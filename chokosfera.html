@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>Chokosfera</title>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    </head>
+    <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, sans-serif;
+    }
+
+    body{
+      background:#fff7f0;
+      color:#333;
+      padding-bottom:75px;
+    }
+
+    .navbar{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:15px 25px;
+      background:#ff69b4;
+      color:white;
+      position:sticky;
+      top:0;
+      z-index:1000;
+    }
+
+    .navbar h1{
+      font-size:28px;
+    }
+
+    .icons{
+      display:flex;
+      gap:20px;
+    }
+
+    .icons i{
+      font-size:22px;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .icons i:hover{
+      transform:scale(1.1);
+      color:#1eceff;
+    }
+
+    .hero{
+      margin:20px;
+      padding:40px;
+      background:linear-gradient(to right, #ffb6d9, #ffd6e7);
+      border-radius:25px;
+      text-align:center;
+    }
+
+    .hero h2{
+      font-size:40px;
+      margin-bottom:10px;
+    }
+
+    .hero p{
+      font-size:18px;
+      margin-bottom:20px;
+    }
+
+    .hero button{
+      padding:14px 28px;
+      border:none;
+      background:#ff1493;
+      color:white;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:16px;
+      transition:0.3s;
+    }
+
+    .hero button:hover{
+      background:#e60073;
+    }
+
+    .categories{
+      display:flex;
+      overflow-x:auto;
+      gap:15px;
+      padding:20px;
+      scrollbar-width:none;
+    }
+
+    .categories::-webkit-scrollbar{
+      display:none;
+    }
+
+    .category{
+      min-width:130px;
+      background:white;
+      padding:14px;
+      text-align:center;
+      border-radius:15px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      cursor:pointer;
+      transition:0.3s;
+      font-weight:bold;
+    }
+
+    .category:hover{
+      background:#ff69b4;
+      color:white;
+    }
+
+    .menu{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+      gap:20px;
+      padding:20px;
+    }
+
+    .card{
+      background:white;
+      border-radius:20px;
+      overflow:hidden;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      transition:0.3s;
+    }
+
+    .card:hover{
+      transform:translateY(-5px);
+    }
+
+    .card img{
+      width:100%;
+      height:200px;
+      object-fit:cover;
+    }
+
+    .card-content{
+      padding:15px;
+      text-align:center;
+    }
+
+    .card h3{
+      margin-bottom:10px;
+    }
+
+    .price{
+      color:#ff1493;
+      font-size:18px;
+      font-weight:bold;
+      margin-bottom:15px;
+    }
+
+    .card button{
+      padding:10px 20px;
+      border:none;
+      background:#ff69b4;
+      color:white;
+      border-radius:10px;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .card button:hover{
+      background:#ff1493;
+    }
+
+    .architecture{
+      margin:40px 20px;
+      background:white;
+      border-radius:20px;
+      padding:30px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .architecture h2{
+      text-align:center;
+      margin-bottom:20px;
+      color:#ff1493;
+    }
+
+    .layers{
+      display:grid;
+      grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+      gap:20px;
+      margin-top:20px;
+    }
+
+    .layer-box{
+      background:#ffe4f2;
+      padding:20px;
+      border-radius:15px;
+    }
+
+    .layer-box h3{
+      margin-bottom:10px;
+      color:#d1006f;
+    }
+
+    .layer-box ul{
+      padding-left:18px;
+    }
+
+    .layer-box li{
+      margin-bottom:8px;
+    }
+
+    .bottom-nav div:hover{
+      color:#ff1493;
+    }
+    .logo-dropdown{
+      position:relative;
+      display:flex;
+      align-items:center;
+    }
+
+
+    .logo-dropdown{
+      position:relative;
+      display:flex;
+      align-items:center;
+    }
+
+    .logo{
+      cursor:pointer;
+      user-select:none;
+    }
+
+    .logo-dropdown i,
+    .logo-dropdown .logo {
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
+    .logo-dropdown:hover i,
+    .logo-dropdown:hover .logo {
+        transform: scale(1.1);
+        color: #1eceff;
+    }
+
+    .dropdown{
+      position:absolute;
+      top:60px;
+      left:0;
+      background:white;
+      min-width:160px;
+      border-radius:12px;
+      box-shadow:0 5px 15px rgba(0,0,0,0.15);
+      display:none;
+      flex-direction:column;
+      overflow:hidden;
+      z-index:2000;
+    }
+
+    .dropdown.show{
+      display:flex; 
+    } 
+
+    .dropdown-item{
+      padding:12px;
+      cursor:pointer;
+      transition:0.2s;
+    }
+
+    .dropdown-item:hover{
+      background:#ff69b4;
+      color:white;  
+    } 
+
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+
+<div class="logo-dropdown">
+    <i class="fa-solid fa-bars" style="font-size: 24px; margin-right: 10px; cursor: pointer;"></i>
+    <h1 class="logo" id="logoBtn"> Menu</h1>
+
+    <div class="dropdown" id="dropdownMenu">
+        <div class="dropdown-item">Add item here</div>
+        <div class="dropdown-item">Add item here</div>
+        <div class="dropdown-item">Add item here</div>
+        <div class="dropdown-item">Add item here</div>
+    </div>
+
+</div>
+
+  <div class="logo-center">
+    <h1>🍩 Chokosfera </h1>
+  </div>
+  
+  <div class="icons">
+    <i class="fa-solid fa-user"></i>
+    <i class="fa-solid fa-cart-shopping"></i>
+  </div>
+
+</div>
+
+  <div class="hero">
+
+    <h2>Fresh Donuts Every Morning</h2>
+
+    <p>Order delicious donuts quickly and easily.</p>
+
+    <button>Order Now</button>
+
+  </div>
+
+  <div class="categories">
+
+    <div class="category">All</div>
+    <div class="category">Chocolate</div>
+    <div class="category">Glazed</div>
+    <div class="category">Filled</div>
+    <div class="category">Vegan</div>
+    <div class="category">Special</div>
+
+  </div>
+
+  <div class="menu">
+
+    <div class="card">
+      <img src="https://www.asweetpeachef.com/wp-content/uploads/2015/08/chocolate-donuts-1200x1200-1.jpg">
+
+      <div class="card-content">
+        <h3>Chocolate Dream</h3>
+        <div class="price">3,00 KM</div>
+        <button>Add To Cart</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://www.foodnetwork.com/content/dam/images/food/video/5/54/546/5464/5464910.jpg">
+
+      <div class="card-content">
+        <h3>Pink Strawberry</h3>
+        <div class="price">3,00 KM</div>
+        <button>Add To Cart</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <img src="https://i.ytimg.com/vi/Qh6j6F_Frvw/maxresdefault.jpg">
+
+      <div class="card-content">
+        <h3>Classic Glazed</h3>
+        <div class="price">2,50 KM</div>
+        <button>Add To Cart</button>
+      </div>
+    </div>
+
+  </div>
+
+    <script>
+     document.addEventListener("DOMContentLoaded", function () {
+     const logo = document.querySelector(".logo");
+     const dropdown = document.getElementById("dropdownMenu");
+
+     logo.addEventListener("click", function (e) {
+      e.stopPropagation(); // prevents instant closing
+      dropdown.classList.toggle("show");
+    });
+
+    document.addEventListener("click", function () {
+      dropdown.classList.remove("show");
+      });
+     });
+    </script>
+</body>
+
+  
