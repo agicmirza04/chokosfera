@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Chokosfera Orders</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #fff7f0;
+      color: #333;
+      padding-bottom: 75px;
+    }
+
+    /* NAVBAR */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 25px;
+      background: #ff69b4;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar h1 {
+      font-size: 28px;
+    }
+
+    .icons {
+      display: flex;
+      gap: 20px;
+    }
+
+    .icons a {
+      color: white;
+      text-decoration: none;
+      font-size: 22px;
+      transition: 0.3s;
+    }
+
+    .icons a:hover {
+      transform: scale(1.1);
+      color: #1eceff;
+    }
+
+    /* LAYOUT */
+    .container {
+      padding: 40px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: white;
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .panel h2 {
+      color: #ff1493;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #ffd6e7;
+      padding-bottom: 10px;
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      background: #ff69b4;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .btn:hover {
+      background: #ff1493;
+    }
+
+    .btn-cancel {
+      background: #ff4d4d;
+      margin-top: 10px;
+    }
+
+    .btn-cancel:hover {
+      background: #cc0000;
+    }
+
+    /* ITEMS */
+    .item-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .item-card:last-child {
+      border-bottom: none;
+    }
+
+    .item-info span {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .item-info .price {
+      color: #ff1493;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .cart-item {
+      padding: 10px;
+      border-bottom: 1px dashed #ccc;
+      font-size: 16px;
+    }
+
+    .order-card {
+      padding: 15px;
+      background: #fff7f0;
+      border: 2px solid #ffd6e7;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .order-card h3 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .order-card p {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar">
+    <div class="logo-center">
+      <h1>🍩 Chokosfera Orders</h1>
+    </div>
+    <div class="icons">
+      <a href="chokosfera.html" title="Home"><i class="fa-solid fa-home"></i></a>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="grid">
+
+      <!-- Menu Items -->
+      <div class="panel">
+        <h2>Menu Options</h2>
+
+        <div class="item-card">
+          <div class="item-info">
+            <span>Chocolate Dream</span>
+            <div class="price">3.00 KM</div>
+          </div>
+          <button class="btn" onclick="appController.addToCart({name: 'Chocolate Dream', price: 3.0})">Add to
+            Cart</button>
+        </div>
+
+        <div class="item-card">
+          <div class="item-info">
+            <span>Pink Strawberry</span>
+            <div class="price">3.00 KM</div>
+          </div>
+          <button class="btn" onclick="appController.addToCart({name: 'Pink Strawberry', price: 3.0})">Add to
+            Cart</button>
+        </div>
+
+        <div class="item-card">
+          <div class="item-info">
+            <span>Classic Glazed</span>
+            <div class="price">2.50 KM</div>
+          </div>
+          <button class="btn" onclick="appController.addToCart({name: 'Classic Glazed', price: 2.5})">Add to
+            Cart</button>
+        </div>
+
+      </div>
+
+      <!-- Cart -->
+      <div class="panel">
+        <h2>Your Cart</h2>
+        <div id="cartContainer">
+          <p style="color: #999;">Cart is empty.</p>
+        </div>
+        <h3 id="cartTotal" style="margin-top: 20px; color: #ff1493; font-size: 20px;">Total: 0.00 KM</h3>
+        <button class="btn" style="width: 100%; margin-top: 20px; font-size: 16px; padding: 15px;"
+          onclick="appController.placeOrder()">Place Order</button>
+      </div>
+
+    </div>
+
+    <!-- Orders -->
+    <div class="panel" style="margin-top: 40px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin-bottom: 0; border: none; padding: 0;">Order History</h2>
+        <button class="btn" onclick="appController.viewOrders()"><i class="fa-solid fa-rotate-right"></i>
+          Refresh</button>
+      </div>
+      <div id="ordersContainer"></div>
+    </div>
+  </div>
+
+  <!-- Load the Order Architecture JS -->
+  <script src="order.js"></script>
+  <script>
+    // Initial view load
+    document.addEventListener("DOMContentLoaded", () => {
+      appController.viewOrders();
+
+      try {
+        const saved = localStorage.getItem('chokosferaUser');
+        if (saved) {
+          const user = JSON.parse(saved);
+          const icons = document.querySelector('.icons');
+          if (icons) {
+            const span = document.createElement('span');
+            span.style.marginRight = '12px';
+            span.style.fontWeight = 'bold';
+            span.style.color = '#fff';
+            span.innerText = `Hi, ${user.name}`;
+            icons.insertBefore(span, icons.firstChild);
+          }
+        }
+      } catch (e) { console.warn('Error reading user', e); }
+    });
+  </script>
+
+</body>
+
+</html>
