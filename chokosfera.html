@@ -1,14 +1,16 @@
-<<<<<<< HEAD
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
-  <title>Chokosfera</title>
+  <title>Donut Sarajevo</title>
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 
   <style>
+    /* RESET — base reset for margins, padding, box-sizing and default font */
     * {
       margin: 0;
       padding: 0;
@@ -16,93 +18,140 @@
       font-family: Arial, sans-serif;
     }
 
+    html,
+    body {
+      min-height: 100%;
+    }
+
     body {
       background: #fff7f0;
       color: #333;
-      padding-bottom: 75px;
+      padding-bottom: 0;
     }
 
-    /* NAVBAR */
+    /* NAVBAR — header container and related elements
+       - Header container: `.navbar` (controls overall header height, `padding`, `min-height`,
+         `background` color, `position: sticky`, and top z-index). Update these values to change
+         the header thickness, color, or sticky behavior.
+       - Brand text: `.brand .brand-name` (controls the decorative font, weight and size of the
+         left-aligned shop name "Donut Sarajevo"). Use this selector to change the pretty font.
+       - Icons area: `.icons` and `.icons i` (controls placement, gap, icon size and hover styles).
+         Reorder or add icons inside the `.icons` element in the HTML; adjust `.icons i` for
+         sizing and hover color.
+    */
 
     .navbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 25px;
+      padding: 28px 52px;
+      min-height: 200px;
+      width: 100vw;
       background: #ff69b4;
       color: white;
       position: sticky;
       top: 0;
       z-index: 1000;
+      box-shadow: inset 0 -4px 0 rgba(255,255,255,0.05);
     }
 
     .navbar h1 {
-      font-size: 28px;
+      font-size: inherit;
+    }
+
+    /* BRAND NAME — left-aligned shop title using a decorative serif (Playfair Display) */
+    .navbar .brand-name {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: 74px;
+      letter-spacing: 0.4px;
+      margin: 0;
+      color: #fff;
+      line-height: 1;
     }
 
     .icons {
       display: flex;
-      gap: 20px;
+      gap: 24px;
+      align-items: center;
+      position: static;
     }
 
-    .icons i {
-      font-size: 22px;
+    .icons i,
+    .menu-toggle {
+      font-size: 54px;
       cursor: pointer;
       transition: 0.3s;
+      border: 0;
+      background: transparent;
+      color: inherit;
     }
 
-    .icons i:hover {
-      transform: scale(1.1);
+    .icons i:hover,
+    .menu-toggle:hover {
+      transform: scale(1.05);
       color: #1eceff;
     }
 
-    /* DROPDOWN */
-
-    .logo-dropdown {
-      position: relative;
+    .menu-dropdown {
+      position: static;
       display: flex;
       align-items: center;
     }
 
-    .logo {
-      cursor: pointer;
-      user-select: none;
+    .menu-toggle {
+      display: inline-flex;
+      flex-direction: column;
+      justify-content: space-between;
+      width: 76px;
+      height: 54px;
+      padding: 0;
     }
 
-    .logo-dropdown i,
-    .logo-dropdown .logo {
-      transition: 0.3s;
-      cursor: pointer;
-    }
-
-    .logo-dropdown:hover i,
-    .logo-dropdown:hover .logo {
-      transform: scale(1.1);
-      color: #1eceff;
+    .menu-toggle span {
+      display: block;
+      width: 100%;
+      height: 10px;
+      border-radius: 999px;
+      background: white;
     }
 
     .dropdown {
       position: absolute;
-      top: 60px;
+      top: 100%;
       left: 0;
+      right: 0;
       background: white;
-      min-width: 160px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+      border-radius: 0;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
       display: none;
       flex-direction: column;
       overflow: hidden;
       z-index: 2000;
+      transform: translateY(-24px);
+      opacity: 0;
+      transition: transform 0.25s ease, opacity 0.25s ease;
+      min-height: 320px;
+      padding: 28px 0;
     }
 
     .dropdown.show {
       display: flex;
+      transform: translateY(0);
+      opacity: 1;
     }
 
     .dropdown-item {
-      padding: 12px;
+      display: block;
+      width: 100%;
+      padding: 24px 32px;
+      font-size: 2.2rem;
+      color: #333;
+      text-decoration: none;
       cursor: pointer;
       transition: 0.2s;
+      font-weight: 700;
+      line-height: 1.1;
     }
 
     .dropdown-item:hover {
@@ -110,42 +159,136 @@
       color: white;
     }
 
-    /* HERO */
+    /* HERO — full-bleed hero image section under the navbar
+       - Background/photo: `.hero` (the `background-image`, `background-size`, and
+         `background-position` are set here). Replace the `background-image` URL to change
+         the photo that fills the hero area.
+       - Overlay: `.hero::before` provides a semi-transparent gradient overlay to improve
+         legibility of headline/CTA on top of the photo.
+       - Content container: `.hero-content` centers the inner content vertically/horizontally
+         and limits width. Adjust `max-width`/`padding` here to move content relative to the photo.
+       - Headline: `.hero-copy h2` is the large decorative title (currently Playfair Display).
+       - Subtitle / "Since 2020": `.hero-copy p` controls the subtitle sizing, weight and
+         spacing — change this selector to adjust that exact line.
+       - CTA card: `.cta-bubble` and `.cta-bubble .btn` control the bubble styling and button.
+    */
 
     .hero {
-      margin: 20px;
+      position: relative;
+      min-height: calc(100vh - 200px);
+      margin: 0;
+      border-radius: 0;
+      overflow: hidden;
+      width: 100%;
+      background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1650&q=80');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* HERO OVERLAY — semi-transparent gradient overlay to improve text legibility on the image
+       (selector: `.hero::before`) */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.20), rgba(0, 0, 0, 0.45));
+    }
+
+     /* HERO CONTENT — container that centers headline and CTA vertically and horizontally
+       (selector: `.hero-content`) */
+     .hero-content {
+      position: relative;
+      width: 100%;
+      max-width: 840px;
       padding: 40px;
-      background: linear-gradient(to right, #ffb6d9, #ffd6e7);
-      border-radius: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      color: white;
       text-align: center;
     }
 
-    .hero h2 {
-      font-size: 40px;
-      margin-bottom: 10px;
+    /* HERO COPY — headline and subtitle block inside the hero
+       - Headline selector: `.hero-copy h2` (this controls the large decorative title).
+       - Subtitle selector: `.hero-copy p` (this controls the "Since 2020" text specifically).
+         Edit `.hero-copy p` to change font-size, weight, color or spacing for that line.
+    */
+    .hero-copy {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
     }
 
-    .hero p {
-      font-size: 18px;
-      margin-bottom: 20px;
+    /* HERO HEADLINE — large decorative title (uses Playfair Display) */
+    .hero-copy h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 900;
+      font-size: clamp(4.4rem, 7.5vw, 7.0rem);
+      line-height: 1.4;
+      margin-bottom: 18px;
+      letter-spacing: 0.8px;
+      text-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
     }
 
-    .hero button {
-      padding: 14px 28px;
-      border: none;
+    /* HERO SUBTITLE — smaller supporting line under the headline (e.g. "Since 2020") */
+    .hero-copy p {
+      font-size: clamp(3.0rem, 3.3vw, 2.4rem);
+      font-weight: 600;
+      max-width: 560px;
+      margin-top: 28px;
+      margin-bottom: 28px;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
+    }
+
+    /* HERO CTA BUTTON — floating button placed directly beneath the subtitle */
+    .hero-cta {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 28px 64px;
+      border-radius: 999px;
       background: #ff1493;
-      color: white;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: 0.3s;
+      color: #fff;
+      text-decoration: none;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
     }
 
-    .hero button:hover {
-      background: #e60073;
+    .hero-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 26px 60px rgba(255, 20, 147, 0.25);
     }
 
-    /* CATEGORIES */
+    /* RESPONSIVE — adjustments for smaller screens */
+    @media (max-width: 900px) {
+      .hero {
+        min-height: 72vh;
+      }
+
+      .hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 28px;
+      }
+
+      .cta-bubble {
+        width: 100%;
+        max-width: 100%;
+      }
+    }
+
+    /* CATEGORIES — horizontal category chips (kept for styles but removed from page content) */
 
     .categories {
       display: flex;
@@ -176,7 +319,7 @@
       color: white;
     }
 
-    /* MENU */
+    /* MENU — grid of product cards (kept for styles but removed from page content) */
 
     .menu {
       display: grid;
@@ -233,7 +376,7 @@
       background: #ff1493;
     }
 
-    /* LOGIN MODAL */
+    /* LOGIN MODAL — overlay and content styles for the login/register modal */
 
     .modal {
       position: fixed;
@@ -253,12 +396,92 @@
     }
 
     .modal-content {
-      width: 380px;
+      width: min(760px, calc(100vw - 60px));
+      max-width: 760px;
       background: white;
       border-radius: 25px;
-      padding: 35px;
+      padding: 52px;
       position: relative;
       animation: popup 0.3s ease;
+      font-size: 1.25rem;
+      line-height: 1.6;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 12px;
+      font-weight: 700;
+      font-size: 1.3rem;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 16px;
+      border: 2px solid #ffd6e7;
+      border-radius: 14px;
+      font-size: 1.15rem;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #ff69b4;
+      box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .password-container input {
+      padding-right: 40px;
+    }
+
+    .auth-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 18px 26px;
+      border: none;
+      border-radius: 14px;
+      background: #ff1493;
+      color: white;
+      font-size: 1.2rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .auth-btn:hover {
+      background: #e60073;
+      transform: translateY(-2px);
+    }
+
+    .register-btn,
+    .register-trigger-btn {
+      background: #1e90ff;
+    }
+
+    .register-btn:hover,
+    .register-trigger-btn:hover {
+      background: #0077cc;
+    }
+
+    .back-to-login-btn {
+      background: #666;
+    }
+
+    .back-to-login-btn:hover {
+      background: #444;
     }
 
     @keyframes popup {
@@ -375,749 +598,47 @@
       text-decoration: underline;
     }
 
-    .hidden {
-      display: none;
-    }
-  </style>
-</head>
-
-<body>
-
-  <!-- NAVBAR -->
-
-  <div class="navbar">
-
-    <div class="logo-dropdown">
-
-      <i class="fa-solid fa-bars" style="font-size:24px; margin-right:10px;"></i>
-
-      <h1 class="logo" id="logoBtn">Menu</h1>
-
-      <div class="dropdown" id="dropdownMenu">
-        <div class="dropdown-item">Home</div>
-        <div class="dropdown-item">Menu</div>
-        <div class="dropdown-item">Special Offers</div>
-        <div class="dropdown-item">Contact</div>
-      </div>
-
-    </div>
-
-    <div class="logo-center">
-      <h1>🍩 Chokosfera</h1>
-    </div>
-
-    <div class="icons">
-      <i class="fa-solid fa-user" id="userIcon"></i>
-      <a href="order.html" style="color: inherit; text-decoration: none;"><i class="fa-solid fa-cart-shopping"></i></a>
-    </div>
-
-  </div>
-
-  <!-- HERO -->
-
-  <div class="hero">
-
-    <h2>text nesto</h2>
-
-    <p>blah blah</p>
-
-  </div>
-
-  <!-- CATEGORIES -->
-
-  <div class="categories">
-
-    <div class="category">All</div>
-    <div class="category">Chocolate</div>
-    <div class="category">Glazed</div>
-    <div class="category">Filled</div>
-    <div class="category">Vegan</div>
-    <div class="category">Special</div>
-
-  </div>
-
-  <!-- MENU -->
-
-  <div class="menu">
-
-    <div class="card">
-
-      <img src="https://www.asweetpeachef.com/wp-content/uploads/2015/08/chocolate-donuts-1200x1200-1.jpg">
-
-      <div class="card-content">
-        <h3>Chocolate Dream</h3>
-        <div class="price">3,00 KM</div>
-        <button onclick="window.location.href='order.html'">Add To Cart</button>
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <img src="https://www.foodnetwork.com/content/dam/images/food/video/5/54/546/5464/5464910.jpg">
-
-      <div class="card-content">
-        <h3>Pink Strawberry</h3>
-        <div class="price">3,00 KM</div>
-        <button onclick="window.location.href='order.html'">Add To Cart</button>
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <img src="https://i.ytimg.com/vi/Qh6j6F_Frvw/maxresdefault.jpg">
-
-      <div class="card-content">
-        <h3>Classic Glazed</h3>
-        <div class="price">2,50 KM</div>
-        <button onclick="window.location.href='order.html'">Add To Cart</button>
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- LOGIN / REGISTER MODAL -->
-
-  <div class="modal" id="authModal">
-
-    <div class="modal-content">
-
-      <span class="close-btn" id="closeModal">&times;</span>
-
-      <!-- LOGIN FORM -->
-
-      <div id="loginForm">
-
-        <h2>Login</h2>
-
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" placeholder="Enter your email">
-        </div>
-
-        <div class="form-group">
-          <label>Password</label>
-          <div class="password-container">
-            <input type="password" id="loginPassword" placeholder="Enter your password">
-            <i class="fa-solid fa-eye toggle-password" id="toggleLoginPassword"></i>
-          </div>
-        </div>
-
-        <button class="auth-btn">Login</button>
-
-        <div class="switch-form">
-          Don't have an account?
-          <span id="showRegister">Register</span>
-        </div>
-
-      </div>
-
-      <!-- REGISTER FORM -->
-
-      <div id="registerForm" class="hidden">
-
-        <h2>Register</h2>
-
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" placeholder="Enter your name">
-        </div>
-
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" placeholder="Enter your email">
-        </div>
-
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="registerPassword" placeholder="Create password">
-          <div id="passwordWarning" class="password-warning">Password must be at least 8 characters.</div>
-        </div>
-
-        <div class="form-group">
-          <label>Confirm Password</label>
-          <input type="password" placeholder="Confirm password">
-        </div>
-
-        <button class="auth-btn">Create Account</button>
-
-        <div class="switch-form">
-          Already have an account?
-          <span id="showLogin">Login</span>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <script>
-
-    /* DROPDOWN MENU */
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-      const logo = document.querySelector(".logo");
-      const dropdown = document.getElementById("dropdownMenu");
-
-      logo.addEventListener("click", function (e) {
-
-        e.stopPropagation();
-        dropdown.classList.toggle("show");
-
-      });
-
-      document.addEventListener("click", function () {
-
-        dropdown.classList.remove("show");
-
-      });
-
-    });
-
-    /* LOGIN MODAL */
-
-    const userIcon = document.getElementById("userIcon");
-    const authModal = document.getElementById("authModal");
-    const closeModal = document.getElementById("closeModal");
-
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
-
-    const showRegister = document.getElementById("showRegister");
-    const showLogin = document.getElementById("showLogin");
-
-    userIcon.addEventListener("click", function () {
-
-      authModal.classList.add("show");
-
-    });
-
-    closeModal.addEventListener("click", function () {
-
-      authModal.classList.remove("show");
-
-    });
-
-    window.addEventListener("click", function (e) {
-
-      if (e.target === authModal) {
-
-        authModal.classList.remove("show");
-
-      }
-
-    });
-
-    showRegister.addEventListener("click", function () {
-
-      loginForm.classList.add("hidden");
-      registerForm.classList.remove("hidden");
-
-    });
-
-    showLogin.addEventListener("click", function () {
-
-      registerForm.classList.add("hidden");
-      loginForm.classList.remove("hidden");
-
-    });
-
-
-    /* REGISTER PASSWORD WARNING */
-    const registerPasswordInput = document.getElementById("registerPassword");
-    const passwordWarning = document.getElementById("passwordWarning");
-
-    registerPasswordInput.addEventListener("input", function () {
-      if (this.value.length > 0 && this.value.length < 8) {
-        passwordWarning.style.display = "block";
-      } else {
-        passwordWarning.style.display = "none";
-      }
-    });
-
-    /* REGISTER */
-
-    const registerButton = registerForm.querySelector(".auth-btn");
-
-    registerButton.addEventListener("click", function () {
-
-      const name =
-        registerForm.querySelector('input[type="text"]').value;
-
-      const email =
-        registerForm.querySelector('input[type="email"]').value;
-
-      const passwordInputs = registerForm.querySelectorAll('input[type="password"]');
-      const password = passwordInputs[0].value;
-      const confirmPassword = passwordInputs[1].value;
-
-      if (name === "" || email === "" || password === "" || confirmPassword === "") {
-
-        alert("Please fill all fields.");
-        return;
-
-      }
-
-      if (password.length < 8) {
-        alert("Password must contain at least 8 characters.");
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-      }
-
-      const user = {
-        name: name,
-        email: email,
-        password: password
-      };
-
-      localStorage.setItem("chokosferaUser", JSON.stringify(user));
-
-      alert("Account created successfully!");
-
-      registerForm.classList.add("hidden");
-      loginForm.classList.remove("hidden");
-
-    });
-
-
-    /* LOGIN TOGGLE PASSWORD */
-    const toggleLoginPassword = document.getElementById("toggleLoginPassword");
-    const loginPasswordInput = document.getElementById("loginPassword");
-
-    toggleLoginPassword.addEventListener("click", function () {
-      const type = loginPasswordInput.getAttribute("type") === "password" ? "text" : "password";
-      loginPasswordInput.setAttribute("type", type);
-      this.classList.toggle("fa-eye");
-      this.classList.toggle("fa-eye-slash");
-    });
-
-    /* LOGIN */
-
-    const loginButton = loginForm.querySelector(".auth-btn");
-
-    loginButton.addEventListener("click", function () {
-
-      const email =
-        loginForm.querySelector('input[type="email"]').value;
-
-      const password =
-        document.getElementById("loginPassword").value;
-
-      const savedUser =
-        JSON.parse(localStorage.getItem("chokosferaUser"));
-
-      if (savedUser === null) {
-
-        alert("No account found.");
-        return;
-
-      }
-
-      if (
-        email === savedUser.email &&
-        password === savedUser.password
-      ) {
-
-        alert("Login successful!");
-
-        authModal.classList.remove("show");
-
-      }
-      else {
-
-        alert("Incorrect email or password.");
-
-      }
-
-    });
-
-  </script>
-
-</body>
-
-=======
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="utf-8">
-  <title>Chokosfera</title>
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
-
-    body {
-      background: #fff7f0;
-      color: #333;
-      padding-bottom: 75px;
-    }
-
-    /* NAVBAR */
-
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 25px;
-      background: #ff69b4;
-      color: white;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-    }
-
-    .navbar h1 {
-      font-size: 28px;
-    }
-
-    .icons {
-      display: flex;
-      gap: 20px;
-    }
-
-    .icons i {
-      font-size: 22px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .icons i:hover {
-      transform: scale(1.1);
-      color: #1eceff;
-    }
-
-    /* DROPDOWN */
-
-    .logo-dropdown {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .logo {
-      cursor: pointer;
-      user-select: none;
-    }
-
-    .logo-dropdown i,
-    .logo-dropdown .logo {
-      transition: 0.3s;
-      cursor: pointer;
-    }
-
-    .logo-dropdown:hover i,
-    .logo-dropdown:hover .logo {
-      transform: scale(1.1);
-      color: #1eceff;
-    }
-
-    .dropdown {
-      position: absolute;
-      top: 60px;
-      left: 0;
-      background: white;
-      min-width: 160px;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      z-index: 2000;
-    }
-
-    .dropdown.show {
-      display: flex;
-    }
-
-    .dropdown-item {
-      padding: 12px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .dropdown-item:hover {
-      background: #ff69b4;
-      color: white;
-    }
-
-    /* HERO */
-
-    .hero {
-      margin: 20px;
-      padding: 40px;
-      background: linear-gradient(to right, #ffb6d9, #ffd6e7);
-      border-radius: 25px;
-      text-align: center;
-    }
-
-    .hero h2 {
-      font-size: 40px;
-      margin-bottom: 10px;
-    }
-
-    .hero p {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    .hero button {
-      padding: 14px 28px;
-      border: none;
-      background: #ff1493;
-      color: white;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 16px;
-      transition: 0.3s;
-    }
-
-    .hero button:hover {
-      background: #e60073;
-    }
-
-    /* CATEGORIES */
-
-    .categories {
-      display: flex;
-      overflow-x: auto;
-      gap: 15px;
-      padding: 20px;
-      scrollbar-width: none;
-    }
-
-    .categories::-webkit-scrollbar {
-      display: none;
-    }
-
-    .category {
-      min-width: 130px;
-      background: white;
-      padding: 14px;
-      text-align: center;
-      border-radius: 15px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      cursor: pointer;
-      transition: 0.3s;
-      font-weight: bold;
-    }
-
-    .category:hover {
-      background: #ff69b4;
-      color: white;
-    }
-
-    /* MENU */
-
-    .menu {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      transition: 0.3s;
-    }
-
-    .card:hover {
-      transform: translateY(-5px);
-    }
-
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-
-    .card-content {
-      padding: 15px;
-      text-align: center;
-    }
-
-    .card h3 {
-      margin-bottom: 10px;
-    }
-
-    .price {
-      color: #ff1493;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-
-    .card button {
-      padding: 10px 20px;
-      border: none;
-      background: #ff69b4;
-      color: white;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .card button:hover {
-      background: #ff1493;
-    }
-
-    /* LOGIN MODAL */
-
-    .modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 5000;
-    }
-
-    .modal.show {
-      display: flex;
-    }
-
-    .modal-content {
-      width: 380px;
-      background: white;
-      border-radius: 25px;
-      padding: 35px;
-      position: relative;
-      animation: popup 0.3s ease;
-    }
-
-    @keyframes popup {
-      from {
-        transform: scale(0.8);
-        opacity: 0;
-      }
-
-      to {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-
-    .close-btn {
-      position: absolute;
-      top: 15px;
-      right: 20px;
-      font-size: 24px;
-      cursor: pointer;
-      color: #999;
-    }
-
-    .close-btn:hover {
-      color: #ff1493;
-    }
-
-    .modal-content h2 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: #ff1493;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
-    }
-
-    .form-group label {
+    .auth-screen {
       display: block;
-      margin-bottom: 8px;
-      font-weight: bold;
     }
 
-    .form-group input {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #ffd6e7;
-      border-radius: 12px;
-      outline: none;
-      transition: 0.3s;
-    }
-
-    .form-group input:focus {
-      border-color: #ff69b4;
-    }
-
-    .password-container {
-      position: relative;
-    }
-
-    .password-container input {
-      padding-right: 40px;
-    }
-
-    .password-container .toggle-password {
-      position: absolute;
-      right: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      color: #999;
-    }
-
-    .password-container .toggle-password:hover {
-      color: #ff1493;
-    }
-
-    .password-warning {
-      color: #ff1493;
-      font-size: 13px;
-      margin-top: 6px;
+    .auth-screen.hidden {
       display: none;
     }
 
-    .auth-btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
+    .password-note {
+      display: block;
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 6px;
+      margin-bottom: 16px;
+    }
+
+    .form-error {
+      color: #d8000c;
+      background: #ffd2d2;
+      border: 1px solid #d8000c;
       border-radius: 12px;
-      background: #ff1493;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-      margin-top: 10px;
-    }
-
-    .auth-btn:hover {
-      background: #e60073;
-    }
-
-    .switch-form {
+      padding: 14px 18px;
+      margin-top: 12px;
+      font-size: 1rem;
       text-align: center;
-      margin-top: 18px;
     }
 
-    .switch-form span {
-      color: #ff1493;
-      cursor: pointer;
-      font-weight: bold;
+    .form-success {
+      color: #155724;
+      background: #d4edda;
+      border: 1px solid #155724;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-top: 12px;
+      font-size: 1rem;
+      text-align: center;
     }
 
-    .switch-form span:hover {
-      text-decoration: underline;
+    .form-error.hidden,
+    .form-success.hidden {
+      display: none;
     }
 
     .hidden {
@@ -1131,29 +652,24 @@
   <!-- NAVBAR -->
 
   <div class="navbar">
-
-    <div class="logo-dropdown">
-
-      <i class="fa-solid fa-bars" style="font-size:24px; margin-right:10px;"></i>
-
-      <h1 class="logo" id="logoBtn">Menu</h1>
-
-      <div class="dropdown" id="dropdownMenu">
-        <div class="dropdown-item">Home</div>
-        <div class="dropdown-item">Menu</div>
-        <div class="dropdown-item">Special Offers</div>
-        <div class="dropdown-item">Contact</div>
-      </div>
-
-    </div>
-
-    <div class="logo-center">
-      <h1>🍩 Chokosfera</h1>
+    <div class="brand">
+      <h1 class="brand-name">Donut Sarajevo</h1>
     </div>
 
     <div class="icons">
-      <i class="fa-solid fa-user" id="userIcon"></i>
-      <a href="order.html" style="color: inherit; text-decoration: none;"><i class="fa-solid fa-cart-shopping"></i></a>
+      <div class="menu-dropdown" id="menuDropdown">
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="dropdown" id="navDropdown">
+          <a href="#" class="dropdown-item">Menu</a>
+          <a href="#" class="dropdown-item">Location</a>
+          <a href="#" class="dropdown-item">Contact Info</a>
+        </div>
+      </div>
+      <i class="fa-solid fa-user" id="userIcon" title="Login / Register"></i>
     </div>
 
   </div>
@@ -1161,332 +677,292 @@
   <!-- HERO -->
 
   <div class="hero">
+    <div class="hero-content">
+      <div class="hero-copy">
+        <h2>Krofne, Smash Cake, Cakesicles & Čoko hurme</h2>
+        <p>Since 2020</p>
+      </div>
+      <a href="order.html" class="btn hero-cta">Start your order</a>
+    </div>
+  </div>
 
-    <h2>text nesto</h2>
+  <!-- LOGIN / REGISTER MODAL -->
+  <div class="modal" id="loginModal" aria-hidden="true">
+    <div class="modal-content" role="dialog" aria-modal="true">
+      <span class="close-btn" id="closeModal" aria-label="Close modal">×</span>
+      
+      <!-- LOGIN SCREEN -->
+      <div id="loginScreen" class="auth-screen">
+        <div class="form-group">
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="email" placeholder="you@example.com">
+        </div>
+        <div class="form-group password-container">
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" placeholder="Enter password">
+        </div>
+        <div class="form-error hidden" id="loginError"></div>
+        <div class="form-success hidden" id="loginSuccess"></div>
+        <div class="auth-actions">
+          <button class="auth-btn login-btn" type="button">Login</button>
+          <button class="auth-btn register-trigger-btn" type="button">Register</button>
+        </div>
+      </div>
 
-    <p>blah blah</p>
-
+      <!-- REGISTER SCREEN -->
+      <div id="registerScreen" class="auth-screen hidden">
+        <div class="form-group">
+          <label for="registerEmail">Email</label>
+          <input id="registerEmail" type="email" placeholder="you@example.com">
+        </div>
+        <div class="form-group password-container">
+          <label for="registerPassword">Password</label>
+          <input id="registerPassword" type="password" placeholder="At least 8 characters">
+          <small class="password-note">Must be at least 8 characters</small>
+        </div>
+        <div class="form-group password-container">
+          <label for="confirmPassword">Confirm Password</label>
+          <input id="confirmPassword" type="password" placeholder="Confirm password">
+        </div>
+        <div class="form-error hidden" id="registerError"></div>
+        <div class="form-success hidden" id="registerSuccess"></div>
+        <div class="auth-actions">
+          <button class="auth-btn register-btn" type="button">Create Account</button>
+          <button class="auth-btn back-to-login-btn" type="button">Back to Login</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- CATEGORIES -->
 
-  <div class="categories">
-
-    <div class="category">All</div>
-    <div class="category">Chocolate</div>
-    <div class="category">Glazed</div>
-    <div class="category">Filled</div>
-    <div class="category">Vegan</div>
-    <div class="category">Special</div>
-
-  </div>
-
-  <!-- MENU -->
-
-  <div class="menu">
-
-    <div class="card">
-
-      <img src="https://www.asweetpeachef.com/wp-content/uploads/2015/08/chocolate-donuts-1200x1200-1.jpg">
-
-      <div class="card-content">
-        <h3>Chocolate Dream</h3>
-        <div class="price">3,00 KM</div>
-        <button onclick="window.location.href='order.html'">Add To Cart</button>
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <img src="https://www.foodnetwork.com/content/dam/images/food/video/5/54/546/5464/5464910.jpg">
-
-      <div class="card-content">
-        <h3>Pink Strawberry</h3>
-        <div class="price">3,00 KM</div>
-        <button onclick="window.location.href='order.html'">Add To Cart</button>
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <img src="https://i.ytimg.com/vi/Qh6j6F_Frvw/maxresdefault.jpg">
-
-      <div class="card-content">
-        <h3>Classic Glazed</h3>
-        <div class="price">2,50 KM</div>
-        <button onclick="window.location.href='order.html'">Add To Cart</button>
-      </div>
-
-    </div>
-
-  </div>
-
-  <!-- LOGIN / REGISTER MODAL -->
-
-  <div class="modal" id="authModal">
-
-    <div class="modal-content">
-
-      <span class="close-btn" id="closeModal">&times;</span>
-
-      <!-- LOGIN FORM -->
-
-      <div id="loginForm">
-
-        <h2>Login</h2>
-
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" placeholder="Enter your email">
-        </div>
-
-        <div class="form-group">
-          <label>Password</label>
-          <div class="password-container">
-            <input type="password" id="loginPassword" placeholder="Enter your password">
-            <i class="fa-solid fa-eye toggle-password" id="toggleLoginPassword"></i>
-          </div>
-        </div>
-
-        <button class="auth-btn">Login</button>
-
-        <div class="switch-form">
-          Don't have an account?
-          <span id="showRegister">Register</span>
-        </div>
-
-      </div>
-
-      <!-- REGISTER FORM -->
-
-      <div id="registerForm" class="hidden">
-
-        <h2>Register</h2>
-
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" placeholder="Enter your name">
-        </div>
-
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" placeholder="Enter your email">
-        </div>
-
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="registerPassword" placeholder="Create password">
-          <div id="passwordWarning" class="password-warning">Password must be at least 8 characters.</div>
-        </div>
-
-        <div class="form-group">
-          <label>Confirm Password</label>
-          <input type="password" placeholder="Confirm password">
-        </div>
-
-        <button class="auth-btn">Create Account</button>
-
-        <div class="switch-form">
-          Already have an account?
-          <span id="showLogin">Login</span>
-        </div>
-
-      </div>
-
-    </div>
-
-  </div>
-
   <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var menuToggle = document.getElementById('menuToggle');
+      var navDropdown = document.getElementById('navDropdown');
+      var userIcon = document.getElementById('userIcon');
+      var loginModal = document.getElementById('loginModal');
+      var closeModal = document.getElementById('closeModal');
+      var loginScreen = document.getElementById('loginScreen');
+      var registerScreen = document.getElementById('registerScreen');
+      var loginEmail = document.getElementById('loginEmail');
+      var loginPassword = document.getElementById('loginPassword');
+      var registerEmail = document.getElementById('registerEmail');
+      var registerPassword = document.getElementById('registerPassword');
+      var confirmPassword = document.getElementById('confirmPassword');
+      var loginBtn = document.querySelector('.login-btn');
+      var registerBtn = document.querySelector('.register-btn');
+      var registerTriggerBtn = document.querySelector('.register-trigger-btn');
+      var backToLoginBtn = document.querySelector('.back-to-login-btn');
+      var loginError = document.getElementById('loginError');
+      var loginSuccess = document.getElementById('loginSuccess');
+      var registerError = document.getElementById('registerError');
+      var registerSuccess = document.getElementById('registerSuccess');
 
-    /* DROPDOWN MENU */
-
-    document.addEventListener("DOMContentLoaded", function () {
-
-      const logo = document.querySelector(".logo");
-      const dropdown = document.getElementById("dropdownMenu");
-
-      logo.addEventListener("click", function (e) {
-
-        e.stopPropagation();
-        dropdown.classList.toggle("show");
-
-      });
-
-      document.addEventListener("click", function () {
-
-        dropdown.classList.remove("show");
-
-      });
-
-    });
-
-    /* LOGIN MODAL */
-
-    const userIcon = document.getElementById("userIcon");
-    const authModal = document.getElementById("authModal");
-    const closeModal = document.getElementById("closeModal");
-
-    const loginForm = document.getElementById("loginForm");
-    const registerForm = document.getElementById("registerForm");
-
-    const showRegister = document.getElementById("showRegister");
-    const showLogin = document.getElementById("showLogin");
-
-    userIcon.addEventListener("click", function () {
-
-      authModal.classList.add("show");
-
-    });
-
-    closeModal.addEventListener("click", function () {
-
-      authModal.classList.remove("show");
-
-    });
-
-    window.addEventListener("click", function (e) {
-
-      if (e.target === authModal) {
-
-        authModal.classList.remove("show");
-
+      function showLoginScreen() {
+        loginScreen.classList.remove('hidden');
+        registerScreen.classList.add('hidden');
+        loginEmail.value = '';
+        loginPassword.value = '';
+        loginError.textContent = '';
+        loginError.classList.add('hidden');
+        loginSuccess.textContent = '';
+        loginSuccess.classList.add('hidden');
       }
 
-    });
-
-    showRegister.addEventListener("click", function () {
-
-      loginForm.classList.add("hidden");
-      registerForm.classList.remove("hidden");
-
-    });
-
-    showLogin.addEventListener("click", function () {
-
-      registerForm.classList.add("hidden");
-      loginForm.classList.remove("hidden");
-
-    });
-
-
-    /* REGISTER PASSWORD WARNING */
-    const registerPasswordInput = document.getElementById("registerPassword");
-    const passwordWarning = document.getElementById("passwordWarning");
-
-    registerPasswordInput.addEventListener("input", function () {
-      if (this.value.length > 0 && this.value.length < 8) {
-        passwordWarning.style.display = "block";
-      } else {
-        passwordWarning.style.display = "none";
-      }
-    });
-
-    /* REGISTER */
-
-    const registerButton = registerForm.querySelector(".auth-btn");
-
-    registerButton.addEventListener("click", function () {
-
-      const name =
-        registerForm.querySelector('input[type="text"]').value;
-
-      const email =
-        registerForm.querySelector('input[type="email"]').value;
-
-      const passwordInputs = registerForm.querySelectorAll('input[type="password"]');
-      const password = passwordInputs[0].value;
-      const confirmPassword = passwordInputs[1].value;
-
-      if (name === "" || email === "" || password === "" || confirmPassword === "") {
-
-        alert("Please fill all fields.");
-        return;
-
+      function showRegisterScreen() {
+        loginScreen.classList.add('hidden');
+        registerScreen.classList.remove('hidden');
+        registerEmail.value = '';
+        registerPassword.value = '';
+        confirmPassword.value = '';
+        registerError.textContent = '';
+        registerError.classList.add('hidden');
+        registerSuccess.textContent = '';
+        registerSuccess.classList.add('hidden');
       }
 
-      if (password.length < 8) {
-        alert("Password must contain at least 8 characters.");
-        return;
+      function showLoginError(message) {
+        loginError.textContent = message;
+        loginError.classList.remove('hidden');
+        loginSuccess.textContent = '';
+        loginSuccess.classList.add('hidden');
       }
 
-      if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
+      function showLoginSuccess(message) {
+        loginSuccess.textContent = message;
+        loginSuccess.classList.remove('hidden');
+        loginError.textContent = '';
+        loginError.classList.add('hidden');
       }
 
-      const user = {
-        name: name,
-        email: email,
-        password: password
-      };
+      function showRegisterError(message) {
+        registerError.textContent = message;
+        registerError.classList.remove('hidden');
+        registerSuccess.textContent = '';
+        registerSuccess.classList.add('hidden');
+      }
 
-      localStorage.setItem("chokosferaUser", JSON.stringify(user));
+      function showRegisterSuccess(message) {
+        registerSuccess.textContent = message;
+        registerSuccess.classList.remove('hidden');
+        registerError.textContent = '';
+        registerError.classList.add('hidden');
+      }
 
-      alert("Account created successfully!");
+      function parseJsonResponse(response) {
+        var contentType = response.headers.get('Content-Type') || response.headers.get('content-type') || '';
+        if (response.status === 204) {
+          return Promise.resolve({});
+        }
+        if (contentType.indexOf('application/json') !== -1) {
+          return response.json();
+        }
+        return response.text().then(function (text) {
+          if (!text || !text.trim()) {
+            return {};
+          }
+          try {
+            return JSON.parse(text);
+          } catch (ex) {
+            return { __raw: text };
+          }
+        });
+      }
 
-      registerForm.classList.add("hidden");
-      loginForm.classList.remove("hidden");
+      function closeLoginModal() {
+        loginModal.classList.remove('show');
+        loginModal.setAttribute('aria-hidden', 'true');
+        showLoginScreen();
+      }
 
+      // Menu toggle
+      if (menuToggle && navDropdown) {
+        menuToggle.addEventListener('click', function (event) {
+          event.stopPropagation();
+          navDropdown.classList.toggle('show');
+        });
+
+        navDropdown.addEventListener('click', function (event) {
+          event.stopPropagation();
+        });
+
+        document.addEventListener('click', function () {
+          navDropdown.classList.remove('show');
+        });
+      }
+
+      // Modal open/close
+      if (userIcon && loginModal) {
+        userIcon.addEventListener('click', function (event) {
+          event.stopPropagation();
+          loginModal.classList.add('show');
+          loginModal.setAttribute('aria-hidden', 'false');
+          showLoginScreen();
+        });
+      }
+
+      if (closeModal) {
+        closeModal.addEventListener('click', closeLoginModal);
+      }
+
+      if (loginModal) {
+        loginModal.addEventListener('click', closeLoginModal);
+        loginModal.querySelector('.modal-content').addEventListener('click', function (event) {
+          event.stopPropagation();
+        });
+      }
+
+      // Screen switching
+      if (registerTriggerBtn) {
+        registerTriggerBtn.addEventListener('click', showRegisterScreen);
+      }
+
+      if (backToLoginBtn) {
+        backToLoginBtn.addEventListener('click', showLoginScreen);
+      }
+
+      // Login handler
+      if (loginBtn) {
+        loginBtn.addEventListener('click', function () {
+          var email = loginEmail.value.trim();
+          var password = loginPassword.value.trim();
+
+          if (!email || !password) {
+            return showLoginError('Please enter both email and password.');
+          }
+
+          fetch('login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, password: password })
+          })
+            .then(function (response) {
+              return parseJsonResponse(response).then(function (data) {
+                if (!response.ok) {
+                  var message = data.error || data.message || response.statusText || 'Login failed';
+                  throw new Error(message);
+                }
+                return data;
+              });
+            })
+            .then(function (data) {
+              showLoginSuccess(data.message || 'Login successful!');
+              setTimeout(closeLoginModal, 1200);
+            })
+            .catch(function (error) {
+              showLoginError(error.message);
+            });
+        });
+      }
+
+      // Register handler
+      if (registerBtn) {
+        registerBtn.addEventListener('click', function () {
+          var email = registerEmail.value.trim();
+          var password = registerPassword.value.trim();
+          var confirm = confirmPassword.value.trim();
+
+          if (!email || !password || !confirm) {
+            return showRegisterError('Please fill in all fields.');
+          }
+
+          if (password.length < 8) {
+            return showRegisterError('Password must be at least 8 characters long.');
+          }
+
+          if (password !== confirm) {
+            return showRegisterError('Passwords do not match.');
+          }
+
+          var username = email.split('@')[0] || 'user';
+
+          fetch('register.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, email: email, password: password, confirmPassword: confirm })
+          })
+            .then(function (response) {
+              return parseJsonResponse(response).then(function (data) {
+                if (!response.ok) {
+                  var message = data.error || data.message || response.statusText || 'Registration failed';
+                  throw new Error(message);
+                }
+                return data;
+              });
+            })
+            .then(function (data) {
+              showRegisterSuccess(data.message || 'Registration successful!');
+              setTimeout(closeLoginModal, 1400);
+            })
+            .catch(function (error) {
+              showRegisterError(error.message);
+            });
+        });
+      }
     });
-
-
-    /* LOGIN TOGGLE PASSWORD */
-    const toggleLoginPassword = document.getElementById("toggleLoginPassword");
-    const loginPasswordInput = document.getElementById("loginPassword");
-
-    toggleLoginPassword.addEventListener("click", function () {
-      const type = loginPasswordInput.getAttribute("type") === "password" ? "text" : "password";
-      loginPasswordInput.setAttribute("type", type);
-      this.classList.toggle("fa-eye");
-      this.classList.toggle("fa-eye-slash");
-    });
-
-    /* LOGIN */
-
-    const loginButton = loginForm.querySelector(".auth-btn");
-
-    loginButton.addEventListener("click", function () {
-
-      const email =
-        loginForm.querySelector('input[type="email"]').value;
-
-      const password =
-        document.getElementById("loginPassword").value;
-
-      const savedUser =
-        JSON.parse(localStorage.getItem("chokosferaUser"));
-
-      if (savedUser === null) {
-
-        alert("No account found.");
-        return;
-
-      }
-
-      if (
-        email === savedUser.email &&
-        password === savedUser.password
-      ) {
-
-        alert("Login successful!");
-
-        authModal.classList.remove("show");
-
-      }
-      else {
-
-        alert("Incorrect email or password.");
-
-      }
-
-    });
-
   </script>
 
-</body>
+  </body>
 
->>>>>>> origin/darkyami
-</html>
+  </html>
