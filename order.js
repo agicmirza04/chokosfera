@@ -11,22 +11,12 @@ class Order {
 
 class OrderRepository {
   async saveOrder(order) {
-    const body = new URLSearchParams({
-      items: JSON.stringify(order.items),
-      total: order.total,
-      userId: order.userId || ''
-    });
-    if (order.loyalPassword) body.append('loyal_password', order.loyalPassword);
-    if (order.userEmail) body.append('userEmail', order.userEmail);
-    const res = await fetch('orders.php', {
+    const res = await fetch('/api/orders', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: body
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: order.items, total: order.total, userId: order.userId })
     });
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error('Failed to save order: ' + (text || res.statusText));
-    }
+    if (!res.ok) throw new Error('Failed to save order');
     const data = await res.json();
     return data.order;
   }
@@ -34,29 +24,18 @@ class OrderRepository {
   async getAllOrders() {
     let userId = null;
     try {
-      const saved = localStorage.getItem('user');
+      const saved = localStorage.getItem('chokosferaUser');
       if (saved) userId = JSON.parse(saved).id;
     } catch (e) {}
-    const url = userId ? `orders.php?userId=${encodeURIComponent(userId)}` : 'orders.php';
+    const url = userId ? `/api/orders?userId=${userId}` : '/api/orders';
     const res = await fetch(url);
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error('Failed to fetch orders: ' + (text || res.statusText));
-    }
+    if (!res.ok) throw new Error('Failed to fetch orders');
     return await res.json();
   }
 
   async cancelOrder(orderId) {
-    // Use POST cancel action to work with PHP endpoint
-    const res = await fetch('orders.php?action=cancel', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: orderId })
-    });
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error('Failed to cancel order: ' + (text || res.statusText));
-    }
+    const res = await fetch(`/api/orders/${orderId}/cancel`, { method: 'PATCH' });
+    if (!res.ok) throw new Error('Failed to cancel order');
     return await res.json();
   }
 }
@@ -132,35 +111,10 @@ class OrderService {
     return this.cart.reduce((total, item) => total + Number(item.price || 0), 0);
   }
 
-  async placeOrder(userId = null, loyalPassword = null) {
+  async placeOrder(userId = null) {
     if (this.cart.length === 0) throw new Error("Cart is empty");
-
-    // Get user from localStorage if not provided and get email for loyalty lookup
-    var userEmail = null;
-    if (!userId) {
-      try {
-        const userStr = localStorage.getItem('user');
-        if (userStr) {
-          const userData = JSON.parse(userStr);
-          userId = userData.id;
-          userEmail = userData.email;
-        }
-      } catch (e) {}
-    } else {
-      // if userId provided but email unknown, try to pull email from localStorage too
-      try {
-        const userStr = localStorage.getItem('user');
-        if (userStr) {
-          const userData = JSON.parse(userStr);
-          if (userData.email) userEmail = userData.email;
-        }
-      } catch (e) {}
-    }
-
     const total = this.calculateTotal();
     const order = new Order(null, [...this.cart], total, 'Pending', userId);
-    if (loyalPassword) order.loyalPassword = loyalPassword;
-    if (userEmail) order.userEmail = userEmail;
     const saved = await this.repository.saveOrder(order);
     this.cart = [];
     this.saveCart();
@@ -209,7 +163,7 @@ class OrderController {
 
   getCurrentUserKey() {
     try {
-      const saved = localStorage.getItem('user');
+      const saved = localStorage.getItem('chokosferaUser');
       if (saved) {
         const user = JSON.parse(saved);
         if (user && user.id) return user.id;
@@ -496,11 +450,10 @@ class OrderController {
       div.className = 'order-card';
       const isPending = order.status === 'Pending';
       const itemsList = order.items.map(i => i.name).join(', ');
-      const orderIdLabel = String(order.id).slice(-6);
       div.innerHTML = `
-        <h3>Order #${orderIdLabel}</h3>
+        <h3>Order #${order.id.slice(-6)}</h3>
         <p><strong>Items:</strong> ${itemsList}</p>
-        <p><strong>Total:</strong> ${Number(order.total).toFixed(2)} KM</p>
+        <p><strong>Total:</strong> ${order.total.toFixed(2)} KM</p>
         <p><strong>Status:</strong> <span style="color: ${order.status === 'Cancelled' ? 'red' : 'green'}">${order.status}</span></p>
         ${isPending ? `<button class="btn btn-cancel" onclick="appController.cancelOrder('${order.id}')">Cancel Order</button>` : ''}
       `;

@@ -205,6 +205,10 @@
           <button class="btn" onclick="appController.addToCart({name: 'Choco Dates', price: 4.5, amount: 1, description: 'Available menu option'})">Add to Cart</button>
         </div>
         <div class="item-card">
+          <div class="item-info"><span>Loyal Customer</span><div class="price">Free</div></div>
+          <a class="btn" href="loyal_customer.html">Register</a>
+        </div>
+        <div class="item-card">
           <div class="item-info"><span>Smash Cake</span><div class="price">12.00 KM</div></div>
           <button class="btn" onclick="appController.addToCart({name: 'Smash Cake', price: 12.0, amount: 1, description: 'Available menu option'})">Add to Cart</button>
         </div>
@@ -213,13 +217,9 @@
       <div class="panel">
         <h2>Your Cart</h2>
         <div id="cartContainer"><p style="color: #999;">Cart is empty.</p></div>
+        <a class="btn btn-secondary" href="loyal_customer.html" style="display:inline-block;margin-bottom:16px;">Loyal Customer Register</a>
         <h3 id="cartTotal" style="margin-top: 20px; color: #ff1493; font-size: 20px;">Total: 0.00 KM</h3>
-        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; align-items: center;">
-          <button class="btn btn-secondary" type="button" onclick="onRedeemLoyalCodeClicked()">Redeem Loyal Code</button>
-          <a class="btn btn-secondary" href="loyal_customer.html">Apply for Loyal Customer</a>
-        </div>
-        <p id="loyalStatus" style="margin-top: 12px; color: #4b2e56; font-weight: 700;"></p>
-        <button class="btn" style="width: 100%; margin-top: 20px; font-size: 16px; padding: 15px;" onclick="onPlaceOrderClicked()">Place Order</button>
+        <button class="btn" style="width: 100%; margin-top: 20px; font-size: 16px; padding: 15px;" onclick="appController.placeOrder()">Place Order</button>
       </div>
     </div>
 
@@ -236,58 +236,66 @@
     document.addEventListener("DOMContentLoaded", () => {
       appController.renderCart();
       appController.viewOrders();
+      // Try server-side session first, then fallback to localStorage
       try {
-        const saved = localStorage.getItem('user');
-        if (saved) {
-          const user = JSON.parse(saved);
-          const icons = document.querySelector('.icons');
-          if (icons) {
-            const span = document.createElement('span');
-            span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
-            span.innerText = `Hi, ${user.username || user.email}`;
-            icons.insertBefore(span, icons.firstChild);
-          }
-        }
-      } catch (e) {}
-    });
-  </script>
-  <script>
-    function onRedeemLoyalCodeClicked() {
-      var code = prompt('Enter your loyal customer redeem code:');
-      if (code === null) {
-        return;
-      }
-      code = code.trim();
-      if (!code) {
-        document.getElementById('loyalStatus').innerText = 'Loyal code cleared.';
-        localStorage.removeItem('loyalRedeemCode');
-        return;
-      }
-      localStorage.setItem('loyalRedeemCode', code);
-      document.getElementById('loyalStatus').innerText = 'Loyal code saved. It will apply at checkout.';
-    }
-
-    async function onPlaceOrderClicked() {
-      try {
-        var savedUser = null;
+        fetch('session_user.php', { credentials: 'same-origin' })
+          .then(function(res){ if (!res.ok) throw new Error('no-session'); return res.json(); })
+          .then(function(data){
+            if (data && data.success && data.username) {
+              try { localStorage.setItem('chokosferaUser', JSON.stringify({ username: data.username })); } catch (e) {}
+              const icons = document.querySelector('.icons');
+              if (icons) {
+                const span = document.createElement('span');
+                span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
+                span.innerText = `Hi, ${data.username}`;
+                icons.insertBefore(span, icons.firstChild);
+              }
+              return;
+            }
+            // fallback to localStorage
+            const saved = localStorage.getItem('chokosferaUser');
+            if (saved) {
+              const user = JSON.parse(saved);
+              const icons = document.querySelector('.icons');
+              if (icons && user && user.username) {
+                const span = document.createElement('span');
+                span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
+                span.innerText = `Hi, ${user.username}`;
+                icons.insertBefore(span, icons.firstChild);
+              }
+            }
+          })
+          .catch(function(){
+            try {
+              const saved = localStorage.getItem('chokosferaUser');
+              if (saved) {
+                const user = JSON.parse(saved);
+                const icons = document.querySelector('.icons');
+                if (icons && user && user.username) {
+                  const span = document.createElement('span');
+                  span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
+                  span.innerText = `Hi, ${user.username}`;
+                  icons.insertBefore(span, icons.firstChild);
+                }
+              }
+            } catch (e) {}
+          });
+      } catch (e) {
         try {
-          savedUser = JSON.parse(localStorage.getItem('user') || 'null');
-        } catch (e) {
-          savedUser = null;
-        }
-        var userId = savedUser ? savedUser.id : null;
-        var code = localStorage.getItem('loyalRedeemCode');
-        var result = await appController.service.placeOrder(userId, code);
-        if (result) {
-          appController.renderCart();
-          await appController.viewOrders();
-          var totalMsg = result.final_price ? `Final price: ${Number(result.final_price).toFixed(2)} KM` : `Total: ${Number(result.total).toFixed(2)} KM`;
-          alert('Order placed successfully!\n' + totalMsg);
-        }
-      } catch (err) {
-        alert('Failed to place order: ' + (err && err.message ? err.message : err));
+          const saved = localStorage.getItem('chokosferaUser');
+          if (saved) {
+            const user = JSON.parse(saved);
+            const icons = document.querySelector('.icons');
+            if (icons && user && user.username) {
+              const span = document.createElement('span');
+              span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
+              span.innerText = `Hi, ${user.username}`;
+              icons.insertBefore(span, icons.firstChild);
+            }
+          }
+        } catch (e) {}
       }
-    }
+    });
   </script>
 </body>
 </html>

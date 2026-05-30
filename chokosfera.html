@@ -41,21 +41,19 @@
     */
 
 .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 28px 52px;
-      min-height: 200px;
-      width: 100vw;
-      background: #ff69b4;
-      color: white;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: inset 0 -4px 0 rgba(255,255,255,0.05);
-      --navbar-height: 200px;
-    }
-
+  --navbar-height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 45px;
+  min-height: var(--navbar-height);
+  width: 100%;
+  background: #ff69b4;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
     .navbar h1 {
       font-size: inherit;
     }
@@ -68,18 +66,19 @@
     }
 
     .brand-link:hover .brand-name {
-      color: #ffeef8;
+      transform: scale(1.1);
+      /*color: #5dc9ff;*/
     }
 
     /* BRAND NAME — left-aligned shop title using a decorative serif (Playfair Display) */
     .navbar .brand-name {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: 74px;
+      display: inline-block;
+      font-size: 30px;
       letter-spacing: 0.4px;
       margin: 0;
       color: #fff;
       line-height: 1;
+      transition: 0.3s;
     }
 
     .icons {
@@ -91,7 +90,7 @@
 
     .icons i,
     .menu-toggle {
-      font-size: 54px;
+      font-size: 30px;
       cursor: pointer;
       transition: 0.3s;
       border: 0;
@@ -101,8 +100,40 @@
 
     .icons i:hover,
     .menu-toggle:hover {
-      transform: scale(1.05);
-      color: #1eceff;
+      transform: scale(1.1);
+      color: #5dc9ff;
+    }
+
+    .user-panel {
+      display: inline-flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .user-info {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      white-space: nowrap;
+    }
+
+    .user-info a {
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.2s ease, color 0.2s ease;
+    }
+
+    .user-info a:hover {
+      color: #a4ebff;
+      border-color: #a4ebff;
+    }
+
+    .menu-toggle:hover span {
+      background: #a4ebff;
     }
 
     .menu-dropdown {
@@ -115,15 +146,15 @@
       display: inline-flex;
       flex-direction: column;
       justify-content: space-between;
-      width: 76px;
-      height: 54px;
+      width: 30px;
+      height: 25px;
       padding: 0;
     }
 
     .menu-toggle span {
       display: block;
       width: 100%;
-      height: 10px;
+      height: 5px;
       border-radius: 999px;
       background: white;
     }
@@ -184,7 +215,7 @@
 
     .menu-overlay {
       position: fixed;
-      top: var(--navbar-height, 200px);
+      top: 80px;
       left: 0;
       right: 0;
       bottom: 0;
@@ -251,13 +282,12 @@
       box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
     }
 
-    .menu-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 20px;
-      align-items: start;
-    }
-
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
     .menu-grid-column {
       display: flex;
       flex-direction: column;
@@ -573,17 +603,26 @@
       font-size: 0.95rem;
     }
 
-    @media (max-width: 900px) {
-      .menu-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
+  /* Desktop */
+.menu-grid{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap:20px;
+}
 
-    @media (max-width: 640px) {
-      .menu-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+/* Tablet */
+@media (max-width: 1240px) {
+  .menu-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+  }
+}
 
     /* HERO — full-bleed hero image section under the navbar
        - Background/photo: `.hero` (the `background-image`, `background-size`, and
@@ -598,22 +637,18 @@
          spacing — change this selector to adjust that exact line.
        - CTA card: `.cta-bubble` and `.cta-bubble .btn` control the bubble styling and button.
     */
-
-    .hero {
-      position: relative;
-      min-height: calc(100vh - 200px);
-      height: calc(100vh - 200px);
-      margin: 0;
-      border-radius: 0;
-      overflow: hidden;
-      width: 100%;
-      background-image: url('https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1650&q=80');
-      background-size: cover;
-      background-position: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+.hero {
+  position: relative;
+  min-height: calc(100vh - 200px);
+  margin: 0;
+  width: 100%;
+  background-image: url('images/mainMenuBackground.png');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
     /* HERO OVERLAY — semi-transparent gradient overlay to improve text legibility on the image
        (selector: `.hero::before`) */
@@ -630,7 +665,7 @@
       position: relative;
       width: 100%;
       height: 100%;
-      max-width: 840px;
+      max-width: 1800px;
       padding: 40px;
       display: flex;
       flex-direction: column;
@@ -661,7 +696,7 @@
     .hero-copy h2 {
       font-family: 'Playfair Display', serif;
       font-weight: 900;
-      font-size: clamp(4.4rem, 7.5vw, 7.0rem);
+      font-size: 7rem;
       line-height: 1.2;
       margin: 0 0 18px;
       letter-spacing: 0.8px;
@@ -688,7 +723,7 @@
       background: #ff1493;
       color: #fff;
       text-decoration: none;
-      font-size: 2rem;
+      font-size: 1.75rem;
       font-weight: 700;
       letter-spacing: 0.05em;
       box-shadow: 0 30px 80px rgba(0, 0, 0, 0.22);
@@ -1084,7 +1119,7 @@
   <div class="navbar">
     <div class="brand">
       <a class="brand-link" href="#homePage">
-        <h1 class="brand-name">Donut Sarajevo</h1>
+        <h1 class="brand-name">🍩 Chokosfera </h1>
       </a>
     </div>
 
@@ -1100,10 +1135,12 @@
           <button type="button" class="dropdown-item" data-action="show-about">About Us</button>
         </div>
       </div>
-      <div id="userMenuContainer" style="display: flex; align-items: center; gap: 15px;">
-        <i class="fa-solid fa-user" id="userIcon" title="Login / Register" style="cursor: pointer; font-size: 20px;"></i>
-        <span id="userDisplay" style="display: none; cursor: pointer; font-weight: bold;"></span>
-        <button id="logoutBtn" style="display: none; background: #ff6b6b; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer;">Logout</button>
+      <div class="user-panel">
+        <i class="fa-solid fa-user" id="userIcon" title="Login / Register"></i>
+        <div class="user-info hidden" id="userInfo">
+          <span id="displayUsername"></span>
+          <a href="logout.php" id="logoutLink">Logout</a>
+        </div>
       </div>
     </div>
 
@@ -1188,7 +1225,7 @@
       <button type="button" class="menu-overlay-close" id="closeMenuOverlay" aria-label="Close menu">×</button>
     </div>
     <div class="menu-featured-slot" id="menuFeaturedSlot"></div>
-    <div class="menu-packets-heading">Ponudjeni paketi</div>
+    <div class="menu-packets-heading">Choose your preferred package</div>
     <div class="menu-grid" id="menuOverlayGrid"></div>
   </section>
 
@@ -1273,6 +1310,9 @@
       var loginSuccess = document.getElementById('loginSuccess');
       var registerError = document.getElementById('registerError');
       var registerSuccess = document.getElementById('registerSuccess');
+      var userInfo = document.getElementById('userInfo');
+      var displayUsername = document.getElementById('displayUsername');
+      var logoutLink = document.getElementById('logoutLink');
 
       function showLoginScreen() {
         loginScreen.classList.remove('hidden');
@@ -1309,6 +1349,41 @@
         loginSuccess.classList.remove('hidden');
         loginError.textContent = '';
         loginError.classList.add('hidden');
+      }
+
+      function showLoggedInUser(username) {
+        if (!userInfo || !displayUsername || !userIcon) {
+          return;
+        }
+        userIcon.classList.add('hidden');
+        displayUsername.textContent = username;
+        userInfo.classList.remove('hidden');
+      }
+
+      function showLoggedOutUser() {
+        if (!userInfo || !userIcon) {
+          return;
+        }
+        userInfo.classList.add('hidden');
+        userIcon.classList.remove('hidden');
+      }
+
+      function restoreLoggedInUser() {
+        try {
+          var saved = localStorage.getItem('chokosferaUser');
+          if (!saved) {
+            showLoggedOutUser();
+            return;
+          }
+          var parsed = JSON.parse(saved);
+          if (parsed && parsed.username) {
+            showLoggedInUser(parsed.username);
+            return;
+          }
+        } catch (error) {
+          // ignore
+        }
+        showLoggedOutUser();
       }
 
       function showRegisterError(message) {
@@ -1410,67 +1485,40 @@
         }
       }
 
-      function createGeneratedMenuPhoto(variantIndex) {
-        // Replace these generated SVG placeholders with your own product photos later.
-        var palette = [
-          ['#ffe6f0', '#ff69b4', '#ffffff'],
-          ['#fff3d8', '#ff9f68', '#ffffff'],
-          ['#e6f6ff', '#52b5ff', '#ffffff']
-        ];
-        var paletteVariant = palette[variantIndex % palette.length];
-        var label = ['Sweet treat', 'Box mix', 'Berry delight'][variantIndex % 3];
+    
 
-        var svgMarkup = [
-          '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">',
-          '<defs>',
-          '<linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">',
-          '<stop offset="0%" stop-color="' + paletteVariant[0] + '"/>',
-          '<stop offset="100%" stop-color="' + paletteVariant[1] + '"/>',
-          '</linearGradient>',
-          '</defs>',
-          '<rect width="800" height="600" rx="32" fill="url(#bg)"/>',
-          '<circle cx="400" cy="280" r="118" fill="' + paletteVariant[2] + '" opacity="0.9"/>',
-          '<circle cx="400" cy="280" r="88" fill="' + paletteVariant[1] + '" opacity="0.9"/>',
-          '<circle cx="400" cy="280" r="42" fill="' + paletteVariant[2] + '" opacity="0.8"/>',
-          '<path d="M300 246 Q400 180 500 246" fill="none" stroke="' + paletteVariant[2] + '" stroke-width="10" stroke-linecap="round"/>',
-          '<rect x="140" y="430" width="520" height="36" rx="18" fill="' + paletteVariant[2] + '" opacity="0.72"/>',
-          '<text x="400" y="388" text-anchor="middle" font-family="Arial, sans-serif" font-size="36" font-weight="700" fill="#ff1493">' + label + '</text>',
-          '</svg>'
-        ].join('');
+     
 
-        return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svgMarkup);
-      }
+      function startPhotoRotation(imageElement, photos) {
+  var rotationIndex = 0;
 
-      var menuPhotoVariants = [
-        createGeneratedMenuPhoto(0),
-        createGeneratedMenuPhoto(1),
-        createGeneratedMenuPhoto(2)
-      ];
+  imageElement.style.transition =
+    'transform 1.4s ease-in-out, opacity 1.4s ease-in-out';
 
-      function startPhotoRotation(imageElement) {
-        var rotationIndex = 0;
-        imageElement.style.transition = 'transform 1.4s ease-in-out, opacity 1.4s ease-in-out';
+  imageElement.style.opacity = '1';
+  imageElement.src = photos[rotationIndex];
+
+  setInterval(function () {
+    rotationIndex = (rotationIndex + 1) % photos.length;
+
+    var nextImage = photos[rotationIndex];
+
+    imageElement.style.transform = 'translateX(-24px)';
+    imageElement.style.opacity = '0';
+
+    window.setTimeout(function () {
+      imageElement.src = nextImage;
+
+      imageElement.style.transform = 'translateX(24px)';
+      imageElement.style.opacity = '0';
+
+      window.setTimeout(function () {
+        imageElement.style.transform = 'translateX(0)';
         imageElement.style.opacity = '1';
-        imageElement.src = menuPhotoVariants[rotationIndex];
-
-        setInterval(function () {
-          rotationIndex = (rotationIndex + 1) % menuPhotoVariants.length;
-          var nextImage = menuPhotoVariants[rotationIndex];
-          imageElement.style.transform = 'translateX(-24px)';
-          imageElement.style.opacity = '0';
-
-          window.setTimeout(function () {
-            imageElement.src = nextImage;
-            imageElement.style.transform = 'translateX(24px)';
-            imageElement.style.opacity = '0';
-
-            window.setTimeout(function () {
-              imageElement.style.transform = 'translateX(0)';
-              imageElement.style.opacity = '1';
-            }, 50);
-          }, 700);
-        }, 5000);
-      }
+      }, 50);
+    }, 700);
+  }, 5000);
+}
 
       var menuItems = [
         {
@@ -1488,63 +1536,108 @@
           amount: '16 pcs',
           price: '20 KM',
           priceValue: 20,
-          description: 'A compact assortment of 16 donuts, ideal for a sweet tasting box or a small celebration.'
+          description: 'A compact assortment of 16 donuts, ideal for a sweet tasting box or a small celebration.',
+           photos: [
+    'images/smaller1.jpg',
+    'images/smaller2.jpg',
+    'images/smaller3.jpg'
+  ]
         },
         {
           name: 'Bigger Box',
           amount: '36 pcs',
           price: '40 KM',
           priceValue: 40,
-          description: 'A larger mixed box with 36 donuts, perfect for sharing with family and friends.'
+          description: 'A larger mixed box with 36 donuts, perfect for sharing with family and friends.',
+           photos: [
+    'images/bigger1.jpg',
+    'images/bigger2.jpg',
+    'images/bigger3.jpg'
+  ]
         },
         {
           name: 'Cakestickles',
           amount: '7 pcs',
           price: '25 KM',
           priceValue: 25,
-          description: 'A seven-piece cakesicle pack with a creamy center and soft coating.'
+          description: 'A seven-piece cakesicle pack with a creamy center and soft coating.',
+           photos: [
+    'images/cakesticksles1.jpg',
+    'images/cakesticksles2.jpg',
+    'images/cakesticksles3.jpg'
+  ]
         },
         {
           name: 'Cakestickles',
           amount: '16 pcs',
           price: '48 KM',
           priceValue: 48,
-          description: 'A larger cakesicle bundle of 16 pieces, great for parties or gifting.'
+          description: 'A larger cakesicle bundle of 16 pieces, great for parties or gifting.',
+           photos: [
+    'images/cakestickslesBig1.jpg',
+    'images/cakestickslesBig2.jpg',
+    'images/cakestickslesBig3.jpg'
+  ]
         },
         {
           name: 'Mix Box',
           amount: '24 pcs',
           price: '50 KM',
           priceValue: 50,
-          description: 'A mixed box of 24 sweets with a balanced variety of textures and toppings.'
+          description: 'A mixed box of 24 sweets with a balanced variety of textures and toppings.',
+           photos: [
+    'images/mix1.jpg',
+    'images/mix2.jpg',
+    'images/mix3.jpg'
+  ]
         },
         {
           name: 'Choco Dates',
           amount: '25 pcs',
           price: '20 km',
           priceValue: 20,
-          description: 'A chocolate-coated date assortment with a rich, indulgent bite.'
+          description: 'A chocolate-coated date assortment with a rich, indulgent bite.',
+           photos: [
+    'images/choco_dates1.jpg',
+    'images/choco_dates2.jpg',
+    'images/choco_dates3.jpg'
+  ]
         },
         {
           name: 'Heart Of Suprise Filled With Donuts/Strawberrys',
           amount: '1 pcs',
           price: '40 KM',
           priceValue: 40,
-          description: 'A heart-shaped surprise filled with donuts and berries for a playful presentation.'
+          description: 'A heart-shaped surprise filled with donuts and berries for a playful presentation.',
+           photos: [
+    'images/strawberry1.jpg',
+    'images/strawberry2.jpg',
+    'images/strawberry3.jpg'
+  ]
         },
         {
           name: 'Heart Of Suprise Filled With Candy',
           amount: '1 pcs',
           price: '30 KM',
           priceValue: 30,
-          description: 'A heart-shaped surprise filled with sweets for a crunchy, candy-focused option.'
+          description: 'A heart-shaped surprise filled with sweets for a crunchy, candy-focused option.',
+           photos: [
+    'images/candy1.jpg',
+    'images/candy2.jpg',
+    'images/candy3.jpg'
+  ]
         },
         {
           name: 'Choco Strawberries',
           amount: '20 pcs',
           price: '25 KM',
           priceValue: 25,
-          description: 'A strawberry-forward assortment of 20 pieces for fruity sweetness and color.'
+          description: 'A strawberry-forward assortment of 20 pieces for fruity sweetness and color.',
+           photos: [
+    'images/choco_strawberries1.jpg',
+    'images/choco_strawberries2.jpg',
+    'images/choco_strawberries3.jpg'
+  ]
         }
       ];
 
@@ -1577,6 +1670,10 @@
 
         var leftColumn = document.createElement('div');
         leftColumn.className = 'menu-grid-column';
+
+        var middleColumn = document.createElement('div');
+        middleColumn.className = 'menu-grid-column';
+
         var rightColumn = document.createElement('div');
         rightColumn.className = 'menu-grid-column';
 
@@ -1597,7 +1694,7 @@
             image = document.createElement('img');
             image.className = 'menu-item-image';
             image.alt = item.name;
-            startPhotoRotation(image);
+            startPhotoRotation(image, item.photos);
           }
 
           var meta = document.createElement('div');
@@ -1673,8 +1770,8 @@
           if (item.featured) {
             menuFeaturedSlot.append(card);
           } else {
-            var targetColumn = regularIndex % 2 === 0 ? leftColumn : rightColumn;
-            targetColumn.append(card);
+            var columns = [leftColumn, middleColumn, rightColumn];
+            columns[regularIndex % 3].append(card);
             regularIndex += 1;
           }
 
@@ -1706,7 +1803,7 @@
           });
         });
 
-        menuOverlayGrid.append(leftColumn, rightColumn);
+        menuOverlayGrid.append(leftColumn, middleColumn,rightColumn);
       }
 
       renderMenuItems();
@@ -1793,6 +1890,37 @@
         });
       }
 
+      if (logoutLink) {
+        logoutLink.addEventListener('click', function () {
+          localStorage.removeItem('chokosferaUser');
+          showLoggedOutUser();
+        });
+      }
+
+      // Prefer server-side session (cookies) for reliable username display.
+      try {
+        fetch('session_user.php', { credentials: 'same-origin' })
+          .then(function (res) {
+            if (!res.ok) throw new Error('no-session');
+            return res.json();
+          })
+          .then(function (data) {
+            if (data && data.success && data.username) {
+              try {
+                localStorage.setItem('chokosferaUser', JSON.stringify({ username: data.username, email: '' }));
+              } catch (e) {}
+              showLoggedInUser(data.username);
+            } else {
+              restoreLoggedInUser();
+            }
+          })
+          .catch(function () {
+            restoreLoggedInUser();
+          });
+      } catch (e) {
+        restoreLoggedInUser();
+      }
+
       // Screen switching
       if (registerTriggerBtn) {
         registerTriggerBtn.addEventListener('click', showRegisterScreen);
@@ -1814,11 +1942,8 @@
 
           fetch('login.php', {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: new URLSearchParams({ email: email, password: password })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, password: password })
           })
             .then(function (response) {
               return parseJsonResponse(response).then(function (data) {
@@ -1830,11 +1955,10 @@
               });
             })
             .then(function (data) {
-              if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
-                updateUserDisplay();
-              }
               showLoginSuccess(data.message || 'Login successful!');
+              var username = data.username || email.split('@')[0] || 'user';
+              localStorage.setItem('chokosferaUser', JSON.stringify({ username: username, email: email }));
+              showLoggedInUser(username);
               setTimeout(closeLoginModal, 1200);
             })
             .catch(function (error) {
@@ -1866,8 +1990,8 @@
 
           fetch('register.php', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ username: username, email: email, password: password, confirmPassword: confirm })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, email: email, password: password, confirmPassword: confirm })
           })
             .then(function (response) {
               return parseJsonResponse(response).then(function (data) {
@@ -1879,10 +2003,6 @@
               });
             })
             .then(function (data) {
-              if (data.user) {
-                localStorage.setItem('user', JSON.stringify(data.user));
-                updateUserDisplay();
-              }
               showRegisterSuccess(data.message || 'Registration successful!');
               setTimeout(closeLoginModal, 1400);
             })
@@ -1891,43 +2011,6 @@
             });
         });
       }
-
-      // Update user display based on localStorage
-      function updateUserDisplay() {
-        var user = localStorage.getItem('user');
-        var userIcon = document.getElementById('userIcon');
-        var userDisplay = document.getElementById('userDisplay');
-        var logoutBtn = document.getElementById('logoutBtn');
-
-        if (user) {
-          try {
-            var userData = JSON.parse(user);
-            userIcon.style.display = 'none';
-            userDisplay.style.display = 'inline';
-            userDisplay.textContent = userData.username || userData.email;
-            logoutBtn.style.display = 'inline-block';
-          } catch (e) {
-            console.error('Error parsing user data:', e);
-          }
-        } else {
-          userIcon.style.display = 'inline';
-          userDisplay.style.display = 'none';
-          logoutBtn.style.display = 'none';
-        }
-      }
-
-      // Handle logout
-      var logoutBtn = document.getElementById('logoutBtn');
-      if (logoutBtn) {
-        logoutBtn.addEventListener('click', function () {
-          localStorage.removeItem('user');
-          updateUserDisplay();
-          alert('Logged out successfully!');
-        });
-      }
-
-      // Show user display on page load
-      updateUserDisplay();
     });
   </script>
 
