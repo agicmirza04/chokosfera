@@ -26,7 +26,13 @@ class OrderRepository {
     const res = await fetch(API_BASE_URL + '/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: order.items, total: order.total, userId: order.userId, orderDate: order.orderDate })
+      body: JSON.stringify({ 
+        items: order.items, 
+        total: order.total, 
+        userId: order.userId, 
+        orderDate: order.orderDate,
+        email: order.email 
+      })
     });
     if (!res.ok) throw new Error('Failed to save order');
     const data = await res.json();
@@ -123,11 +129,12 @@ class OrderService {
     return this.cart.reduce((total, item) => total + Number(item.price || 0), 0);
   }
 
-  async placeOrder(userId = null, orderDate = null) {
+  async placeOrder(userId = null, orderDate = null, email = null) {
     if (this.cart.length === 0) throw new Error("Cart is empty");
     const total = this.calculateTotal();
     const order = new Order(null, [...this.cart], total, 'Pending', userId);
     order.orderDate = orderDate || null;
+    order.email = email || null;
     const saved = await this.repository.saveOrder(order);
     this.cart = [];
     this.saveCart();
@@ -371,9 +378,14 @@ class OrderController {
   async placeOrder() {
     try {
       let userId = null;
+      let email = null;
       try {
         const saved = localStorage.getItem('chokosferaUser');
-        if (saved) userId = JSON.parse(saved).id;
+        if (saved) {
+          const user = JSON.parse(saved);
+          userId = user.id;
+          email = user.email;
+        }
       } catch (e) {}
       // read date from UI (if present)
       let orderDate = null;
@@ -384,7 +396,7 @@ class OrderController {
         }
       } catch (e) {}
 
-      await this.service.placeOrder(userId, orderDate);
+      await this.service.placeOrder(userId, orderDate, email);
       alert('Order placed successfully!');
       this.renderCart();
       await this.viewOrders();

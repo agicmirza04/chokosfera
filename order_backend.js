@@ -67,4 +67,23 @@ router.patch('/:id/cancel', (req, res) => {
   res.json({ order });
 });
 
+router.patch('/:id/approve', (req, res) => {
+  const orders = readOrders();
+  const order = orders.find(o => o.id === req.params.id);
+
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+
+  const { status } = req.body;
+  if (status === 'Approved') {
+    order.status = 'Approved';
+  } else if (status === 'Rejected') {
+    order.status = 'Rejected';
+  } else {
+    return res.status(400).json({ error: 'Invalid status. Use "Approved" or "Rejected".' });
+  }
+
+  writeOrders(orders);
+  res.json({ order });
+});
+
 module.exports = router;

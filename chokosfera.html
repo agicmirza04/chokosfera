@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1175,6 +1174,7 @@
         <i class="fa-solid fa-user" id="userIcon" title="Login / Register"></i>
         <div class="user-info hidden" id="userInfo">
           <span id="displayUsername"></span>
+          <a href="admin.html" id="adminLink" class="hidden" style="color:white;font-weight:bold;margin-right:6px;">Admin</a>
           <a href="logout.php" id="logoutLink">Logout</a>
         </div>
       </div>
@@ -1348,6 +1348,7 @@
       var userInfo = document.getElementById('userInfo');
       var displayUsername = document.getElementById('displayUsername');
       var logoutLink = document.getElementById('logoutLink');
+      var adminLink = document.getElementById('adminLink');
 
       function showLoginScreen() {
         loginScreen.classList.remove('hidden');
@@ -1386,13 +1387,20 @@
         loginError.classList.add('hidden');
       }
 
-      function showLoggedInUser(username) {
+      function showLoggedInUser(username, isAdmin) {
         if (!userInfo || !displayUsername || !userIcon) {
           return;
         }
         userIcon.classList.add('hidden');
         displayUsername.textContent = username;
         userInfo.classList.remove('hidden');
+        if (adminLink) {
+          if (isAdmin) {
+            adminLink.classList.remove('hidden');
+          } else {
+            adminLink.classList.add('hidden');
+          }
+        }
       }
 
       function showLoggedOutUser() {
@@ -1412,7 +1420,7 @@
           }
           var parsed = JSON.parse(saved);
           if (parsed && parsed.username) {
-            showLoggedInUser(parsed.username);
+            showLoggedInUser(parsed.username, parsed.isAdmin || false);
             return;
           }
         } catch (error) {
@@ -1942,9 +1950,12 @@
           .then(function (data) {
             if (data && data.success && data.username) {
               try {
-                localStorage.setItem('chokosferaUser', JSON.stringify({ username: data.username, email: '' }));
+                var existingUser = JSON.parse(localStorage.getItem('chokosferaUser') || '{}');
+                localStorage.setItem('chokosferaUser', JSON.stringify({ username: data.username, email: '', isAdmin: existingUser.isAdmin || false }));
               } catch (e) {}
-              showLoggedInUser(data.username);
+              var savedAdmin = false;
+              try { savedAdmin = JSON.parse(localStorage.getItem('chokosferaUser') || '{}').isAdmin || false; } catch(e) {}
+              showLoggedInUser(data.username, savedAdmin);
             } else {
               restoreLoggedInUser();
             }
@@ -1992,9 +2003,17 @@
             .then(function (data) {
               showLoginSuccess(data.message || 'Login successful!');
               var username = data.username || email.split('@')[0] || 'user';
-              localStorage.setItem('chokosferaUser', JSON.stringify({ username: username, email: email }));
-              showLoggedInUser(username);
-              setTimeout(closeLoginModal, 1200);
+              localStorage.setItem('chokosferaUser', JSON.stringify({ username: username, email: email, isAdmin: !!data.isAdmin }));
+              
+              // Check if admin login
+              if (data.isAdmin) {
+                setTimeout(function() {
+                  window.location.href = 'admin.html';
+                }, 1200);
+              } else {
+                showLoggedInUser(username, false);
+                setTimeout(closeLoginModal, 1200);
+              }
             })
             .catch(function (error) {
               showLoginError(error.message);

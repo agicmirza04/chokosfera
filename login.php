@@ -20,6 +20,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($email) || empty($password)) {
         $error = "All fields are required";
     } else {
+        // Check for admin credentials
+        $isAdmin = ($email === 'sarah.karacic@gmail.com' && $password === 'donutsarajevo');
+        
+        if ($isAdmin) {
+            // Admin login successful
+            $_SESSION['user_id'] = 'admin';
+            $_SESSION['username'] = 'Admin';
+            $_SESSION['email'] = 'sarah.karacic@gmail.com';
+            $_SESSION['isAdmin'] = true;
+            if ($isJson) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => true, 'message' => 'Login successful!', 'username' => 'Admin', 'isAdmin' => true]);
+                exit();
+            }
+            header("Location: admin.html");
+            exit();
+        }
+        
         $sql = "SELECT id, username, email, password FROM users WHERE email = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $email);
@@ -34,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['email'] = $user['email'];
                 if ($isJson) {
                     header('Content-Type: application/json');
-                    echo json_encode(['success' => true, 'message' => 'Login successful!', 'username' => $user['username']]);
+                    echo json_encode(['success' => true, 'message' => 'Login successful!', 'username' => $user['username'], 'isAdmin' => false]);
                     exit();
                 }
                 header("Location: dashboard.php");
