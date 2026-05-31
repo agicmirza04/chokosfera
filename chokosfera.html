@@ -6,8 +6,10 @@
   <meta charset="utf-8">
   <title>Donut Sarajevo</title>
 
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="fredoka.css">
 
   <style>
     /* RESET — base reset for margins, padding, box-sizing and default font */
@@ -15,20 +17,19 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+      font-family: 'Fredoka', sans-serif;
     }
-
+    /* HTML & BODY — ensure the page always spans the full viewport height */
     html,
     body {
       min-height: 100%;
     }
-
+    /* BODY — set the page background, default text color, and bottom spacing behavior */
     body {
-      background: #fff7f0;
-      color: #333;
+      background: #ffffff;
+      color: #0a0a0a;
       padding-bottom: 0;
     }
-
     /* NAVBAR — header container and related elements
        - Header container: `.navbar` (controls overall header height, `padding`, `min-height`,
          `background` color, `position: sticky`, and top z-index). Update these values to change
@@ -39,7 +40,6 @@
          Reorder or add icons inside the `.icons` element in the HTML; adjust `.icons i` for
          sizing and hover color.
     */
-
 .navbar {
   --navbar-height: 80px;
   display: flex;
@@ -48,109 +48,90 @@
   padding: 20px 45px;
   min-height: var(--navbar-height);
   width: 100%;
-  background: #ff69b4;
-  color: white;
+  background: #ff3385;
+  color: rgb(255, 255, 255);
   position: sticky;
   top: 0;
   z-index: 1000;
 }
+    /* NAVBAR HEADINGS — keep heading size matched to the navbar branding styles */
     .navbar h1 {
       font-size: inherit;
     }
-
+    /* BRAND LINK — container for the logo/title that behaves as a clickable link */
     .brand-link {
       display: inline-flex;
       align-items: center;
       text-decoration: none;
       color: inherit;
     }
-
+    /* BRAND LINK HOVER — interactive hover state for the brand name inside the link */
     .brand-link:hover .brand-name {
-      transform: scale(1.1);
+      transform: scale(1.06);
       /*color: #5dc9ff;*/
     }
-
     /* BRAND NAME — left-aligned shop title using a decorative serif (Playfair Display) */
     .navbar .brand-name {
       display: inline-block;
-      font-size: 30px;
-      letter-spacing: 0.4px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
       margin: 0;
       color: #fff;
       line-height: 1;
       transition: 0.3s;
     }
-
+    /* BRAND STICKER — changeable icon/sticker image to the left of the shop name */
+    .brand-sticker {
+      width: 65px;
+      height: 65px;
+      margin-right: 16px;
+      object-fit: contain;
+    }
+    /* ICONS GROUP — right side icons and mobile menu toggle alignment and spacing */
     .icons {
       display: flex;
       gap: 24px;
       align-items: center;
       position: static;
     }
-
+    /* ICON & MENU TOGGLE BASE — shared styling for icon buttons and the mobile toggle bars */
     .icons i,
     .menu-toggle {
-      font-size: 30px;
+      font-size: 40px;
       cursor: pointer;
       transition: 0.3s;
       border: 0;
       background: transparent;
       color: inherit;
     }
-
+    /* ICON HOVER — visual hover effect for both icon buttons and the menu toggle */
     .icons i:hover,
     .menu-toggle:hover {
-      transform: scale(1.1);
-      color: #5dc9ff;
+      transform: scale(1.06);
+      color: #ff6633;
     }
-
-    .user-panel {
-      display: inline-flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .user-info {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 1rem;
-      font-weight: 700;
-      color: white;
-      white-space: nowrap;
-    }
-
-    .user-info a {
-      color: white;
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.2s ease, color 0.2s ease;
-    }
-
-    .user-info a:hover {
-      color: #a4ebff;
-      border-color: #a4ebff;
-    }
-
+    /* MENU TOGGLE BAR HOVER — change the hamburger bars color when hovered */
     .menu-toggle:hover span {
-      background: #a4ebff;
+      background: #ff6633;
     }
-
+    /* MOBILE MENU WRAPPER — container for the menu toggle and dropdown elements */
     .menu-dropdown {
       position: static;
       display: flex;
       align-items: center;
     }
-
+    /* MENU TOGGLE STACK — hamburger icon bars layout and size */
     .menu-toggle {
       display: inline-flex;
       flex-direction: column;
       justify-content: space-between;
-      width: 30px;
-      height: 25px;
+      width: 40px;
+      height: 35px;
       padding: 0;
     }
-
+    /* MENU TOGGLE BAR — each span is one hamburger bar inside the toggle button */
     .menu-toggle span {
       display: block;
       width: 100%;
@@ -158,13 +139,13 @@
       border-radius: 999px;
       background: white;
     }
-
+    /* DROPDOWN PANEL — hidden by default; becomes visible when the menu is opened */
     .dropdown {
       position: absolute;
       top: 100%;
       left: 0;
       right: 0;
-      background: white;
+      background: #ffffff;
       border-radius: 0;
       box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
       display: none;
@@ -177,23 +158,23 @@
       min-height: 0;
       padding: 0;
     }
-
+    /* DROPDOWN OPEN STATE — visible menu panel with animation and opacity transition */
     .dropdown.show {
       display: flex;
       transform: translateY(0);
       opacity: 1;
     }
-
+    /* DROPDOWN ITEM — individual menu links/buttons inside the dropdown panel */
     .dropdown-item,
     button.dropdown-item {
       display: block;
       width: 100%;
-      padding: 24px 32px;
+      padding: 16px 32px;
       font-size: 2.2rem;
-      font-family: 'Playfair Display', serif;
+      font-family: 'Fredoka', sans-serif;
       font-weight: 700;
       line-height: 1.1;
-      color: #333;
+      color: #ff6633;
       text-decoration: none;
       text-align: left;
       border: 0;
@@ -202,36 +183,36 @@
       cursor: pointer;
       transition: 0.2s;
     }
-
+    /* DROPDOWN ITEM HOVER — highlight each dropdown row when hovered */
     .dropdown-item:hover,
     button.dropdown-item:hover {
-      background: #ff69b4;
+      background: #ff83b5;
       color: white;
     }
-
+    /* PAGE LOCK — prevent scrolling when an overlay menu is open */
     body.menu-overlay-open {
       overflow: hidden;
     }
-
+    /* FULL SCREEN MENU OVERLAY — an overlay panel that covers the page below the sticky navbar */
     .menu-overlay {
       position: fixed;
-      top: 80px;
+      top: 105px;
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(255, 247, 240, 0.98);
-      border-top: 2px solid rgba(255, 105, 180, 0.18);
-      box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.16);
+      background: #ff83b5;
+      border-top: 2px solid #ff83b5;
+      box-shadow: 0 -24px 60px rgba(0, 0, 0, 0.18);
       padding: 28px 34px 40px;
       z-index: 2500;
       overflow-y: auto;
       display: none;
     }
-
+    /* OVERLAY OPEN STATE — show the overlay panel when toggled open */
     .menu-overlay.is-open {
       display: block;
     }
-
+    /* OVERLAY HEADER — header row inside the menu overlay panel */
     .menu-overlay-header {
       position: relative;
       display: flex;
@@ -240,88 +221,74 @@
       gap: 16px;
       margin-bottom: 24px;
     }
-
+    /* OVERLAY KICKER — small uppercase label that appears above the overlay title */
     .menu-overlay-kicker {
       font-size: 0.82rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.25em;
-      color: #ff1493;
+      color: #ff83b5;
       margin-bottom: 8px;
     }
-
+    /* OVERLAY TITLE — large centered title text inside the menu overlay */
     .menu-overlay-title {
       width: 100%;
       text-align: center;
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.6rem, 5vw, 4rem);
-      color: #ff1493;
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(2.3rem, 5vw, 4rem);
+      color: #ff6633;
+      text-shadow: 5px 5px 5px rgba(255, 255, 255, 0.3);
       line-height: 1;
     }
-
+    /* OVERLAY SUBTITLE — supporting descriptive text below the overlay title */
     .menu-overlay-subtitle {
       max-width: 760px;
       margin-top: 10px;
       font-size: 1.1rem;
-      color: #5e3f50;
+      color: #ffffff;
     }
-
-    .menu-overlay-close {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 50px;
-      height: 50px;
-      border-radius: 999px;
-      border: 0;
-      background: white;
-      color: #ff1493;
-      font-size: 2rem;
-      cursor: pointer;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
-    }
-
+    /* MENU GRID — main layout grid for product card columns on desktop */
 .menu-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 20px;
   align-items: start;
 }
+    /* MENU GRID COLUMN — vertical column container inside the menu grid for stacking items */
     .menu-grid-column {
       display: flex;
       flex-direction: column;
       gap: 20px;
     }
-
+    /* ITEM CARD — individual product card styling and hover animation */
     .menu-item-card {
       display: flex;
       flex-direction: column;
       gap: 12px;
       padding: 16px;
-      background: white;
-      border-radius: 24px;
+      background: #ff9c7a;
+      border-radius: 64px;
       box-shadow: 0 12px 26px rgba(0, 0, 0, 0.12);
-      border: 1px solid rgba(255, 105, 180, 0.2);
+      border: 1px solid #ff6633;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
+    /* ITEM CARD ACTIVE STATES — lift the card for hover or when expanded */
     .menu-item-card:hover,
     .menu-item-card.is-expanded {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 34px rgba(255, 20, 147, 0.22);
+      transform: translateY(-1px);
+      box-shadow: 0 18px 34px #ff6633;
     }
-
+    /* ITEM IMAGE — image filling the top of the card with rounded corners */
     .menu-item-image {
       width: 100%;
       aspect-ratio: 4 / 3;
-      border-radius: 18px;
+      border-radius: 44px;
       object-fit: cover;
-      background: #ffe0ef;
-      border: 1px solid rgba(255, 105, 180, 0.2);
+      background: #ffffff;
+      border: 1px solid #ff6633;
     }
-
+    /* ITEM META — title, price, and summary text grouped in the card */
     .menu-item-meta {
       display: flex;
       flex-direction: column;
@@ -329,37 +296,40 @@
       text-align: center;
       gap: 6px;
     }
-
+    /* ITEM NAME — product title styling inside the menu card */
     .menu-item-name {
       font-size: 1.55rem;
       font-weight: 900;
       line-height: 1.2;
-      color: #2b1d25;
-      font-family: 'Georgia', 'Times New Roman', serif;
+      color: #ffffff;
+      text-shadow: 5px 5px 5px #ff6633;
+      font-family: 'Fredoka', sans-serif;
       letter-spacing: 0.02em;
     }
-
+    /* PRICE / AMOUNT TEXT — base styles for item quantity and price texts */
     .menu-item-amount,
     .menu-item-price {
       font-size: 1.08rem;
       font-weight: 700;
-      color: #6f5365;
+      color: #000000;
+      text-shadow: 5px 5px 5px #ff6633;
     }
-
+    /* AMOUNT HIDDEN BY DEFAULT — only show extra quantity details when expanded */
     .menu-item-amount {
       display: none;
     }
-
+    /* AMOUNT VISIBLE WHEN EXPANDED — reveal the quantity line after expansion */
     .menu-item-card.is-expanded .menu-item-amount {
       display: block;
     }
-
+    /* PRICE HIGHLIGHT — accent price text color and size */
     .menu-item-price {
-      color: #ff1493;
+      color: #000000;
       font-size: 1.28rem;
+      text-shadow: 5px 5px 5px #ff6633;
     }
-
-.menu-item-detail {
+/* EXPANDABLE DETAIL BLOCK — hidden by default and revealed when the card expands */
+    .menu-item-detail {
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -367,11 +337,11 @@
       opacity: 0;
       overflow: hidden;
       padding-top: 0;
-      border-top: 0 solid #ffe0ef;
+      border-top: 0 solid #000000;
       transform: translateY(-6px);
       transition: max-height 0.38s ease, opacity 0.35s ease, transform 0.35s ease, border-top-width 0.35s ease, padding-top 0.35s ease;
     }
-
+    /* EXPANDED DETAIL STATE — when the item card is expanded, show the hidden details */
     .menu-item-card.is-expanded .menu-item-detail {
       max-height: 220px;
       opacity: 1;
@@ -379,31 +349,32 @@
       padding-top: 10px;
       border-top-width: 1px;
     }
-
-.menu-item-summary-description {
+/* COLLAPSIBLE SUMMARY — short text hidden until the card expands */
+    .menu-item-summary-description {
       display: none;
       margin: 0;
       font-size: 0.88rem;
       line-height: 1.35;
-      color: #7b5a68;
+      color: #000000;
     }
-
+    /* SHOW SUMMARY WHEN EXPANDED — reveal the summary in the expanded card state */
     .menu-item-card.is-expanded .menu-item-summary-description {
       display: block;
     }
-
+    /* ITEM DESCRIPTION — descriptive text shown in the expanded detail area */
     .menu-item-description {
       font-size: 0.98rem;
       line-height: 1.4;
-      color: #5b3a4d;
+      color: #000000;
     }
-
+    /* ACTION BUTTON ROW — layout for buttons like add to cart or more info */
     .menu-item-actions {
       display: flex;
-      gap: 10px;
+      gap: 20px;
+      justify-content:center;
       flex-wrap: wrap;
     }
-
+    /* ACTION BUTTON — rounded button styles inside each menu item card */
     .menu-item-action {
       border: 0;
       border-radius: 999px;
@@ -413,40 +384,40 @@
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
-
+    /* ACTION BUTTON HOVER — subtle lift when hovering over an action button */
     .menu-item-action:hover {
       transform: translateY(-1px);
     }
-
+    /* PRIMARY ACTION — emphasized button for the main action, such as ordering */
     .menu-item-action-primary {
-      background: #ff1493;
+      background: #ff3385;
       color: white;
-      box-shadow: 0 10px 22px rgba(255, 20, 147, 0.24);
     }
-
+    /* SECONDARY ACTION — softer button style for secondary actions */
     .menu-item-action-secondary {
-      background: #fff0f6;
-      color: #ff1493;
-      box-shadow: 0 8px 18px rgba(255, 105, 180, 0.16);
+      background: #ffffff;
+      color: #ff3385;
     }
-
+    /* FEATURED SLOT — optional top slot for a featured item inside the grid */
     .menu-featured-slot {
       display: block;
       margin-bottom: 16px;
     }
-
+    /* PACKETS HEADING — section heading styling for featured packet or offer titles */
 .menu-packets-heading {
       margin: 6px auto 18px;
       width: 100%;
       text-align: center;
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(1.7rem, 4vw, 2.6rem);
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(1.9rem, 4vw, 2.6rem);
       font-weight: 900;
       letter-spacing: 0.24em;
-      color: #ff1493;
+      color: #ff6633;
+      text-shadow: 5px 5px 5px rgba(255, 255, 255, 0.3);
     }
-
+    
     .about-page {
+      /* About page section container */
       min-height: calc(100vh - var(--navbar-height, 200px));
       padding: 42px 32px 52px;
       background: #fffaf7;
@@ -456,6 +427,7 @@
     }
 
     .about-page-content {
+      /* Content wrapper for the about page */
       width: 100%;
       max-width: 980px;
       margin: 0 auto;
@@ -467,10 +439,12 @@
     }
 
     .about-page-kicker {
+      /* Hidden kicker/label above about page title (not shown) */
       display: none;
     }
 
     .about-page-title {
+      /* About page main title: "Welcome to Donut Sarajevo!" */
       font-family: 'Playfair Display', serif;
       font-size: clamp(5.4rem, 9vw, 9.2rem);
       color: #2b1d25;
@@ -478,6 +452,7 @@
     }
 
     .about-page-description {
+      /* About page subtitle: "We craft fresh donuts, cakesicles, and chocolate dates..." */
       max-width: 860px;
       font-size: 2.9rem;
       line-height: 1.5;
@@ -485,6 +460,7 @@
     }
 
     .about-block {
+      /* Block for working hours and address sections */
       width: 100%;
       max-width: 860px;
       background: white;
@@ -498,12 +474,14 @@
     }
 
     .about-block-title {
+      /* Section titles: "Our working Hours", "Where to find us?" */
       font-family: 'Playfair Display', serif;
       font-size: 2.8rem;
       color: #2b1d25;
     }
 
     .about-working-hours-table {
+      /* Table for working hours */
       width: 100%;
       border-collapse: collapse;
       text-align: left;
@@ -512,24 +490,28 @@
 
     .about-working-hours-table th,
     .about-working-hours-table td {
+      /* Table cells for working hours */
       padding: 18px 20px;
       border-bottom: 1px solid rgba(255, 105, 180, 0.16);
       color: #5c4250;
     }
 
     .about-working-hours-table th {
+      /* Table header cells ("Day", "Hours") */
       width: 38%;
       color: #ff1493;
       font-weight: 800;
     }
 
     .about-address {
+      /* Address text: "Vratnik Mejdan 69, Sarajevo 71000" */
       font-size: 1.9rem;
       font-weight: 700;
       color: #2b1d25;
     }
 
     .about-contact-row {
+      /* Row for contact info (phone number) */
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -540,6 +522,7 @@
     }
 
     .about-contact-icon {
+      /* Icon for contact (phone icon) */
       width: 48px;
       height: 48px;
       border-radius: 999px;
@@ -549,8 +532,8 @@
       background: #ff69b4;
       color: white;
     }
-
     .about-contact-note {
+      /* Note below contact: "also available on Whatsapp" */
       display: block;
       width: 100%;
       font-size: 1.4rem;
@@ -558,8 +541,9 @@
     }
 
     .menu-item-card--featured {
+      /* Featured menu item card (highlighted product) */
       grid-column: 1 / -1;
-      background: linear-gradient(180deg, #fff8fb, #ffffff);
+      background: #ff9c7a;
       padding: 26px 30px;
       min-height: 200px;
       display: grid;
@@ -568,36 +552,39 @@
       gap: 22px;
       border-radius: 30px;
     }
-
     .menu-item-card--featured .menu-item-meta {
+      /* Meta info inside featured menu card */
       display: flex;
       flex-direction: column;
+      text-align: left;
+      width: 100%;
       align-items: flex-start;
       gap: 10px;
     }
-
     .menu-item-card--featured .menu-item-name {
+      /* Featured menu item name (product title) */
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.7rem, 4vw, 2.6rem);
-      color: #ff1493;
+      font-size: clamp(3.7rem, 4vw, 2.6rem);
+      color: #ffffff;
       margin: 0;
     }
-
     .menu-item-card--featured .menu-item-description {
+      /* Description for featured menu item */
       margin: 0;
       max-width: 760px;
-      font-size: 1.03rem;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.53rem;
       line-height: 1.45;
       color: #5b3a4d;
     }
-
     .menu-item-card--featured .menu-item-featured-actions {
+      /* Actions row for featured menu item (e.g., order button) */
       display: flex;
       align-items: center;
       justify-content: flex-end;
     }
-
     .menu-item-card--featured .menu-item-action {
+      /* Action button inside featured menu card */
       min-width: 200px;
       padding: 14px 18px;
       font-size: 0.95rem;
@@ -605,6 +592,7 @@
 
   /* Desktop */
 .menu-grid{
+  /* Menu grid for desktop: 3 columns */
   display:grid;
   grid-template-columns: repeat(3, 1fr);
   gap:20px;
@@ -612,6 +600,7 @@
 
 /* Tablet */
 @media (max-width: 1240px) {
+  /* Menu grid for tablets: 2 columns */
   .menu-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -619,6 +608,7 @@
 
 /* Mobile */
 @media (max-width: 768px) {
+  /* Menu grid for mobile: 1 column */
   .menu-grid {
     grid-template-columns: 1fr;
   }
@@ -638,6 +628,7 @@
        - CTA card: `.cta-bubble` and `.cta-bubble .btn` control the bubble styling and button.
     */
 .hero {
+  /* Hero section background image and layout */
   position: relative;
   min-height: calc(100vh - 200px);
   margin: 0;
@@ -653,6 +644,7 @@
     /* HERO OVERLAY — semi-transparent gradient overlay to improve text legibility on the image
        (selector: `.hero::before`) */
     .hero::before {
+      /* Overlay gradient for hero section */
       content: '';
       position: absolute;
       inset: 0;
@@ -662,6 +654,7 @@
      /* HERO CONTENT — container that centers headline and CTA vertically and horizontally
        (selector: `.hero-content`) */
      .hero-content {
+      /* Container for hero headline and CTA */
       position: relative;
       width: 100%;
       height: 100%;
@@ -682,6 +675,7 @@
          Edit `.hero-copy p` to change font-size, weight, color or spacing for that line.
     */
     .hero-copy {
+      /* Block for hero headline and subtitle */
       width: 100%;
       max-width: 720px;
       display: flex;
@@ -694,6 +688,7 @@
 
     /* HERO HEADLINE — large decorative title (uses Playfair Display) */
     .hero-copy h2 {
+      /* Hero headline: "Donuts, Smash Cake, Cakesicles & Choco Dates" */
       font-family: 'Playfair Display', serif;
       font-weight: 900;
       font-size: 7rem;
@@ -705,6 +700,7 @@
 
     /* HERO SUBTITLE — smaller supporting line under the headline (e.g. "Since 2020") */
     .hero-copy p {
+      /* Hero subtitle: "Since 2020" */
       font-size: clamp(2.4rem, 2.8vw, 2.8rem);
       font-weight: 600;
       max-width: 560px;
@@ -716,6 +712,7 @@
 
     /* HERO CTA BUTTON — floating button placed directly beneath the subtitle */
     .hero-cta {
+      /* Hero call-to-action button: "Start your order" */
       display: inline-block;
       margin-top: 20px;
       padding: 28px 64px;
@@ -731,12 +728,14 @@
     }
 
     .hero-cta:hover {
+      /* Hover effect for hero CTA button */
       transform: translateY(-2px);
       box-shadow: 0 26px 60px rgba(255, 20, 147, 0.25);
     }
 
     /* RESPONSIVE — adjustments for smaller screens */
     @media (max-width: 900px) {
+      /* Responsive adjustments for hero section on screens <900px */
       .hero {
         min-height: 72vh;
       }
@@ -756,6 +755,7 @@
     /* CATEGORIES — horizontal category chips (kept for styles but removed from page content) */
 
     .categories {
+      /* Horizontal scrollable category chips (not shown in page) */
       display: flex;
       overflow-x: auto;
       gap: 15px;
@@ -764,10 +764,12 @@
     }
 
     .categories::-webkit-scrollbar {
+      /* Hide scrollbar for categories */
       display: none;
     }
 
     .category {
+      /* Individual category chip */
       min-width: 130px;
       background: white;
       padding: 14px;
@@ -780,6 +782,7 @@
     }
 
     .category:hover {
+      /* Hover effect for category chip */
       background: #ff69b4;
       color: white;
     }
@@ -787,6 +790,7 @@
     /* MENU — grid of product cards (kept for styles but removed from page content) */
 
     .menu {
+      /* Grid for menu cards (not shown in page) */
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 20px;
@@ -794,6 +798,7 @@
     }
 
     .card {
+      /* Product card container */
       background: white;
       border-radius: 20px;
       overflow: hidden;
@@ -802,25 +807,30 @@
     }
 
     .card:hover {
+      /* Hover effect for product card */
       transform: translateY(-5px);
     }
 
     .card img {
+      /* Product card image */
       width: 100%;
       height: 200px;
       object-fit: cover;
     }
 
     .card-content {
+      /* Content inside product card */
       padding: 15px;
       text-align: center;
     }
 
     .card h3 {
+      /* Product card title */
       margin-bottom: 10px;
     }
 
     .price {
+      /* Product price text */
       color: #ff1493;
       font-size: 18px;
       font-weight: bold;
@@ -828,6 +838,7 @@
     }
 
     .card button {
+      /* Product card button (e.g., order) */
       padding: 10px 20px;
       border: none;
       background: #ff69b4;
@@ -838,12 +849,14 @@
     }
 
     .card button:hover {
+      /* Hover effect for product card button */
       background: #ff1493;
     }
 
     /* LOGIN MODAL — overlay and content styles for the login/register modal */
 
     .modal {
+      /* Login/Register modal overlay */
       position: fixed;
       top: 0;
       left: 0;
@@ -857,10 +870,12 @@
     }
 
     .modal.show {
+      /* Show modal overlay */
       display: flex;
     }
 
     .modal-content {
+      /* Modal content box */
       width: min(760px, calc(100vw - 60px));
       max-width: 760px;
       background: white;
@@ -873,10 +888,12 @@
     }
 
     .form-group {
+      /* Form group wrapper in modal */
       margin-bottom: 20px;
     }
 
     .form-group label {
+      /* Label for form input in modal */
       display: block;
       margin-bottom: 12px;
       font-weight: 700;
@@ -884,6 +901,7 @@
     }
 
     .form-group input {
+      /* Input field in modal */
       width: 100%;
       padding: 16px;
       border: 2px solid #ffd6e7;
@@ -894,19 +912,23 @@
     }
 
     .form-group input:focus {
+      /* Focus effect for input field in modal */
       border-color: #ff69b4;
       box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
     }
 
     .password-container {
+      /* Container for password input and toggle */
       position: relative;
     }
 
     .password-container input {
+      /* Password input field with extra padding for toggle */
       padding-right: 40px;
     }
 
     .auth-actions {
+      /* Actions column in modal (login/register buttons) */
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -914,6 +936,7 @@
     }
 
     .auth-btn {
+      /* Main auth button (login/register) */
       width: 100%;
       padding: 18px 26px;
       border: none;
@@ -927,29 +950,35 @@
     }
 
     .auth-btn:hover {
+      /* Hover effect for auth button */
       background: #e60073;
       transform: translateY(-2px);
     }
 
     .register-btn,
     .register-trigger-btn {
+      /* Register button and trigger in modal */
       background: #1e90ff;
     }
 
     .register-btn:hover,
     .register-trigger-btn:hover {
+      /* Hover effect for register button/trigger */
       background: #0077cc;
     }
 
     .back-to-login-btn {
+      /* Back to login button in modal */
       background: #666;
     }
 
     .back-to-login-btn:hover {
+      /* Hover effect for back to login button */
       background: #444;
     }
 
     @keyframes popup {
+      /* Popup animation for modal */
       from {
         transform: scale(0.8);
         opacity: 0;
@@ -962,6 +991,7 @@
     }
 
     .close-btn {
+      /* Close button for modal */
       position: absolute;
       top: 15px;
       right: 20px;
@@ -971,26 +1001,31 @@
     }
 
     .close-btn:hover {
+      /* Hover effect for close button */
       color: #ff1493;
     }
 
     .modal-content h2 {
+      /* Modal title (e.g., "Login", "Register") */
       text-align: center;
       margin-bottom: 25px;
       color: #ff1493;
     }
 
     .form-group {
+      /* Form group wrapper in modal (duplicate, for smaller screens) */
       margin-bottom: 18px;
     }
 
     .form-group label {
+      /* Label for form input in modal (duplicate, for smaller screens) */
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
     }
 
     .form-group input {
+      /* Input field in modal (duplicate, for smaller screens) */
       width: 100%;
       padding: 12px;
       border: 2px solid #ffd6e7;
@@ -1119,7 +1154,8 @@
   <div class="navbar">
     <div class="brand">
       <a class="brand-link" href="#homePage">
-        <h1 class="brand-name">🍩 Chokosfera </h1>
+        <img src="images/stickerrr.png" alt="Sticker" class="brand-sticker" />
+        <h1 class="brand-name">Donut Sarajevo</h1>
       </a>
     </div>
 
@@ -1222,7 +1258,6 @@
       <div>
         <h2 class="menu-overlay-title">OUR MENU</h2>
       </div>
-      <button type="button" class="menu-overlay-close" id="closeMenuOverlay" aria-label="Close menu">×</button>
     </div>
     <div class="menu-featured-slot" id="menuFeaturedSlot"></div>
     <div class="menu-packets-heading">Choose your preferred package</div>

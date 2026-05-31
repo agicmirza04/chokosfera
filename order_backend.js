@@ -21,6 +21,7 @@ function writeOrders(orders) {
 
 router.post('/', (req, res) => {
   const { items, total, userId } = req.body;
+  const { orderDate } = req.body;
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ error: 'Cart is empty' });
   }
@@ -31,6 +32,7 @@ router.post('/', (req, res) => {
     total,
     status: 'Pending',
     userId: userId || null,
+    orderDate: orderDate || null,
     createdAt: new Date().toISOString()
   };
 

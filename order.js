@@ -1,3 +1,15 @@
+const API_BASE_URL = (function () {
+  var host = window.location.hostname;
+  var port = window.location.port;
+  if ((host === 'localhost' || host === '127.0.0.1') && port && port !== '3000') {
+    return 'http://localhost:3000';
+  }
+  if ((host === 'localhost' || host === '127.0.0.1') && !port) {
+    return 'http://localhost:3000';
+  }
+  return '';
+})();
+
 class Order {
   constructor(id, items, total, status = 'Pending', userId = null, createdAt = null) {
     this.id = id;
@@ -11,10 +23,10 @@ class Order {
 
 class OrderRepository {
   async saveOrder(order) {
-    const res = await fetch('/api/orders', {
+    const res = await fetch(API_BASE_URL + '/api/orders', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ items: order.items, total: order.total, userId: order.userId })
+      body: JSON.stringify({ items: order.items, total: order.total, userId: order.userId, orderDate: order.orderDate })
     });
     if (!res.ok) throw new Error('Failed to save order');
     const data = await res.json();
@@ -27,14 +39,14 @@ class OrderRepository {
       const saved = localStorage.getItem('chokosferaUser');
       if (saved) userId = JSON.parse(saved).id;
     } catch (e) {}
-    const url = userId ? `/api/orders?userId=${userId}` : '/api/orders';
+    const url = userId ? API_BASE_URL + `/api/orders?userId=${userId}` : API_BASE_URL + '/api/orders';
     const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to fetch orders');
     return await res.json();
   }
 
   async cancelOrder(orderId) {
-    const res = await fetch(`/api/orders/${orderId}/cancel`, { method: 'PATCH' });
+    const res = await fetch(API_BASE_URL + `/api/orders/${orderId}/cancel`, { method: 'PATCH' });
     if (!res.ok) throw new Error('Failed to cancel order');
     return await res.json();
   }
@@ -111,10 +123,11 @@ class OrderService {
     return this.cart.reduce((total, item) => total + Number(item.price || 0), 0);
   }
 
-  async placeOrder(userId = null) {
+  async placeOrder(userId = null, orderDate = null) {
     if (this.cart.length === 0) throw new Error("Cart is empty");
     const total = this.calculateTotal();
     const order = new Order(null, [...this.cart], total, 'Pending', userId);
+    order.orderDate = orderDate || null;
     const saved = await this.repository.saveOrder(order);
     this.cart = [];
     this.saveCart();
@@ -362,7 +375,16 @@ class OrderController {
         const saved = localStorage.getItem('chokosferaUser');
         if (saved) userId = JSON.parse(saved).id;
       } catch (e) {}
-      await this.service.placeOrder(userId);
+      // read date from UI (if present)
+      let orderDate = null;
+      try {
+        const dateInput = document.getElementById('orderDate');
+        if (dateInput && dateInput.value) {
+          orderDate = dateInput.value; // format YYYY-MM-DD
+        }
+      } catch (e) {}
+
+      await this.service.placeOrder(userId, orderDate);
       alert('Order placed successfully!');
       this.renderCart();
       await this.viewOrders();
@@ -450,10 +472,12 @@ class OrderController {
       div.className = 'order-card';
       const isPending = order.status === 'Pending';
       const itemsList = order.items.map(i => i.name).join(', ');
+      const displayDate = order.orderDate || (order.createdAt ? order.createdAt.split('T')[0] : 'N/A');
       div.innerHTML = `
-        <h3>Order #${order.id.slice(-6)}</h3>
+        <h3>Order #${String(order.id).slice(-6)}</h3>
+        <p><strong>Date:</strong> ${displayDate}</p>
         <p><strong>Items:</strong> ${itemsList}</p>
-        <p><strong>Total:</strong> ${order.total.toFixed(2)} KM</p>
+        <p><strong>Total:</strong> ${Number(order.total).toFixed(2)} KM</p>
         <p><strong>Status:</strong> <span style="color: ${order.status === 'Cancelled' ? 'red' : 'green'}">${order.status}</span></p>
         ${isPending ? `<button class="btn btn-cancel" onclick="appController.cancelOrder('${order.id}')">Cancel Order</button>` : ''}
       `;
