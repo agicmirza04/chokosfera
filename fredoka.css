@@ -1,0 +1,92 @@
+/* HERO FLEX LAYOUT */
+.hero-flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 32px;
+}
+.hero-left {
+  flex: 1 1 60%;
+  display: flex;
+  align-items: flex-start;
+}
+.hero-headline {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 2.6rem;
+  line-height: 1.2;
+  margin: 0;
+  letter-spacing: 0.8px;
+  text-shadow: 0 12px 32px rgba(0,0,0,0.18);
+  color: #fff;
+  text-align: left;
+}
+.hero-right {
+  flex: 0 1 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 18px;
+}
+.hero-since {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.95);
+  margin: 0 0 10px 0;
+  text-shadow: 0 8px 18px rgba(0,0,0,0.18);
+}
+.hero-cta {
+  margin-top: 0;
+}
+@media (max-width: 900px) {
+  .hero-flex {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+  .hero-left, .hero-right {
+    align-items: flex-start;
+    width: 100%;
+  }
+  .hero-headline {
+    font-size: 1.7rem;
+    text-align: left;
+  }
+  .hero-right {
+    align-items: flex-start;
+  }
+}
+/* Navbar direct link styles */
+.navbar-link {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1.25rem;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  margin: 0 12px;
+  cursor: pointer;
+  padding: 8px 18px;
+  border-radius: 999px;
+  transition: background 0.2s, color 0.2s;
+}
+.navbar-link:hover {
+  background: #ff83b5;
+  color: #fff;
+}
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;700&display=swap');
+body, .navbar, .brand-name, .menu-item-name, .menu-packets-heading, .menu-overlay-title, .dropdown-item, .about-address, .about-contact-row, .about-contact-note, .menu-item-card, .menu-item-meta, .menu-item-description, .menu-item-action, .menu-item-action-primary, .menu-item-action-secondary, .menu-item-card--featured, .menu-item-card--featured .menu-item-meta, .menu-item-card--featured .menu-item-name, .menu-item-card--featured .menu-item-description, .menu-item-card--featured .menu-item-featured-actions {
+  font-family: 'Fredoka', sans-serif !important;
+}
+
+/* Exclude Fredoka for login/register modal and order page */
+.modal, .modal * {
+  font-family: 'Playfair Display', serif !important;
+}
+
+/* Exclude Fredoka for order page if needed (order.html) */
+body.order-page, body.order-page * {
+  font-family: 'Playfair Display', serif !important;
+}
