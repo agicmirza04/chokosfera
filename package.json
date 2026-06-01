@@ -18,5 +18,11 @@
   "devDependencies": {
     "@playwright/test": "^1.60.0",
     "jest": "^30.0.0"
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/tests/e2e/"
+    ]
   }
 }
