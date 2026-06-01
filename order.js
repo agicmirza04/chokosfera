@@ -514,3 +514,12 @@ if (document.readyState === 'loading') {
 } else {
   initializeOrderPage();
 }
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    Order,
+    OrderRepository,
+    OrderService,
+    customOrderDefinitions
+  };
+}
