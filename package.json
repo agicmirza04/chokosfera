@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "Simple backend for Chokosfera (auth + static)",
   "main": "server.js",
-  "scripts": {
+"scripts": {
   "start": "node server.js",
   "test": "jest",
   "test:coverage": "jest --coverage",
-  "test:e2e": "playwright test"
+  "test:e2e": "playwright test tests/e2e"
+}
 },
   "dependencies": {
     "bcryptjs": "^3.0.3",
