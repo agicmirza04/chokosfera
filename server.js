@@ -61,6 +61,7 @@ async function initializeDatabase() {
         username VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
+        role VARCHAR(50) DEFAULT 'user',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
@@ -121,8 +122,8 @@ app.post('/api/register', async (req, res) => {
     
     // Hash password and insert user
     const hashed = await bcrypt.hash(password, 10);
-    const [result] = await conn.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', 
-      [name, email, hashed]);
+    const [result] = await conn.query('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
+      [name, email, hashed, 'user']);
     
     conn.release();
     
