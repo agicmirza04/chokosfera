@@ -62,8 +62,8 @@ const CART_STORAGE_KEY = 'chokosferaCart';
 
 const customOrderDefinitions = {
   donuts: { label: 'Donuts', unitPrice: 5.0, min: 4, step: 4, packSize: 4 },
-  popsicles: { label: 'Cakestickles', unitPrice: 12.0, min: 4, step: 4, packSize: 4 },
-  heartPopsicles: { label: 'Heart Cakestickles', unitPrice: 12.0, min: 4, step: 4, packSize: 4 },
+  popsicles: { label: 'Cakesticles', unitPrice: 12.0, min: 4, step: 4, packSize: 4 },
+  heartPopsicles: { label: 'Heart Cakesticles', unitPrice: 12.0, min: 4, step: 4, packSize: 4 },
   chocoStrawberries: { label: 'Choco Strawberries', unitPrice: 5.0, min: 5, step: 5, packSize: 5 },
   chocoDates: { label: 'Choco Dates', unitPrice: 4.0, min: 5, step: 5, packSize: 5 },
   smashCake: { label: 'Smash Cake', unitPrice: 40.0, min: 1, step: 1, packSize: 1 }
@@ -318,6 +318,12 @@ class OrderController {
 
     this.service.removeFromCart(index);
     this.syncCustomOrderUI();
+    
+    // Scroll to custom order section for editing
+    const customOrderPanel = document.querySelector('.custom-order-panel');
+    if (customOrderPanel) {
+      customOrderPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   resetCustomOrder() {
@@ -424,15 +430,27 @@ class OrderController {
     if (!cartContainer) return;
     cartContainer.innerHTML = '';
     this.service.cart.forEach((item, index) => {
+      const mainDiv = document.createElement('div');
+      mainDiv.style.display = 'flex';
+      mainDiv.style.flexDirection = 'column';
+      mainDiv.style.gap = '8px';
+      mainDiv.style.marginBottom = '0px';
+      mainDiv.style.paddingBottom = '12px';
+      mainDiv.style.paddingTop = '0px';
+      mainDiv.style.borderTop = 'none';
+      mainDiv.style.borderBottom = '3px solid #ff3385';
+
       const div = document.createElement('div');
       div.className = 'cart-item';
       div.style.display = 'flex';
       div.style.alignItems = 'center';
       div.style.justifyContent = 'space-between';
       div.style.gap = '12px';
+      div.style.flexWrap = 'nowrap';
 
       const content = document.createElement('div');
       content.style.flex = '1';
+      content.style.fontWeight = 'bold';
       const quantity = Number(item.amount) || 1;
       const totalPrice = Number(item.price) || 0;
       const note = item.description ? ` • ${item.description}` : '';
@@ -442,27 +460,112 @@ class OrderController {
       actions.style.display = 'flex';
       actions.style.gap = '8px';
       actions.style.alignItems = 'center';
+      actions.style.flexWrap = 'nowrap';
 
       const editBtn = document.createElement('button');
       editBtn.type = 'button';
       editBtn.className = 'btn btn-secondary';
       editBtn.textContent = 'Edit';
+      editBtn.style.whiteSpace = 'nowrap';
       editBtn.onclick = () => this.restoreCustomOrder(index);
 
       const removeBtn = document.createElement('button');
       removeBtn.type = 'button';
       removeBtn.className = 'btn btn-cancel';
       removeBtn.textContent = 'Remove';
+      removeBtn.style.whiteSpace = 'nowrap';
       removeBtn.onclick = () => this.removeFromCart(index);
 
       if (item.customOrderData) {
-        actions.append(editBtn, removeBtn);
+        actions.append(removeBtn);
       } else {
         actions.append(removeBtn);
       }
 
       div.append(content, actions);
-      cartContainer.appendChild(div);
+      mainDiv.append(div);
+
+      // Add edit order button for custom orders
+      if (item.customOrderData) {
+        const editOrderBtn = document.createElement('button');
+        editOrderBtn.type = 'button';
+        editOrderBtn.className = 'btn';
+        editOrderBtn.textContent = 'Edit Order';
+        editOrderBtn.style.width = '100%';
+        editOrderBtn.style.marginTop = '4px';
+        editOrderBtn.style.background = '#ff6633';
+        editOrderBtn.style.color = 'white';
+        editOrderBtn.onclick = () => this.restoreCustomOrder(index);
+        mainDiv.append(editOrderBtn);
+      }
+
+      // Add notes field for non-custom orders
+      if (!item.customOrderData) {
+        const notesContainer = document.createElement('div');
+        const hasNotes = item.notes && item.notes.trim().length > 0;
+        notesContainer.style.display = hasNotes ? 'none' : 'flex';
+        notesContainer.style.flexDirection = 'column';
+        notesContainer.style.gap = '6px';
+        notesContainer.style.marginTop = '8px';
+
+        const notesLabel = document.createElement('label');
+        notesLabel.textContent = 'Flavor/Design notes:';
+        notesLabel.style.fontSize = '12px';
+        notesLabel.style.fontWeight = '600';
+        notesLabel.style.color = '#ff3385';
+
+        const notesInput = document.createElement('textarea');
+        notesInput.placeholder = 'Describe color, flavor, or any special requests...';
+        notesInput.style.padding = '8px 10px';
+        notesInput.style.border = '1px solid #ffd6e7';
+        notesInput.style.borderRadius = '8px';
+        notesInput.style.fontSize = '13px';
+        notesInput.style.fontFamily = "'Fredoka', Arial, sans-serif";
+        notesInput.style.minHeight = '60px';
+        notesInput.style.resize = 'vertical';
+        notesInput.style.backgroundColor = '#fff0f5';
+        notesInput.value = item.notes || '';
+
+        const notesButtonsContainer = document.createElement('div');
+        notesButtonsContainer.style.display = 'flex';
+        notesButtonsContainer.style.gap = '8px';
+
+        const okBtn = document.createElement('button');
+        okBtn.type = 'button';
+        okBtn.className = 'btn';
+        okBtn.textContent = 'OK';
+        okBtn.style.flex = '1';
+
+        const editNotesBtn = document.createElement('button');
+        editNotesBtn.type = 'button';
+        editNotesBtn.className = 'btn';
+        editNotesBtn.textContent = 'Edit notes';
+        editNotesBtn.style.display = hasNotes ? 'block' : 'none';
+        editNotesBtn.style.width = '100%';
+        editNotesBtn.style.marginTop = '4px';
+        editNotesBtn.style.background = '#ff6633';
+        editNotesBtn.style.color = 'white';
+
+        okBtn.onclick = () => {
+          item.notes = notesInput.value;
+          this.service.saveCart();
+          notesContainer.style.display = 'none';
+          editNotesBtn.style.display = item.notes && item.notes.trim().length > 0 ? 'block' : 'none';
+        };
+
+        editNotesBtn.onclick = () => {
+          notesContainer.style.display = 'flex';
+          editNotesBtn.style.display = 'none';
+          notesInput.focus();
+        };
+
+        notesButtonsContainer.append(okBtn);
+        notesContainer.append(notesLabel, notesInput, notesButtonsContainer);
+        mainDiv.append(notesContainer);
+        mainDiv.append(editNotesBtn);
+      }
+
+      cartContainer.appendChild(mainDiv);
     });
     if (this.service.cart.length === 0) {
       cartContainer.innerHTML = '<p style="color: #999;">Cart is empty.</p>';

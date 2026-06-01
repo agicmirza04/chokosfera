@@ -27,11 +27,11 @@
     /* Responsive: grid becomes one column on small screens */
     @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
     /* Panel for sections (menu, cart, etc.) */
-    .panel { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .panel { background: #f9c8b7; padding: 25px; border-radius: 20px; box-shadow: 0 4px 20px #ff6633; }
     /* Panel section titles (e.g., "Menu Options", "Your Cart") */
     .panel h2 { color: #ff1493; margin-bottom: 20px; border-bottom: 2px solid #ffd6e7; padding-bottom: 10px; }
     /* Main button style (e.g., Add to Cart, Place Order) */
-    .btn { padding: 10px 20px; border: none; background: #ff69b4; color: white; border-radius: 10px; cursor: pointer; transition: 0.3s; font-size: 14px; font-weight: bold; }
+    .btn { padding: 10px 20px; border: none; background: #ff3385; color: white; border-radius: 10px; cursor: pointer; transition: 0.3s; font-size: 14px; font-weight: bold; }
     /* Button hover effect */
     .btn:hover { background: #ff1493; }
     /* Secondary button style (e.g., Reset, Loyal Customer Register) */
@@ -47,46 +47,46 @@
     /* Header for custom order section ("Build your custom order") */
     .section-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
     /* Custom order section title ("Build your custom order") */
-    .section-header h2 { margin-bottom: 6px; border: none; padding: 0; }
+    .section-header h2 { margin-bottom: 6px; border: none; padding: 0; font-size: 28px; }
     /* Section copy/description under custom order title */
     .section-copy { color: #666; max-width: 700px; line-height: 1.5; }
     /* Eyebrow label: "Custom builder" */
-    .eyebrow { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: 999px; background: #ffe6f1; color: #ff1493; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+    .eyebrow { display: none; }
     /* Grid for custom order options */
     .custom-order-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 18px; }
     /* Responsive: custom order grid 2 columns on medium, 1 on small screens */
     @media (max-width: 900px) { .custom-order-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 640px) { .custom-order-grid { grid-template-columns: 1fr; } }
-    /* Card for each custom order option (Donuts, Cakestickles, etc.) */
-    .custom-option-card { display: flex; flex-direction: column; justify-content: space-between; gap: 12px; padding: 16px; border-radius: 16px; border: 1px solid #ffd6e7; background: #fffaf8; min-height: 120px; }
+    @media (max-width: 640px) { .custom-order-grid { grid-template-columns: 1fr; } .section-header { flex-direction: column; } }
+    /* Card for each custom order option (Donuts, Cakesticles, etc.) */
+    .custom-option-card { display: flex; flex-direction: column; justify-content: space-between; gap: 12px; padding: 12px; border-radius: 16px; border: 1px solid #ff83b5; background: #ff9c7a; min-height: 100px; }
     /* Header row in custom option card (title, meta, quantity) */
     .custom-option-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-    /* Custom option card title (e.g., "Donuts", "Cakestickles") */
-    .custom-option-card h3 { color: #ff1493; font-size: 18px; margin-bottom: 4px; }
+    /* Custom option card title (e.g., "Donuts", "Cakesticles") */
+    .custom-option-card h3 { color: white; font-size: 18px; margin-bottom: 4px; text-shadow: 2px 2px 4px #ff6633; }
     /* Meta info under custom option title (e.g., "Minimum 4 · step 4") */
-    .custom-option-meta { color: #8a5a6a; font-size: 12px; }
+    .custom-option-meta { color: white; font-size: 12px; }
     /* Quantity pill for custom option (shows count) */
-    .custom-quantity-pill { min-width: 34px; padding: 6px 9px; border-radius: 999px; background: #ff1493; color: white; font-size: 12px; font-weight: bold; text-align: center; }
+    .custom-quantity-pill { min-width: 34px; padding: 6px 9px; border-radius: 999px; background: white; color: #ff9c7a; font-size: 12px; font-weight: bold; text-align: center; }
     /* Controls for increasing/decreasing quantity */
-    .custom-option-controls { display: flex; gap: 10px; }
+    .custom-option-controls { display: flex; gap: 10px; background: #ff9c7a; padding: 12px; border-radius: 10px; }
     /* Buttons inside custom option controls */
     .custom-option-controls .btn { flex: 1; padding: 9px 12px; }
     /* Summary of selected custom order items */
-    .custom-order-summary { margin: 0 0 16px; padding: 12px 14px; border-radius: 16px; border: 1px solid #ffd6e7; background: #fffaf8; }
+    .custom-order-summary { margin: 0 0 16px; padding: 12px 14px; border-radius: 16px; border: 1px solid #ff6633; background: #fff0f5; }
     /* Label for custom order summary: "Selected items" */
     .custom-order-summary-label { display: block; margin-bottom: 10px; font-weight: bold; color: #ff1493; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; }
     /* Track for summary chips (selected items) */
     .summary-track { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
     /* Chip for each selected item in summary */
-    .summary-chip { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: white; border: 1px solid #ffd6e7; color: #333; padding: 8px 10px; font-size: 12px; font-weight: bold; flex: 0 0 auto; }
+    .summary-chip { display: inline-flex; align-items: center; gap: 8px; border-radius: 999px; background: #ff83b5; border: 1px solid #ff83b5; color: #333; padding: 8px 10px; font-size: 12px; font-weight: bold; flex: 0 0 auto; }
     /* Remove button inside summary chip */
-    .summary-chip button { border: 0; background: #ff1493; color: white; border-radius: 999px; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; }
+    .summary-chip button { border: 0; background: #ff3385; color: white; border-radius: 999px; width: 18px; height: 18px; cursor: pointer; font-size: 12px; line-height: 1; }
     /* Price preview display for custom order */
-    .price-display { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0 16px; padding: 12px 14px; border-radius: 12px; background: #fff0f5; border: 1px solid #ffd6e7; color: #ff1493; font-weight: bold; }
+    .price-display { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 12px 0 16px; padding: 12px 14px; border-radius: 12px; background: #fff0f5; border: 1px solid #ff83b5; color: #ff3385; font-weight: bold; }
     /* Label for design/flavor notes textarea */
     .design-notes-label { display: block; font-weight: bold; margin-bottom: 10px; color: #333; }
     /* Textarea for design/flavor notes */
-    .design-notes { width: 100%; border-radius: 12px; border: 1px solid #ffd6e7; padding: 12px 14px; font-size: 14px; resize: vertical; margin-bottom: 16px; }
+    .design-notes { width: 100%; border-radius: 12px; border: 1px solid #ff83b5; padding: 12px 14px; font-size: 14px; resize: vertical; margin-bottom: 16px; background: #fff0f5; }
     /* Actions row for custom order (Add to cart, Reset) */
     .custom-order-actions { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
     /* Layout for orders section: menu and cart columns */
@@ -94,9 +94,11 @@
     /* Responsive: orders layout becomes one column on small screens */
     @media (max-width: 768px) { .orders-layout { grid-template-columns: 1fr; } }
     /* Card for each menu item in menu panel */
-    .item-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+    .item-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #000; }
     /* Remove border for last item card */
     .item-card:last-child { border-bottom: none; }
+    /* Ensure buttons in item cards don't stretch vertically */
+    .item-card .btn { align-self: center; height: auto; white-space: nowrap; flex-shrink: 0; }
     /* Item name in menu card (e.g., "Donuts") */
     .item-info span { font-weight: bold; font-size: 16px; }
     /* Price in menu card (e.g., "3.00 KM") */
@@ -104,7 +106,7 @@
     /* Cart item row (not used in main UI) */
     .cart-item { padding: 10px; border-bottom: 1px dashed #ccc; font-size: 16px; }
     /* Card for each order in order history */
-    .order-card { padding: 15px; background: #fff7f0; border: 2px solid #ffd6e7; border-radius: 12px; margin-bottom: 15px; }
+    .order-card { padding: 15px; background: #f9c8b7; border: 2px solid #ffd6e7; border-radius: 12px; margin-bottom: 15px; }
     /* Order card title (e.g., order number) */
     .order-card h3 { margin-bottom: 10px; color: #333; }
     /* Order card paragraph (order details) */
@@ -129,9 +131,7 @@
     <section class="panel custom-order-panel">
       <div class="section-header">
         <div>
-          <span class="eyebrow">Custom builder</span>
-          <h2>Build your custom order</h2>
-          <p class="section-copy">Create your perfect selection. Choose from donuts, cakestickles, choco strawberries, choco dates, and smash cakes.</p>
+          <h2 style="color: #ff6633;">Build your custom order</h2>
         </div>
       </div>
       <div class="custom-order-grid">
@@ -139,7 +139,7 @@
           <div class="custom-option-header">
             <div>
               <h3>Donuts</h3>
-              <div class="custom-option-meta">Minimum 4 · step 4 · 5.00 KM</div>
+              <div class="custom-option-meta">Minimum 4 · 5.00 KM</div>
             </div>
             <span class="custom-quantity-pill" id="donutsCount">0</span>
           </div>
@@ -151,8 +151,8 @@
         <article class="custom-option-card">
           <div class="custom-option-header">
             <div>
-              <h3>Cakestickles</h3>
-              <div class="custom-option-meta">Minimum 4 · step 4 · 12.00 KM</div>
+              <h3>Cakesticles</h3>
+              <div class="custom-option-meta">Minimum 4 · 12.00 KM</div>
             </div>
             <span class="custom-quantity-pill" id="popsiclesCount">0</span>
           </div>
@@ -164,8 +164,8 @@
         <article class="custom-option-card">
           <div class="custom-option-header">
             <div>
-              <h3>Heart Cakestickles</h3>
-              <div class="custom-option-meta">Minimum 4 · step 4 · 12.00 KM</div>
+              <h3>Heart Cakesticles</h3>
+              <div class="custom-option-meta">Minimum 4 · 12.00 KM</div>
             </div>
             <span class="custom-quantity-pill" id="heartPopsiclesCount">0</span>
           </div>
@@ -178,7 +178,7 @@
           <div class="custom-option-header">
             <div>
               <h3>Choco Strawberries</h3>
-              <div class="custom-option-meta">Minimum 5 · step 5 · 5.00 KM</div>
+              <div class="custom-option-meta">Minimum 5 · 5.00 KM</div>
             </div>
             <span class="custom-quantity-pill" id="chocoStrawberriesCount">0</span>
           </div>
@@ -188,10 +188,10 @@
           </div>
         </article>
         <article class="custom-option-card">
-          <div class="custom-oution-header">
+          <div class="custom-option-header">
             <div>
               <h3>Choco Dates</h3>
-              <div class="custom-option-meta">Minimum 5 · step 5 · 4.00 KM</div>
+              <div class="custom-option-meta">Minimum 5 · 4.00 KM</div>
             </div>
             <span class="custom-quantity-pill" id="chocoDatesCount">0</span>
           </div>
@@ -204,7 +204,7 @@
           <div class="custom-option-header">
             <div>
               <h3>Smash Cake</h3>
-              <div class="custom-option-meta">Minimum 1 · step 1 · 40.00 KM</div>
+              <div class="custom-option-meta">Minimum 1 · 40.00 KM</div>
             </div>
             <span class="custom-quantity-pill" id="smashCakeCount">0</span>
           </div>
@@ -228,14 +228,6 @@
       <label class="design-notes-label" for="designNotes">Design / flavor notes</label>
       <textarea id="designNotes" class="design-notes" rows="5" placeholder="Describe the color palette, taste, filling, decorations, and any special requests."></textarea>
 
-      <div style="display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap;">
-        <div style="display:flex;flex-direction:column;">
-          <label class="design-notes-label" for="orderDate" style="margin-bottom:6px;">Choose date</label>
-          <input type="text" id="orderDate" class="flatpickr-input" placeholder="Select date" style="padding:10px;border-radius:10px;border:1px solid #ffd6e7;min-width:160px;" />
-        </div>
-        <div style="flex:1"></div>
-      </div>
-
       <div class="custom-order-actions">
         <button class="btn" type="button" id="addCustomOrderButton">Add custom order to cart</button>
         <button class="btn btn-secondary" type="button" id="resetCustomOrderButton">Reset</button>
@@ -244,42 +236,56 @@
 
     <div class="grid orders-layout">
       <div class="panel">
-        <h2>Menu Options</h2>
+        <h2>Offered Packages</h2>
         <div class="item-card">
-          <div class="item-info"><span>Donuts</span><div class="price">3.00 KM</div></div>
-          <button class="btn" onclick="appController.addToCart({name: 'Donuts', price: 3.0, amount: 1, description: 'Available menu option'})">Add to Cart</button>
+          <div class="item-info"><span>Smaller Box</span><div class="price">20.00 KM</div></div>
+          <button class="btn" onclick="appController.addToCart({name: 'Smaller Box', price: 20.0, amount: 1, description: 'Offered Package'})">Add to Cart</button>
         </div>
         <div class="item-card">
-          <div class="item-info"><span>Cakestickles</span><div class="price">4.00 KM</div></div>
-          <button class="btn" onclick="appController.addToCart({name: 'Cakestickles', price: 4.0, amount: 1, description: 'Available menu option'})">Add to Cart</button>
+          <div class="item-info"><span>Bigger Box</span><div class="price">40.00 KM</div></div>
+          <button class="btn" onclick="appController.addToCart({name: 'Bigger Box', price: 40.0, amount: 1, description: 'Offered Package'})">Add to Cart</button>
         </div>
         <div class="item-card">
-          <div class="item-info"><span>Heart Cakestickles</span><div class="price">6.00 KM</div></div>
-          <button class="btn" onclick="appController.addToCart({name: 'Heart Cakestickles', price: 6.0, amount: 1, description: 'Available menu option'})">Add to Cart</button>
+          <div class="item-info"><span>Cakesticles</span><div class="price">25.00 KM</div></div>
+          <button class="btn" onclick="appController.addToCart({name: 'Cakesticles', price: 25.0, amount: 1, description: 'Offered Package'})">Add to Cart</button>
         </div>
         <div class="item-card">
-          <div class="item-info"><span>Choco Strawberries</span><div class="price">5.00 KM</div></div>
-          <button class="btn" onclick="appController.addToCart({name: 'Choco Strawberries', price: 5.0, amount: 1, description: 'Available menu option'})">Add to Cart</button>
+          <div class="item-info"><span>Choco Strawberries</span><div class="price">25.00 KM</div></div>
+          <button class="btn" onclick="appController.addToCart({name: 'Choco Strawberries', price: 25.0, amount: 1, description: 'Offered Package'})">Add to Cart</button>
         </div>
         <div class="item-card">
-          <div class="item-info"><span>Choco Dates</span><div class="price">4.50 KM</div></div>
-          <button class="btn" onclick="appController.addToCart({name: 'Choco Dates', price: 4.5, amount: 1, description: 'Available menu option'})">Add to Cart</button>
+          <div class="item-info"><span>Choco Dates</span><div class="price">20.00 KM</div></div>
+          <button class="btn" onclick="appController.addToCart({name: 'Choco Dates', price: 20.0, amount: 1, description: 'Offered Package'})">Add to Cart</button>
         </div>
         <div class="item-card">
-          <div class="item-info"><span>Loyal Customer</span><div class="price">Free</div></div>
-          <a class="btn" href="loyal_customer.html">Register</a>
+          <div class="item-info"><span>Mix Box</span><div class="price">50.00 KM</div></div>
+          <button class="btn" onclick="appController.addToCart({name: 'Mix Box', price: 50.0, amount: 1, description: 'Offered Package'})">Add to Cart</button>
         </div>
         <div class="item-card">
-          <div class="item-info"><span>Smash Cake</span><div class="price">12.00 KM</div></div>
-          <button class="btn" onclick="appController.addToCart({name: 'Smash Cake', price: 12.0, amount: 1, description: 'Available menu option'})">Add to Cart</button>
+          <div class="item-info"><span>Cakesticles</span><div class="price">40.00 KM</div></div>
+          <button class="btn" onclick="appController.addToCart({name: 'Cakesticles', price: 40.0, amount: 1, description: 'Offered Package'})">Add to Cart</button>
+        </div>
+        <div class="item-card">
+          <div class="item-info"><span>Heart Of Surprise Filled With Donuts/Strawberries</span><div class="price">40.00 KM</div></div>
+          <button class="btn" onclick="appController.addToCart({name: 'Heart Of Surprise Filled With Donuts/Strawberries', price: 40.0, amount: 1, description: 'Offered Package'})">Add to Cart</button>
+        </div>
+        <div class="item-card">
+          <div class="item-info"><span>Heart Of Surprise Filled With Candy</span><div class="price">30.00 KM</div></div>
+          <button class="btn" onclick="appController.addToCart({name: 'Heart Of Surprise Filled With Candy', price: 30.0, amount: 1, description: 'Offered Package'})">Add to Cart</button>
         </div>
       </div>
 
       <div class="panel">
-        <h2>Your Cart</h2>
+        <h2 style="font-weight: 900;">Your Cart</h2>
         <div id="cartContainer"><p style="color: #999;">Cart is empty.</p></div>
-        <a class="btn btn-secondary" href="loyal_customer.html" style="display:inline-block;margin-bottom:16px;">Loyal Customer Register</a>
-        <h3 id="cartTotal" style="margin-top: 20px; color: #ff1493; font-size: 20px;">Total: 0.00 KM</h3>
+        <div style="background: #ff9c7a; border-radius: 12px; padding: 16px; margin-top: 20px; display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:16px;">
+          <div style="display:flex;flex-direction:column;flex:1;">
+            <label class="design-notes-label" for="orderDate" style="margin-bottom:6px;color:#fff;">Choose date</label>
+            <input type="text" id="orderDate" class="flatpickr-input" placeholder="Select date" style="padding:10px;border-radius:10px;border:1px solid #ffd6e7;min-width:160px;" />
+          </div>
+          <a class="btn btn-secondary" href="loyal_customer.html">Loyal Customer Register</a>
+        </div>
+        <h3 id="cartTotal" style="margin-top: 20px; color: #ff1493; font-size: 20px; font-weight: bold;">Total: 0.00 KM</h3>
         <button class="btn" style="width: 100%; margin-top: 20px; font-size: 16px; padding: 15px;" onclick="appController.placeOrder()">Place Order</button>
       </div>
     </div>
