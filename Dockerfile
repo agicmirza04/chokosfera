@@ -1,16 +1,22 @@
-FROM ubuntu:22.04
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y \
-    apache2 \
-    php8.1 \
-    php8.1-mysql \
-    libapache2-mod-php8.1 \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -f /var/www/html/index.html
-COPY . /var/www/html/
-RUN chown -R www-data:www-data /var/www/html
-RUN echo "Listen 8080" > /etc/apache2/ports.conf
-RUN sed -i 's/<VirtualHost \*:80>/<VirtualHost *:8080>/' /etc/apache2/sites-enabled/000-default.conf
-RUN echo "DirectoryIndex chokosfera.html index.php index.html" >> /etc/apache2/apache2.conf
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies (production only)
+RUN npm install --omit=dev
+
+# Copy entire app
+COPY . .
+
+# Expose port 8080
 EXPOSE 8080
-CMD ["apache2ctl", "-D", "FOREGROUND"]
+
+# Set environment variable for port
+ENV PORT=8080
+
+# Start the Node.js server
+CMD ["npm", "start"]
+
