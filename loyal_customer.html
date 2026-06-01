@@ -375,13 +375,16 @@
           successMessage.classList.add('show');
           form.style.display = 'none';
           
-          // Save user to localStorage
+          // Save user to localStorage with loyalty flag
           try {
             localStorage.setItem('chokosferaUser', JSON.stringify({
               username: firstName + ' ' + lastName,
               email: email,
-              id: email
+              id: email,
+              isLoyalCustomer: true,
+              loyaltyCode: data.redeem_code
             }));
+            console.log('[LOYALTY] User registered as loyal customer');
           } catch (e) {}
         } else {
           throw new Error(data.error || 'Registration failed');
