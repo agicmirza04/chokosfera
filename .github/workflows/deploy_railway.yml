@@ -48,7 +48,7 @@ jobs:
           fi
           
           # Deploy to Railway
-          railway up --force --token "$RAILWAY_TOKEN"
+          railway up --token "$RAILWAY_TOKEN" --service chokosfera
 
       - name: Deployment Status
         if: success()
