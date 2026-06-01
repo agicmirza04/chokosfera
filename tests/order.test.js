@@ -49,3 +49,21 @@ describe('OrderService - calculateTotal()', () => {
   });
 
 });
+test('should add item to cart', () => {
+
+  const mockRepository = {};
+  const service = new OrderService(mockRepository);
+
+  service.cart = [];
+
+  service.addToCart({
+    name: 'Chocolate Box',
+    price: 20,
+    amount: 1
+  });
+
+  expect(service.cart.length).toBe(1);
+  expect(service.cart[0].name).toBe('Chocolate Box');
+  expect(service.cart[0].price).toBe(20);
+
+});
