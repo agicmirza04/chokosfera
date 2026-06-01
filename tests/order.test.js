@@ -504,3 +504,110 @@ test('should show empty message when no custom order items are selected', () => 
 
   expect(summaryElement.textContent).toBe('No items selected yet.');
 });
+
+test('should prevent adding custom order when no items are selected', () => {
+  global.alert = jest.fn();
+
+  const mockService = {
+    addToCart: jest.fn()
+  };
+
+  const controller = new OrderController(mockService);
+
+  controller.customOrderCounts = {
+    donuts: 0,
+    popsicles: 0,
+    heartPopsicles: 0,
+    chocoStrawberries: 0,
+    chocoDates: 0,
+    smashCake: 0
+  };
+
+  controller.addCustomOrder();
+
+  expect(global.alert).toHaveBeenCalledWith(
+    'Select at least one item to add to the cart.'
+  );
+  expect(mockService.addToCart).not.toHaveBeenCalled();
+});
+
+test('should add valid custom order to cart', () => {
+  const mockService = {
+    addToCart: jest.fn()
+  };
+
+  const controller = new OrderController(mockService);
+
+  controller.renderCart = jest.fn();
+  controller.resetCustomOrder = jest.fn();
+  controller.getNextCustomOrderLabel = jest.fn(() => 'Custom order #1');
+
+  controller.customOrderCounts = {
+    donuts: 4,
+    popsicles: 0,
+    heartPopsicles: 0,
+    chocoStrawberries: 0,
+    chocoDates: 0,
+    smashCake: 0
+  };
+
+  controller.addCustomOrder();
+
+  expect(mockService.addToCart).toHaveBeenCalledWith(
+    expect.objectContaining({
+      name: 'Custom order #1',
+      price: 5,
+      amount: 1
+    })
+  );
+
+  expect(controller.renderCart).toHaveBeenCalled();
+  expect(controller.resetCustomOrder).toHaveBeenCalled();
+});
+test('should render empty cart message and total', () => {
+  const cartContainer = {
+    innerHTML: '',
+    appendChild: jest.fn()
+  };
+
+  const totalDiv = {
+    innerText: ''
+  };
+
+  global.document.getElementById = jest.fn((id) => {
+    if (id === 'cartContainer') return cartContainer;
+    if (id === 'cartTotal') return totalDiv;
+    return null;
+  });
+
+  const controller = new OrderController({
+    cart: []
+  });
+
+  controller.calculateTotal = jest.fn(() => 0);
+
+  controller.renderCart();
+
+  expect(cartContainer.innerHTML).toBe(
+    '<p style="color: #999;">Cart is empty.</p>'
+  );
+  expect(totalDiv.innerText).toBe('Total: 0.00 KM');
+});
+
+test('should render empty order history message', () => {
+  const ordersContainer = {
+    innerHTML: '',
+    appendChild: jest.fn()
+  };
+
+  global.document.getElementById = jest.fn((id) => {
+    if (id === 'ordersContainer') return ordersContainer;
+    return null;
+  });
+
+  const controller = new OrderController({});
+
+  controller.renderOrders([]);
+
+  expect(ordersContainer.innerHTML).toBe('<p>No orders placed yet.</p>');
+});
