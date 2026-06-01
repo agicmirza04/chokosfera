@@ -13,7 +13,8 @@ global.localStorage = {
 global.document = {};
 
 const {
-  OrderService
+  OrderService,
+  OrderController
 } = require('../order.js');
 
 describe('OrderService - calculateTotal()', () => {
