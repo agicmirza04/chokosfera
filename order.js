@@ -501,7 +501,8 @@ class OrderController {
 if (
   typeof window !== 'undefined' &&
   typeof document !== 'undefined' &&
-  typeof document.getElementById === 'function'
+  typeof document.getElementById === 'function' &&
+  typeof module === 'undefined'
 ) {
 
   const repository = new OrderRepository();
