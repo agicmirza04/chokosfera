@@ -67,3 +67,20 @@ test('should add item to cart', () => {
   expect(service.cart[0].price).toBe(20);
 
 });
+
+test('should remove item from cart', () => {
+
+  const mockRepository = {};
+  const service = new OrderService(mockRepository);
+
+  service.cart = [
+    { name: 'Box 1', price: 20 },
+    { name: 'Box 2', price: 30 }
+  ];
+
+  service.removeFromCart(0);
+
+  expect(service.cart.length).toBe(1);
+  expect(service.cart[0].name).toBe('Box 2');
+
+});
