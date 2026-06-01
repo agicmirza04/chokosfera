@@ -11,13 +11,43 @@ const DATA_DIR = path.join(__dirname, 'data');
 const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret-change-me';
 
-// MySQL connection pool
+const databaseUrl = process.env.DATABASE_URL || process.env.MYSQL_URL || process.env.CLEARDB_DATABASE_URL || process.env.RAILWAY_DATABASE_URL;
+let dbHost = process.env.RAILWAY_DB_HOST || process.env.MYSQL_HOST || process.env.DB_HOST || 'localhost';
+let dbPort = process.env.RAILWAY_DB_PORT || process.env.MYSQL_PORT || process.env.DB_PORT || 3306;
+let dbUser = process.env.RAILWAY_DB_USER || process.env.MYSQL_USER || process.env.DB_USER || 'root';
+let dbPassword = process.env.RAILWAY_DB_PASSWORD || process.env.MYSQL_PASSWORD || process.env.DB_PASS || '';
+let dbName = process.env.RAILWAY_DB_NAME || process.env.MYSQL_DATABASE || process.env.DB_NAME || 'chokosfera';
+
+if (databaseUrl) {
+  try {
+    const parsedUrl = new URL(databaseUrl);
+    if (parsedUrl.hostname) dbHost = parsedUrl.hostname;
+    if (parsedUrl.port) dbPort = Number(parsedUrl.port);
+    if (parsedUrl.username) dbUser = parsedUrl.username;
+    if (parsedUrl.password) dbPassword = parsedUrl.password;
+    const pathName = parsedUrl.pathname || '';
+    if (pathName.length > 1) dbName = pathName.replace(/^\//, '');
+  } catch (err) {
+    console.warn('Unable to parse database URL:', err.message);
+  }
+}
+
+const basePool = mysql.createPool({
+  host: dbHost,
+  port: dbPort,
+  user: dbUser,
+  password: dbPassword,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+});
+
 const pool = mysql.createPool({
-  host: process.env.RAILWAY_DB_HOST || 'localhost',
-  port: process.env.RAILWAY_DB_PORT || 3306,
-  user: process.env.RAILWAY_DB_USER || 'root',
-  password: process.env.RAILWAY_DB_PASSWORD || '',
-  database: process.env.RAILWAY_DB_NAME || 'chokosfera',
+  host: dbHost,
+  port: dbPort,
+  user: dbUser,
+  password: dbPassword,
+  database: dbName,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -25,22 +55,37 @@ const pool = mysql.createPool({
 
 // Initialize database table
 async function initializeDatabase() {
-  try {
-    const conn = await pool.getConnection();
-    await conn.query(`
+  const createTableSql = `
       CREATE TABLE IF NOT EXISTS users (
         id INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
+        role VARCHAR(50) DEFAULT 'user',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
-    `);
+    `;
+
+  try {
+    const conn = await pool.getConnection();
+    await conn.query(createTableSql);
     conn.release();
-    console.log('Database initialized successfully');
+    console.log('Database initialized successfully on', dbHost, dbName);
   } catch (error) {
-    console.error('Failed to initialize database:', error);
+    if (error.code === 'ER_BAD_DB_ERROR') {
+      console.warn('Database does not exist, attempting creation:', dbName);
+      const conn = await basePool.getConnection();
+      await conn.query(`CREATE DATABASE IF NOT EXISTS \`${dbName}\` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`);
+      conn.release();
+      const conn2 = await pool.getConnection();
+      await conn2.query(createTableSql);
+      conn2.release();
+      console.log('Database created and initialized successfully');
+    } else {
+      console.error('Failed to initialize database:', error);
+      throw error;
+    }
   }
 }
 
@@ -77,8 +122,8 @@ app.post('/api/register', async (req, res) => {
     
     // Hash password and insert user
     const hashed = await bcrypt.hash(password, 10);
-    const [result] = await conn.query('INSERT INTO users (username, email, password) VALUES (?, ?, ?)', 
-      [name, email, hashed]);
+    const [result] = await conn.query('INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)', 
+      [name, email, hashed, 'user']);
     
     conn.release();
     
