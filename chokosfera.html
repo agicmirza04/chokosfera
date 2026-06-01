@@ -1903,7 +1903,20 @@
             return showLoginError('Please enter both email and password.');
           }
 
-          fetch('login.php', {
+          // Check if admin credentials
+          var isAdminLogin = (email === 'sarah.karacic@gmail.com' && password === 'donutsarajevo');
+
+          if (isAdminLogin) {
+            // Admin login
+            showLoginSuccess('Admin login successful!');
+            localStorage.setItem('chokosferaUser', JSON.stringify({ username: 'Admin', email: email, isAdmin: true }));
+            setTimeout(function() {
+              window.location.href = 'admin.html';
+            }, 1200);
+            return;
+          }
+
+          fetch('/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email, password: password })
@@ -1918,19 +1931,11 @@
               });
             })
             .then(function (data) {
-              showLoginSuccess(data.message || 'Login successful!');
-              var username = data.username || email.split('@')[0] || 'user';
-              localStorage.setItem('chokosferaUser', JSON.stringify({ username: username, email: email, isAdmin: !!data.isAdmin }));
-              
-              // Check if admin login
-              if (data.isAdmin) {
-                setTimeout(function() {
-                  window.location.href = 'admin.html';
-                }, 1200);
-              } else {
-                showLoggedInUser(username, false);
-                setTimeout(closeLoginModal, 1200);
-              }
+              showLoginSuccess('Login successful!');
+              var username = (data.user && data.user.name) || email.split('@')[0] || 'user';
+              localStorage.setItem('chokosferaUser', JSON.stringify({ username: username, email: email, isAdmin: false, token: data.token }));
+              showLoggedInUser(username, false);
+              setTimeout(closeLoginModal, 1200);
             })
             .catch(function (error) {
               showLoginError(error.message);
@@ -1959,10 +1964,10 @@
 
           var username = email.split('@')[0] || 'user';
 
-          fetch('register.php', {
+          fetch('/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: username, email: email, password: password, confirmPassword: confirm })
+            body: JSON.stringify({ name: username, email: email, password: password })
           })
             .then(function (response) {
               return parseJsonResponse(response).then(function (data) {
@@ -1974,8 +1979,8 @@
               });
             })
             .then(function (data) {
-              showRegisterSuccess(data.message || 'Registration successful!');
-              setTimeout(closeLoginModal, 1400);
+              showRegisterSuccess('Registration successful! Please log in.');
+              setTimeout(showLoginScreen, 1400);
             })
             .catch(function (error) {
               showRegisterError(error.message);
