@@ -1828,6 +1828,11 @@
         });
       }
 
+      var apiBaseUrl = '';
+      if (window.location.protocol === 'file:' || window.location.port === '8000' || (window.location.hostname === 'localhost' && window.location.port && window.location.port !== '3000')) {
+        apiBaseUrl = 'http://localhost:3000';
+      }
+
       if (logoutLink) {
         logoutLink.addEventListener('click', function (e) {
           e.preventDefault();
@@ -1899,7 +1904,7 @@
             return;
           }
 
-          fetch('/api/login', {
+          fetch(apiBaseUrl + '/api/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email, password: password })
@@ -1947,7 +1952,7 @@
 
           var username = email.split('@')[0] || 'user';
 
-          fetch('/api/register', {
+          fetch(apiBaseUrl + '/api/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name: username, email: email, password: password })
