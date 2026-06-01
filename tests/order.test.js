@@ -1,3 +1,17 @@
+global.window = {
+  location: {
+    hostname: 'localhost',
+    port: '3000'
+  }
+};
+
+global.localStorage = {
+  getItem: jest.fn(),
+  setItem: jest.fn()
+};
+
+global.document = {};
+
 const {
   OrderService
 } = require('../order.js');
