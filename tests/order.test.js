@@ -116,3 +116,13 @@ test('should place order successfully', async () => {
   expect(result.id).toBe(1);
   expect(service.cart.length).toBe(0);
 });
+
+test('should throw error when placing order with empty cart', async () => {
+  const mockRepository = {};
+
+  const service = new OrderService(mockRepository);
+
+  await expect(
+    service.placeOrder()
+  ).rejects.toThrow('Cart is empty');
+});
