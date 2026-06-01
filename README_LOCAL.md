@@ -12,7 +12,7 @@ This project requires a PHP-capable server for the PHP auth and order endpoints 
 ## Option 2: PHP installed manually or via XAMPP/WAMP
 1. Place this project inside your PHP server web root.
 2. Start Apache/PHP.
-3. Open the browser to the project URL (for example `http://localhost/chokosfera.html`).
+3. Open the browser to the project URL (for example `https://chokosferatest-production.up.railway.app/chokosfera.html`).
 
 ## Important
 - Do not open the page with `file://` or through static-only Live Server.
