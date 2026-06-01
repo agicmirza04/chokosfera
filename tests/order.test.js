@@ -16,7 +16,8 @@ global.document = {
 
 const {
   OrderService,
-  OrderController
+  OrderController,
+  OrderRepository
 } = require('../order.js');
 
 describe('OrderService - calculateTotal()', () => {
