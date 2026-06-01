@@ -10,7 +10,9 @@ global.localStorage = {
   setItem: jest.fn()
 };
 
-global.document = {};
+global.document = {
+  getElementById: jest.fn(() => null)
+};
 
 const {
   OrderService,
