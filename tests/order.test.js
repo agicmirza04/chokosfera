@@ -204,3 +204,64 @@ test('should not remove item when index is negative', () => {
 
   expect(service.cart.length).toBe(1);
 });
+
+test('should clear cart after successful order placement', async () => {
+  const mockRepository = {
+    saveOrder: jest.fn().mockResolvedValue({ id: 1 })
+  };
+
+  const service = new OrderService(mockRepository);
+
+  service.cart = [
+    { name: 'Box', price: 20 }
+  ];
+
+  await service.placeOrder();
+
+  expect(service.cart.length).toBe(0);
+});
+
+test('should call repository when viewing orders', async () => {
+  const mockRepository = {
+    getAllOrders: jest.fn().mockResolvedValue([])
+  };
+
+  const service = new OrderService(mockRepository);
+
+  await service.viewOrders();
+
+  expect(mockRepository.getAllOrders).toHaveBeenCalled();
+});
+
+test('should call repository when cancelling order', async () => {
+  const mockRepository = {
+    cancelOrder: jest.fn().mockResolvedValue({})
+  };
+
+  const service = new OrderService(mockRepository);
+
+  await service.cancelOrder(123);
+
+  expect(mockRepository.cancelOrder).toHaveBeenCalledWith(123);
+});
+
+test('should return empty cart when localStorage is empty', () => {
+  localStorage.getItem.mockReturnValue(null);
+
+  const service = new OrderService({});
+
+  expect(service.cart).toEqual([]);
+});
+
+test('should keep original price when amount equals one', () => {
+  const service = new OrderService({});
+
+  service.addToCart({
+    name: 'Cake',
+    price: 15,
+    amount: 1
+  });
+
+  expect(service.cart[0].price).toBe(15);
+});
+
