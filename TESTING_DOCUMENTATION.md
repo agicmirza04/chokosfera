@@ -158,7 +158,7 @@ tests/
 └── e2e/
     └── smoke.spec.js
 
-Coverage Results
+### Coverage Results
 
 Unit testing achieved the following coverage results:
 
@@ -170,7 +170,7 @@ Lines: 74.33%
 The project satisfies the required minimum unit test coverage target of 70%.
 
 
-5. Conclusion
+### 5. Conclusion
 
 The testing process confirmed that the main functionalities of the Chokosfera application work correctly.
 
