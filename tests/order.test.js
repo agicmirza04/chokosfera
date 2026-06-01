@@ -157,3 +157,16 @@ test('should cancel order successfully', async () => {
 
   expect(result.success).toBe(true);
 });
+
+test('should load cart from localStorage', () => {
+  localStorage.getItem.mockReturnValue(
+    JSON.stringify([
+      { name: 'Cake', price: 20 }
+    ])
+  );
+
+  const service = new OrderService({});
+
+  expect(service.cart.length).toBe(1);
+  expect(service.cart[0].name).toBe('Cake');
+});
