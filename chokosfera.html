@@ -1715,8 +1715,9 @@
             goToCartButton.className = 'menu-item-action menu-item-action-primary menu-item-action-featured';
             goToCartButton.textContent = item.actionLabel || 'Customize in cart →';
           } else {
-            goToCartButton.className = 'menu-item-action menu-item-action-secondary';
-            goToCartButton.textContent = 'Go to cart';
+            <button class="menu-item-action menu-item-action-secondary" onclick="window.location.href='order.html'">
+  Go to Cart
+</button>
           }
 
           if (item.featured) {
