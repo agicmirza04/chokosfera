@@ -170,3 +170,13 @@ test('should load cart from localStorage', () => {
   expect(service.cart.length).toBe(1);
   expect(service.cart[0].name).toBe('Cake');
 });
+
+test('should return empty cart when localStorage contains invalid data', () => {
+  localStorage.getItem.mockImplementation(() => {
+    throw new Error();
+  });
+
+  const service = new OrderService({});
+
+  expect(service.cart).toEqual([]);
+});
