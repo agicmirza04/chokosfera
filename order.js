@@ -530,6 +530,7 @@ if (typeof module !== 'undefined' && module.exports) {
     Order,
     OrderRepository,
     OrderService,
+    OrderController,
     customOrderDefinitions
   };
 }
