@@ -394,4 +394,54 @@ test('should reset custom order counts and clear active draft', () => {
   expect(controller.activeCustomOrderDraft).toBe(null);
   expect(controller.syncCustomOrderUI).toHaveBeenCalled();
 });
+test('should return 0 when no custom order items are selected', () => {
+  const controller = new OrderController({});
 
+  controller.customOrderCounts = {
+    donuts: 0,
+    popsicles: 0,
+    heartPopsicles: 0,
+    chocoStrawberries: 0,
+    chocoDates: 0,
+    smashCake: 0
+  };
+
+  expect(controller.calculateCustomOrderTotal()).toBe(0);
+});
+test('should return guest when stored user data is invalid', () => {
+  localStorage.getItem.mockReturnValue('invalid-json');
+
+  const controller = new OrderController({});
+
+  expect(controller.getCurrentUserKey()).toBe('guest');
+});
+test('should update custom order price display', () => {
+  const controller = new OrderController({});
+
+  controller.customOrderPriceValue = {
+    textContent: ''
+  };
+
+  controller.customOrderCounts = {
+    donuts: 4,
+    popsicles: 0,
+    heartPopsicles: 0,
+    chocoStrawberries: 0,
+    chocoDates: 0,
+    smashCake: 0
+  };
+
+  controller.updateCustomOrderPriceDisplay();
+
+  expect(controller.customOrderPriceValue.textContent).toBe('5.00 KM');
+});
+
+test('should not render custom order summary when summary element is missing', () => {
+  const controller = new OrderController({});
+
+  controller.customOrderSummary = null;
+
+  expect(() => {
+    controller.renderCustomOrderSummary();
+  }).not.toThrow();
+});
