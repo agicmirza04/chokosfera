@@ -1,27 +1,48 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Chokosfera Orders</title>
+  <title>Donut Sarajevo Orders</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="fredoka.css">
   <style>
-    /* Reset and base font for all elements */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    /* Main page background and text color */
-    body { background: #fff7f0; color: #333; padding-bottom: 75px; }
-    /* Top navigation bar */
-    .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 25px; background: #ff69b4; color: white; position: sticky; top: 0; z-index: 1000; }
-    /* Navbar title: "🍩 Chokosfera Orders" */
-    .navbar h1 { font-size: 28px; }
+    body { background: linear-gradient(180deg, #ff83b5, #ff9c7a); color: #333; padding-bottom: 75px; }
+    .navbar {
+  --navbar-height: 80px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 45px;
+  min-height: var(--navbar-height);
+  width: 100%;
+  background: #ff3385;
+  color: rgb(255, 255, 255);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+    .navbar h1 { 
+      font-family: 'Fredoka', sans-serif;
+      font-size: 52px;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      margin: 0;
+      color: #fff;
+      line-height: 1;
+    }
     /* Navbar icons container */
     .icons { display: flex; gap: 20px; }
     /* Navbar icon links (e.g., home icon) */
     .icons a { color: white; text-decoration: none; font-size: 22px; transition: 0.3s; }
     /* Navbar icon hover effect */
-    .icons a:hover { transform: scale(1.1); color: #1eceff; }
+    .icons a:hover { transform: scale(1.1); color: #ff9c7a; }
     /* Main content container */
-    .container { padding: 40px; max-width: 1200px; margin: auto; }
+    .container { padding: 52px; max-width: 1200px; margin: auto; }
     /* Two-column grid for menu/cart */
     .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
     /* Responsive: grid becomes one column on small screens */
@@ -29,15 +50,15 @@
     /* Panel for sections (menu, cart, etc.) */
     .panel { background: #f9c8b7; padding: 25px; border-radius: 20px; box-shadow: 0 4px 20px #ff6633; }
     /* Panel section titles (e.g., "Menu Options", "Your Cart") */
-    .panel h2 { color: #ff1493; margin-bottom: 20px; border-bottom: 2px solid #ffd6e7; padding-bottom: 10px; }
+    .panel h2 { color: #ff3385; font-family: 'Fredoka', sans-serif; margin-bottom: 10px; border-bottom: 2px solid #000000; padding-bottom: 5px; }
     /* Main button style (e.g., Add to Cart, Place Order) */
     .btn { padding: 10px 20px; border: none; background: #ff3385; color: white; border-radius: 10px; cursor: pointer; transition: 0.3s; font-size: 14px; font-weight: bold; }
     /* Button hover effect */
-    .btn:hover { background: #ff1493; }
+    .btn:hover { background: #ff3385; }
     /* Secondary button style (e.g., Reset, Loyal Customer Register) */
-    .btn-secondary { background: #fff0f5; color: #ff1493; border: 1px solid #ffd6e7; }
+    .btn-secondary { background: #fff0f5; color: #ff3385; border: 1px solid #ff83b5; }
     /* Secondary button hover effect */
-    .btn-secondary:hover { background: #ffe0ef; color: #ff1493; }
+    .btn-secondary:hover { background: #ffe0ef; color: #ff3385; }
     /* Cancel button style (not used in main UI) */
     .btn-cancel { background: #ff4d4d; margin-top: 10px; }
     /* Cancel button hover effect */
@@ -74,7 +95,7 @@
     /* Summary of selected custom order items */
     .custom-order-summary { margin: 0 0 16px; padding: 12px 14px; border-radius: 16px; border: 1px solid #ff6633; background: #fff0f5; }
     /* Label for custom order summary: "Selected items" */
-    .custom-order-summary-label { display: block; margin-bottom: 10px; font-weight: bold; color: #ff1493; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; }
+    .custom-order-summary-label { display: block; margin-bottom: 10px; font-weight: bold; color: #ff3385; font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; }
     /* Track for summary chips (selected items) */
     .summary-track { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
     /* Chip for each selected item in summary */
@@ -111,16 +132,21 @@
     .order-card h3 { margin-bottom: 10px; color: #333; }
     /* Order card paragraph (order details) */
     .order-card p { margin-bottom: 5px; }
-  </style>
-  /* flatpickr disabled-day style to show past dates crossed out */
-  .flatpickr-day.flatpickr-disabled { text-decoration: line-through; color: #bdbdbd; cursor: not-allowed; }
-  .flatpickr-day.flatpickr-disabled:hover { background: transparent; }
+    /* flatpickr disabled-day style to show past dates crossed out */
+    .flatpickr-day.flatpickr-disabled,
+    .flatpickr-day.flatpickr-disabled:hover {
+      text-decoration: line-through;
+      color: #bdbdbd !important;
+      background: transparent !important;
+      cursor: not-allowed !important;
+      opacity: 0.6;
+    }
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 </head>
 <body>
   <div class="navbar">
-    <h1>🍩 Chokosfera Orders</h1>
+    <h1>Donut Sarajevo Orders</h1>
     <div class="icons">
       <a href="chokosfera.html" title="Home"><i class="fa-solid fa-house"></i></a>
       <a href="order.html" title="Orders"><i class="fa-solid fa-bag-shopping"></i></a>
@@ -304,30 +330,99 @@
     document.addEventListener("DOMContentLoaded", () => {
       appController.renderCart();
       appController.viewOrders();
-
-      // Restore username from localStorage (no PHP sessions on Railway)
+      // Try server-side session first, then fallback to localStorage
       try {
-        const saved = localStorage.getItem('chokosferaUser');
-        if (saved) {
-          const user = JSON.parse(saved);
-          const icons = document.querySelector('.icons');
-          if (icons && user && user.username) {
-            const span = document.createElement('span');
-            span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
-            span.innerText = `Hi, ${user.username}`;
-            icons.insertBefore(span, icons.firstChild);
+        fetch('session_user.php', { credentials: 'same-origin' })
+          .then(function(res){ if (!res.ok) throw new Error('no-session'); return res.json(); })
+          .then(function(data){
+            if (data && data.success && data.username) {
+              try { localStorage.setItem('chokosferaUser', JSON.stringify({ username: data.username })); } catch (e) {}
+              const icons = document.querySelector('.icons');
+              if (icons) {
+                const span = document.createElement('span');
+                span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
+                span.innerText = `Hi, ${data.username}`;
+                icons.insertBefore(span, icons.firstChild);
+              }
+              return;
+            }
+            // fallback to localStorage
+            const saved = localStorage.getItem('chokosferaUser');
+            if (saved) {
+              const user = JSON.parse(saved);
+              const icons = document.querySelector('.icons');
+              if (icons && user && user.username) {
+                const span = document.createElement('span');
+                span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
+                span.innerText = `Hi, ${user.username}`;
+                icons.insertBefore(span, icons.firstChild);
+              }
+            }
+          })
+          .catch(function(){
+            try {
+              const saved = localStorage.getItem('chokosferaUser');
+              if (saved) {
+                const user = JSON.parse(saved);
+                const icons = document.querySelector('.icons');
+                if (icons && user && user.username) {
+                  const span = document.createElement('span');
+                  span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
+                  span.innerText = `Hi, ${user.username}`;
+                  icons.insertBefore(span, icons.firstChild);
+                }
+              }
+            } catch (e) {}
+            // set default order date to today (format YYYY-MM-DD)
+            try {
+              const dateInput = document.getElementById('orderDate');
+              if (dateInput && !dateInput.value) {
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                dateInput.value = `${yyyy}-${mm}-${dd}`;
+              }
+            } catch (e) {}
+          });
+      } catch (e) {
+        try {
+          const saved = localStorage.getItem('chokosferaUser');
+          if (saved) {
+            const user = JSON.parse(saved);
+            const icons = document.querySelector('.icons');
+            if (icons && user && user.username) {
+              const span = document.createElement('span');
+              span.style.cssText = 'margin-right:12px;font-weight:bold;color:#fff;';
+              span.innerText = `Hi, ${user.username}`;
+              icons.insertBefore(span, icons.firstChild);
+            }
           }
-        }
-      } catch (e) {}
+        } catch (e) {}
+      }
     });
   </script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       try {
         if (typeof flatpickr !== 'undefined') {
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
           flatpickr('#orderDate', {
             dateFormat: 'Y-m-d',
-            minDate: new Date()  // This disables all dates before today
+            minDate: today,
+            defaultDate: today,
+            onDayCreate: function(dObj, dStr, fp, dayElem) {
+              const dayDate = dayElem.dateObj;
+              if (dayDate < today) {
+                dayElem.classList.add('flatpickr-disabled');
+                dayElem.style.textDecoration = 'line-through';
+                dayElem.style.color = '#bdbdbd';
+                dayElem.style.cursor = 'not-allowed';
+                dayElem.style.opacity = '0.6';
+                dayElem.style.pointerEvents = 'none';
+              }
+            }
           });
         }
       } catch (e) {
