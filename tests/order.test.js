@@ -362,3 +362,36 @@ test('should calculate mixed custom order total correctly', () => {
   expect(controller.calculateCustomOrderTotal()).toBe(71);
 });
 
+test('should reset custom order counts and clear active draft', () => {
+  const controller = new OrderController({});
+
+  controller.syncCustomOrderUI = jest.fn();
+
+  controller.customOrderCounts = {
+    donuts: 4,
+    popsicles: 4,
+    heartPopsicles: 4,
+    chocoStrawberries: 5,
+    chocoDates: 5,
+    smashCake: 1
+  };
+
+  controller.activeCustomOrderDraft = {
+    label: 'Custom order #1'
+  };
+
+  controller.resetCustomOrder();
+
+  expect(controller.customOrderCounts).toEqual({
+    donuts: 0,
+    popsicles: 0,
+    heartPopsicles: 0,
+    chocoStrawberries: 0,
+    chocoDates: 0,
+    smashCake: 0
+  });
+
+  expect(controller.activeCustomOrderDraft).toBe(null);
+  expect(controller.syncCustomOrderUI).toHaveBeenCalled();
+});
+
