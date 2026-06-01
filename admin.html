@@ -983,40 +983,4 @@
     });
   </script>
 </body>
-</html>ument.getElementById('toDate').value = new Date().toISOString().split('T')[0];
-      document.getElementById('statusFilter').value = '';
-      filteredOrders = allOrders;
-      renderOrders();
-    }
-
-    document.getElementById('orderModal').addEventListener('click', function(e) {
-      if (e.target === this) closeOrderModal();
-    });
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script>
-    // Initialize flatpickr for date range filters
-    document.addEventListener('DOMContentLoaded', function() {
-      const today = new Date();
-      
-      flatpickr('#fromDate', {
-        minDate: 'today',
-        disable: [
-          function(date) {
-            return date < today;
-          }
-        ]
-      });
-
-      flatpickr('#toDate', {
-        minDate: 'today',
-        disable: [
-          function(date) {
-            return date < today;
-          }
-        ]
-      });
-    });
-  </script>
-</body>
 </html>
