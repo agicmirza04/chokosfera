@@ -1097,6 +1097,26 @@
     .hidden {
       display: none;
     }
+
+    /* NAVBAR LINK BUTTON — styles for menu and about buttons */
+    .navbar-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 16px;
+      border-radius: 5px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .navbar-link:hover {
+      background: rgba(255, 255, 255, 0.35);
+    }
   </style>
 </head>
 
@@ -1778,39 +1798,6 @@
       }
 
       showHomePage();
-
-      if (brandLink) {
-        brandLink.addEventListener('click', function (event) {
-          event.preventDefault();
-          showHomePage();
-        });
-      }
-
-      if (closeMenuOverlayButton) {
-        closeMenuOverlayButton.addEventListener('click', closeMenuOverlay);
-      }
-
-      document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-          closeMenuOverlay();
-        }
-      });
-
-      showHomePage();
-
-      if (menuTrigger) {
-        menuTrigger.addEventListener('click', function (event) {
-          event.preventDefault();
-          openMenuOverlay();
-        });
-      }
-
-      if (aboutMenuTrigger) {
-        aboutMenuTrigger.addEventListener('click', function (event) {
-          event.preventDefault();
-          showAboutPage();
-        });
-      }
 
       if (brandLink) {
         brandLink.addEventListener('click', function (event) {
