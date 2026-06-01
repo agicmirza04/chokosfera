@@ -611,3 +611,97 @@ test('should render empty order history message', () => {
 
   expect(ordersContainer.innerHTML).toBe('<p>No orders placed yet.</p>');
 });
+
+test('should restore custom order from cart item', () => {
+  const mockService = {
+    cart: [
+      {
+        name: 'Custom order #1',
+        customOrderData: {
+          counts: {
+            donuts: 4,
+            popsicles: 4,
+            heartPopsicles: 0,
+            chocoStrawberries: 0,
+            chocoDates: 0,
+            smashCake: 0
+          },
+          notes: 'Birthday design'
+        }
+      }
+    ],
+    removeFromCart: jest.fn()
+  };
+
+  global.document.getElementById = jest.fn((id) => {
+    if (id === 'designNotes') {
+      return { value: '' };
+    }
+    return null;
+  });
+
+  const controller = new OrderController(mockService);
+  controller.syncCustomOrderUI = jest.fn();
+
+  controller.restoreCustomOrder(0);
+
+  expect(controller.customOrderCounts.donuts).toBe(4);
+  expect(controller.customOrderCounts.popsicles).toBe(4);
+  expect(controller.activeCustomOrderDraft.label).toBe('Custom order #1');
+  expect(mockService.removeFromCart).toHaveBeenCalledWith(0);
+  expect(controller.syncCustomOrderUI).toHaveBeenCalled();
+});
+test('should not restore custom order when cart item has no custom data', () => {
+  const mockService = {
+    cart: [
+      {
+        name: 'Smaller Box',
+        price: 20
+      }
+    ],
+    removeFromCart: jest.fn()
+  };
+
+  const controller = new OrderController(mockService);
+  controller.syncCustomOrderUI = jest.fn();
+
+  controller.restoreCustomOrder(0);
+
+  expect(mockService.removeFromCart).not.toHaveBeenCalled();
+  expect(controller.syncCustomOrderUI).not.toHaveBeenCalled();
+});
+
+test('should render populated order history with pending order', () => {
+  const ordersContainer = {
+    innerHTML: '',
+    appendChild: jest.fn()
+  };
+
+  global.document.getElementById = jest.fn((id) => {
+    if (id === 'ordersContainer') return ordersContainer;
+    return null;
+  });
+
+  global.document.createElement = jest.fn(() => ({
+    className: '',
+    innerHTML: ''
+  }));
+
+  const controller = new OrderController({});
+
+  controller.renderOrders([
+    {
+      id: 'order123456',
+      orderDate: '2026-06-01',
+      items: [
+        { name: 'Smaller Box' },
+        { name: 'Choco Dates' }
+      ],
+      total: 40,
+      status: 'Pending'
+    }
+  ]);
+
+  expect(ordersContainer.appendChild).toHaveBeenCalled();
+});
+
