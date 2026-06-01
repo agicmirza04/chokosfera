@@ -704,4 +704,99 @@ test('should render populated order history with pending order', () => {
 
   expect(ordersContainer.appendChild).toHaveBeenCalled();
 });
+test('should sync custom order UI counters and price display', () => {
+  const elements = {};
+
+  [
+    'donutsCount',
+    'popsiclesCount',
+    'heartPopsiclesCount',
+    'chocoStrawberriesCount',
+    'chocoDatesCount',
+    'smashCakeCount'
+  ].forEach((id) => {
+    elements[id] = { textContent: '' };
+  });
+
+  global.document.getElementById = jest.fn((id) => elements[id] || null);
+
+  const controller = new OrderController({});
+  controller.renderCustomOrderSummary = jest.fn();
+  controller.updateCustomOrderPriceDisplay = jest.fn();
+
+  controller.customOrderCounts = {
+    donuts: 4,
+    popsicles: 4,
+    heartPopsicles: 0,
+    chocoStrawberries: 5,
+    chocoDates: 0,
+    smashCake: 1
+  };
+
+  controller.syncCustomOrderUI();
+
+  expect(elements.donutsCount.textContent).toBe('4');
+  expect(elements.popsiclesCount.textContent).toBe('4');
+  expect(elements.chocoStrawberriesCount.textContent).toBe('5');
+  expect(elements.smashCakeCount.textContent).toBe('1');
+  expect(controller.renderCustomOrderSummary).toHaveBeenCalled();
+  expect(controller.updateCustomOrderPriceDisplay).toHaveBeenCalled();
+});
+
+test('should call service placeOrder and refresh cart and orders', async () => {
+  global.alert = jest.fn();
+
+  const mockService = {
+    placeOrder: jest.fn().mockResolvedValue({ id: 'order1' })
+  };
+
+  global.document.getElementById = jest.fn((id) => {
+    if (id === 'orderDate') return { value: '2026-06-01' };
+    return null;
+  });
+
+  localStorage.getItem.mockReturnValue(
+    JSON.stringify({
+      id: 'user-1',
+      email: 'customer@test.com'
+    })
+  );
+
+  const controller = new OrderController(mockService);
+  controller.renderCart = jest.fn();
+  controller.viewOrders = jest.fn().mockResolvedValue([]);
+
+  await controller.placeOrder();
+
+  expect(mockService.placeOrder).toHaveBeenCalledWith(
+    'user-1',
+    '2026-06-01',
+    'customer@test.com'
+  );
+  expect(global.alert).toHaveBeenCalledWith('Order placed successfully!');
+  expect(controller.renderCart).toHaveBeenCalled();
+  expect(controller.viewOrders).toHaveBeenCalled();
+});
+
+test('should show error alert when controller placeOrder fails', async () => {
+  global.alert = jest.fn();
+
+  const mockService = {
+    placeOrder: jest.fn().mockRejectedValue(
+      new Error('Cart is empty')
+    )
+  };
+
+  global.document.getElementById = jest.fn(() => null);
+  localStorage.getItem.mockReturnValue(null);
+
+  const controller = new OrderController(mockService);
+
+  await controller.placeOrder();
+
+  expect(global.alert).toHaveBeenCalledWith(
+    'Failed to place order: Cart is empty'
+  );
+});
+
 
