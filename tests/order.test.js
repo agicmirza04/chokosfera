@@ -289,3 +289,36 @@ test('should calculate custom order total correctly', () => {
 
 });
 
+test('should return guest when no user is stored in localStorage', () => {
+  localStorage.getItem.mockReturnValue(null);
+
+  const controller = new OrderController({});
+
+  expect(controller.getCurrentUserKey()).toBe('guest');
+});
+
+test('should return user id from localStorage', () => {
+  localStorage.getItem.mockReturnValue(
+    JSON.stringify({ id: 'user-123' })
+  );
+
+  const controller = new OrderController({});
+
+  expect(controller.getCurrentUserKey()).toBe('user-123');
+});
+
+test('should generate next custom order label for guest user', () => {
+  localStorage.getItem.mockReturnValue(null);
+  localStorage.setItem = jest.fn();
+
+  const controller = new OrderController({});
+
+  const label = controller.getNextCustomOrderLabel();
+
+  expect(label).toBe('Custom order #1');
+  expect(localStorage.setItem).toHaveBeenCalledWith(
+    'chokosferaCustomOrderCounter_guest',
+    '1'
+  );
+});
+
