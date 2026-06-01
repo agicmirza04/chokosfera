@@ -116,36 +116,53 @@ app.get('/', (req, res) => {
 
 app.post('/api/register', async (req, res) => {
   const { name, email, password } = req.body;
-  if (!name || !email || !password) return res.status(400).json({ error: 'Missing fields' });
+  console.log('[REGISTER] Attempt:', { email, name });
+  
+  if (!name || !email || !password) {
+    console.log('[REGISTER] Missing fields');
+    return res.status(400).json({ error: 'Missing fields' });
+  }
 
   try {
     const conn = await pool.getConnection();
     const [existing] = await conn.query('SELECT id FROM users WHERE email = ?', [email]);
     if (existing.length > 0) {
       conn.release();
+      console.log('[REGISTER] Email already exists:', email);
       return res.status(409).json({ error: 'Email already exists' });
     }
+    
     const hashed = await bcrypt.hash(password, 10);
+    console.log('[REGISTER] Password hashed, length:', hashed.length);
+    
     const [result] = await conn.query(
       'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
       [name, email, hashed, 'user']
     );
     conn.release();
+    
     const userId = result.insertId.toString();
     const token = jwt.sign({ id: userId, email, name }, JWT_SECRET, { expiresIn: '7d' });
+    console.log('[REGISTER] Success for:', email);
     res.json({ message: 'Registration successful!', user: { id: userId, name, email }, token });
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('[REGISTER] Error:', error.message);
     res.status(500).json({ error: 'Registration failed: ' + error.message });
   }
 });
 
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
+  console.log('[LOGIN] Attempt for:', email);
+  
+  if (!email || !password) {
+    console.log('[LOGIN] Missing fields');
+    return res.status(400).json({ error: 'Missing fields' });
+  }
 
   // Admin check
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    console.log('[LOGIN] Admin login successful');
     const token = jwt.sign({ id: 'admin', email: ADMIN_EMAIL, name: 'Admin', isAdmin: true }, JWT_SECRET, { expiresIn: '7d' });
     return res.json({
       message: 'Login successful!',
@@ -157,13 +174,37 @@ app.post('/api/login', async (req, res) => {
 
   try {
     const conn = await pool.getConnection();
-    const [users] = await conn.query('SELECT id, username, password FROM users WHERE email = ?', [email]);
+    const [users] = await conn.query('SELECT id, username, email, password FROM users WHERE email = ?', [email]);
     conn.release();
-    if (users.length === 0) return res.status(401).json({ error: 'Invalid credentials' });
+    
+    console.log('[LOGIN] User lookup - found:', users.length > 0);
+    
+    if (users.length === 0) {
+      console.log('[LOGIN] User not found:', email);
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
     const user = users[0];
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
+    console.log('[LOGIN] User found - id:', user.id, 'email:', user.email);
+    console.log('[LOGIN] Stored password hash length:', user.password ? user.password.length : 'null');
+    console.log('[LOGIN] Comparing with provided password length:', password.length);
+    
+    let passwordMatch = false;
+    try {
+      passwordMatch = await bcrypt.compare(password, user.password);
+      console.log('[LOGIN] Password match result:', passwordMatch);
+    } catch (bcryptError) {
+      console.error('[LOGIN] Bcrypt error:', bcryptError.message);
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
+    if (!passwordMatch) {
+      console.log('[LOGIN] Password mismatch for:', email);
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
     const token = jwt.sign({ id: user.id, email, name: user.username }, JWT_SECRET, { expiresIn: '7d' });
+    console.log('[LOGIN] Success for:', email);
     res.json({
       message: 'Login successful!',
       user: { id: user.id, name: user.username, email },
@@ -171,8 +212,29 @@ app.post('/api/login', async (req, res) => {
       isAdmin: false
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('[LOGIN] Error:', error.message);
     res.status(500).json({ error: 'Login failed: ' + error.message });
+  }
+});
+
+// Debug endpoint to check users in database
+app.get('/api/debug/users', async (req, res) => {
+  try {
+    const conn = await pool.getConnection();
+    const [users] = await conn.query('SELECT id, username, email, password FROM users');
+    conn.release();
+    
+    const userList = users.map(u => ({
+      id: u.id,
+      username: u.username,
+      email: u.email,
+      passwordHashLength: u.password ? u.password.length : 0,
+      passwordHashStart: u.password ? u.password.substring(0, 20) : 'null'
+    }));
+    
+    res.json({ users: userList, count: users.length });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -211,3 +273,4 @@ initializeDatabase().then(() => {
   console.error('Failed to start server:', error);
   process.exit(1);
 });
+
