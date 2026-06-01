@@ -97,3 +97,22 @@ test('should not remove item when index is invalid', () => {
 
   expect(service.cart.length).toBe(1);
 });
+test('should place order successfully', async () => {
+  const mockRepository = {
+    saveOrder: jest.fn().mockResolvedValue({
+      id: 1,
+      total: 50
+    })
+  };
+
+  const service = new OrderService(mockRepository);
+
+  service.cart = [
+    { name: 'Cake', price: 50 }
+  ];
+
+  const result = await service.placeOrder();
+
+  expect(result.id).toBe(1);
+  expect(service.cart.length).toBe(0);
+});
