@@ -143,3 +143,17 @@ test('should return all orders from repository', async () => {
   expect(orders[0].id).toBe(1);
   expect(orders[1].id).toBe(2);
 });
+
+test('should cancel order successfully', async () => {
+  const mockRepository = {
+    cancelOrder: jest.fn().mockResolvedValue({
+      success: true
+    })
+  };
+
+  const service = new OrderService(mockRepository);
+
+  const result = await service.cancelOrder(1);
+
+  expect(result.success).toBe(true);
+});
