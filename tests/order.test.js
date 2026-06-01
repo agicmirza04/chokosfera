@@ -480,3 +480,27 @@ test('should render selected custom order items in summary', () => {
 
   expect(summaryElement.appendChild).toHaveBeenCalled();
 });
+
+test('should show empty message when no custom order items are selected', () => {
+  const summaryElement = {
+    innerHTML: '',
+    textContent: ''
+  };
+
+  const controller = new OrderController({});
+
+  controller.customOrderSummary = summaryElement;
+
+  controller.customOrderCounts = {
+    donuts: 0,
+    popsicles: 0,
+    heartPopsicles: 0,
+    chocoStrawberries: 0,
+    chocoDates: 0,
+    smashCake: 0
+  };
+
+  controller.renderCustomOrderSummary();
+
+  expect(summaryElement.textContent).toBe('No items selected yet.');
+});
