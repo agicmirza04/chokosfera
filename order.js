@@ -509,10 +509,17 @@ function initializeOrderPage() {
   appController.viewOrders();
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeOrderPage);
-} else {
-  initializeOrderPage();
+if (typeof window !== 'undefined' &&
+    typeof document !== 'undefined') {
+
+  if (document.readyState === 'loading') {
+    document.addEventListener(
+      'DOMContentLoaded',
+      initializeOrderPage
+    );
+  } else {
+    initializeOrderPage();
+  }
 }
 
 if (typeof module !== 'undefined' && module.exports) {
