@@ -1,12 +1,24 @@
 const API_BASE_URL = (function () {
   var host = window.location.hostname;
   var port = window.location.port;
+  var protocol = window.location.protocol;
+  
+  // On Railway or production domain, use same origin
+  if (host.includes('railway.app') || host.includes('chokosfera')) {
+    return '';
+  }
+  
+  // Local development: localhost:8000 (Apache) → localhost:3000 (Node)
   if ((host === 'localhost' || host === '127.0.0.1') && port && port !== '3000') {
     return 'http://localhost:3000';
   }
+  
+  // Local development: no port → localhost:3000
   if ((host === 'localhost' || host === '127.0.0.1') && !port) {
     return 'http://localhost:3000';
   }
+  
+  // Default: same origin
   return '';
 })();
 
