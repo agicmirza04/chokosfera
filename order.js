@@ -31,7 +31,8 @@ class OrderRepository {
         total: order.total, 
         userId: order.userId, 
         orderDate: order.orderDate,
-        email: order.email 
+        email: order.email,
+        isLoyalCustomer: order.isLoyalCustomer || false
       })
     });
     if (!res.ok) throw new Error('Failed to save order');
@@ -73,6 +74,7 @@ class OrderService {
   constructor(repository) {
     this.repository = repository;
     this.cart = this.loadCart();
+    this.lastAddedItem = null;
   }
 
   loadCart() {
@@ -101,6 +103,14 @@ class OrderService {
   }
 
   addToCart(item) {
+    // Prevent duplicate items from being added
+    const itemKey = JSON.stringify({ name: item.name, price: item.price, description: item.description });
+    if (this.lastAddedItem === itemKey) {
+      console.log('[CART] Duplicate item prevented:', item.name);
+      return;
+    }
+    this.lastAddedItem = itemKey;
+
     const quantity = Number(item.amount) || 1;
     const unitPrice = Number(item.price) || 0;
     const normalizedItem = {
@@ -117,6 +127,7 @@ class OrderService {
     }
     this.cart.push(normalizedItem);
     this.saveCart();
+    console.log('[CART] Item added:', item.name);
   }
 
   removeFromCart(index) {
@@ -129,12 +140,20 @@ class OrderService {
     return this.cart.reduce((total, item) => total + Number(item.price || 0), 0);
   }
 
-  async placeOrder(userId = null, orderDate = null, email = null) {
+  async placeOrder(userId = null, orderDate = null, email = null, isLoyalCustomer = false) {
     if (this.cart.length === 0) throw new Error("Cart is empty");
-    const total = this.calculateTotal();
+    let total = this.calculateTotal();
+    
+    // Apply 10% discount if loyal customer
+    if (isLoyalCustomer) {
+      total = total * 0.9;
+      console.log('[ORDER] Loyalty discount applied. New total:', total);
+    }
+    
     const order = new Order(null, [...this.cart], total, 'Pending', userId);
     order.orderDate = orderDate || null;
     order.email = email || null;
+    order.isLoyalCustomer = isLoyalCustomer;
     const saved = await this.repository.saveOrder(order);
     this.cart = [];
     this.saveCart();
@@ -319,7 +338,6 @@ class OrderController {
     this.service.removeFromCart(index);
     this.syncCustomOrderUI();
     
-    // Scroll to custom order section for editing
     const customOrderPanel = document.querySelector('.custom-order-panel');
     if (customOrderPanel) {
       customOrderPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -385,24 +403,28 @@ class OrderController {
     try {
       let userId = null;
       let email = null;
+      let isLoyalCustomer = false;
+      
       try {
         const saved = localStorage.getItem('chokosferaUser');
         if (saved) {
           const user = JSON.parse(saved);
           userId = user.id;
           email = user.email;
+          isLoyalCustomer = user.isLoyalCustomer || false;
         }
       } catch (e) {}
-      // read date from UI (if present)
+      
       let orderDate = null;
       try {
         const dateInput = document.getElementById('orderDate');
         if (dateInput && dateInput.value) {
-          orderDate = dateInput.value; // format YYYY-MM-DD
+          orderDate = dateInput.value;
+          console.log('[ORDER] Order date selected:', orderDate);
         }
       } catch (e) {}
 
-      await this.service.placeOrder(userId, orderDate, email);
+      await this.service.placeOrder(userId, orderDate, email, isLoyalCustomer);
       alert('Order placed successfully!');
       this.renderCart();
       await this.viewOrders();
@@ -485,7 +507,6 @@ class OrderController {
       div.append(content, actions);
       mainDiv.append(div);
 
-      // Add edit order button for custom orders
       if (item.customOrderData) {
         const editOrderBtn = document.createElement('button');
         editOrderBtn.type = 'button';
@@ -499,7 +520,6 @@ class OrderController {
         mainDiv.append(editOrderBtn);
       }
 
-      // Add notes field for non-custom orders
       if (!item.customOrderData) {
         const notesContainer = document.createElement('div');
         const hasNotes = item.notes && item.notes.trim().length > 0;
@@ -588,12 +608,14 @@ class OrderController {
       const isPending = order.status === 'Pending';
       const itemsList = order.items.map(i => i.name).join(', ');
       const displayDate = order.orderDate || (order.createdAt ? order.createdAt.split('T')[0] : 'N/A');
+      const discountInfo = order.isLoyalCustomer ? '<p style="color: #ff3385; font-weight: bold;">✓ Loyalty Discount Applied (10%)</p>' : '';
       div.innerHTML = `
         <h3>Order #${String(order.id).slice(-6)}</h3>
         <p><strong>Date:</strong> ${displayDate}</p>
         <p><strong>Items:</strong> ${itemsList}</p>
         <p><strong>Total:</strong> ${Number(order.total).toFixed(2)} KM</p>
         <p><strong>Status:</strong> <span style="color: ${order.status === 'Cancelled' ? 'red' : 'green'}">${order.status}</span></p>
+        ${discountInfo}
         ${isPending ? `<button class="btn btn-cancel" onclick="appController.cancelOrder('${order.id}')">Cancel Order</button>` : ''}
       `;
       ordersContainer.appendChild(div);
