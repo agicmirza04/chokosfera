@@ -41,17 +41,14 @@ jobs:
             echo "Error: RAILWAY_TOKEN secret is not set"
             exit 1
           fi
-          railway up --token "$RAILWAY_TOKEN" --service chokosfera
+          railway up --service chokosfera
 
       - name: Deployment Status
         if: success()
-        run: |
-          echo "✅ Deployment to Railway successful!"
-          echo "View your app: https://railway.app/dashboard"
+        run: echo "✅ Deployment to Railway successful!"
 
       - name: Deployment Failed
         if: failure()
         run: |
           echo "❌ Deployment to Railway failed"
-          echo "Check logs above for details"
           exit 1
