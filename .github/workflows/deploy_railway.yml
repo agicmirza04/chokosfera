@@ -37,18 +37,11 @@ jobs:
           NODE_ENV: production
           PORT: 3000
         run: |
-          # Validate token exists
           if [ -z "$RAILWAY_TOKEN" ]; then
             echo "Error: RAILWAY_TOKEN secret is not set"
-            echo "Please add RAILWAY_TOKEN to GitHub Secrets:"
-            echo "1. Go to Settings > Secrets and variables > Actions"
-            echo "2. Create new repository secret: RAILWAY_TOKEN"
-            echo "3. Get token from: https://railway.app/account/tokens"
             exit 1
           fi
-          
-          # Deploy to Railway
-          railway up --force --token "$RAILWAY_TOKEN"
+          railway up --token "$RAILWAY_TOKEN" --service chokosfera
 
       - name: Deployment Status
         if: success()
