@@ -126,3 +126,20 @@ test('should throw error when placing order with empty cart', async () => {
     service.placeOrder()
   ).rejects.toThrow('Cart is empty');
 });
+
+test('should return all orders from repository', async () => {
+  const mockRepository = {
+    getAllOrders: jest.fn().mockResolvedValue([
+      { id: 1, total: 20 },
+      { id: 2, total: 40 }
+    ])
+  };
+
+  const service = new OrderService(mockRepository);
+
+  const orders = await service.viewOrders();
+
+  expect(orders.length).toBe(2);
+  expect(orders[0].id).toBe(1);
+  expect(orders[1].id).toBe(2);
+});
