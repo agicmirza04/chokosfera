@@ -180,3 +180,27 @@ test('should return empty cart when localStorage contains invalid data', () => {
 
   expect(service.cart).toEqual([]);
 });
+
+test('should multiply price by quantity when amount is greater than one', () => {
+  const service = new OrderService({});
+
+  service.addToCart({
+    name: 'Cake',
+    price: 10,
+    amount: 3
+  });
+
+  expect(service.cart[0].price).toBe(30);
+});
+
+test('should not remove item when index is negative', () => {
+  const service = new OrderService({});
+
+  service.cart = [
+    { name: 'Cake', price: 10 }
+  ];
+
+  service.removeFromCart(-1);
+
+  expect(service.cart.length).toBe(1);
+});
