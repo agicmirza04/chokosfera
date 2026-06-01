@@ -829,6 +829,45 @@ test('should show error alert when cancelling order fails', async () => {
     'Failed to cancel order: Cancel failed'
   );
 });
+test('should bind custom order control buttons and update quantity on increase click', () => {
+  const increaseButton = {
+    getAttribute: jest.fn((attr) => {
+      if (attr === 'data-option') return 'donuts';
+      if (attr === 'data-action') return 'increase';
+      return null;
+    }),
+    addEventListener: jest.fn((event, callback) => {
+      if (event === 'click') callback();
+    })
+  };
+
+  const addButton = {
+    addEventListener: jest.fn()
+  };
+
+  const resetButton = {
+    addEventListener: jest.fn()
+  };
+
+  global.document.querySelectorAll = jest.fn(() => [increaseButton]);
+
+  global.document.getElementById = jest.fn((id) => {
+    if (id === 'addCustomOrderButton') return addButton;
+    if (id === 'resetCustomOrderButton') return resetButton;
+    return null;
+  });
+
+  const controller = new OrderController({});
+  controller.syncCustomOrderUI = jest.fn();
+
+  controller.bindCustomOrderControls();
+
+  expect(controller.customOrderCounts.donuts).toBe(4);
+  expect(controller.syncCustomOrderUI).toHaveBeenCalled();
+  expect(addButton.addEventListener).toHaveBeenCalled();
+  expect(resetButton.addEventListener).toHaveBeenCalled();
+  expect(controller.customOrderControlsBound).toBe(true);
+});
 
 
 
