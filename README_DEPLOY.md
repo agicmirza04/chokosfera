@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 Chokosfera — Deployment Guide
 
 This repository contains a small Node/Express backend and static frontend files. Below are common cloud deployment options and quick steps. You must provide any cloud credentials/secrets in your chosen platform.
@@ -70,4 +70,4 @@ Security notes
 If you want, I can:
  - Push this repo to a new GitHub repository I create instructions for, and add a GitHub Actions workflow that will build and deploy to Render/Cloud Run (you must add secrets), or
  - Create a ready-to-run GitHub Actions workflow for Cloud Run (requires `GCP_SERVICE_ACCOUNT_KEY` secret).
->>>>>>> origin/darkyami
+
