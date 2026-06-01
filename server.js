@@ -116,6 +116,8 @@ app.get('/', (req, res) => {
 
 app.post('/api/register', async (req, res) => {
   const { name, email, password } = req.body;
+  console.log('Register attempt:', { email, name, passwordLength: password ? password.length : 0 });
+  
   if (!name || !email || !password) return res.status(400).json({ error: 'Missing fields' });
 
   try {
@@ -126,6 +128,8 @@ app.post('/api/register', async (req, res) => {
       return res.status(409).json({ error: 'Email already exists' });
     }
     const hashed = await bcrypt.hash(password, 10);
+    console.log('Hashed password for', email, ':', hashed);
+    
     const [result] = await conn.query(
       'INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)',
       [name, email, hashed, 'user']
@@ -133,6 +137,7 @@ app.post('/api/register', async (req, res) => {
     conn.release();
     const userId = result.insertId.toString();
     const token = jwt.sign({ id: userId, email, name }, JWT_SECRET, { expiresIn: '7d' });
+    console.log('Registration successful for', email);
     res.json({ message: 'Registration successful!', user: { id: userId, name, email }, token });
   } catch (error) {
     console.error('Registration error:', error);
@@ -142,10 +147,13 @@ app.post('/api/register', async (req, res) => {
 
 app.post('/api/login', async (req, res) => {
   const { email, password } = req.body;
+  console.log('Login attempt:', { email, passwordLength: password ? password.length : 0 });
+  
   if (!email || !password) return res.status(400).json({ error: 'Missing fields' });
 
   // Admin check
   if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    console.log('Admin login successful');
     const token = jwt.sign({ id: 'admin', email: ADMIN_EMAIL, name: 'Admin', isAdmin: true }, JWT_SECRET, { expiresIn: '7d' });
     return res.json({
       message: 'Login successful!',
@@ -157,13 +165,31 @@ app.post('/api/login', async (req, res) => {
 
   try {
     const conn = await pool.getConnection();
-    const [users] = await conn.query('SELECT id, username, password FROM users WHERE email = ?', [email]);
+    const [users] = await conn.query('SELECT id, username, email, password FROM users WHERE email = ?', [email]);
     conn.release();
-    if (users.length === 0) return res.status(401).json({ error: 'Invalid credentials' });
+    
+    console.log('User lookup result:', { found: users.length > 0, email });
+    
+    if (users.length === 0) {
+      console.log('User not found:', email);
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
     const user = users[0];
+    console.log('User found:', { id: user.id, email: user.email, username: user.username });
+    console.log('Stored hash:', user.password);
+    console.log('Comparing password:', password, 'with hash:', user.password);
+    
     const ok = await bcrypt.compare(password, user.password);
-    if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
+    console.log('Password comparison result:', ok);
+    
+    if (!ok) {
+      console.log('Password mismatch for user:', email);
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    
     const token = jwt.sign({ id: user.id, email, name: user.username }, JWT_SECRET, { expiresIn: '7d' });
+    console.log('Login successful for', email);
     res.json({
       message: 'Login successful!',
       user: { id: user.id, name: user.username, email },
@@ -211,3 +237,4 @@ initializeDatabase().then(() => {
   console.error('Failed to start server:', error);
   process.exit(1);
 });
+
