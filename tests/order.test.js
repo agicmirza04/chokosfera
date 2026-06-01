@@ -32,6 +32,20 @@ describe('OrderService - calculateTotal()', () => {
     const result = service.calculateTotal();
 
     expect(result).toBe(110);
+
+  });
+
+  test('should return 0 when cart is empty', () => {
+
+    const mockRepository = {};
+    const service = new OrderService(mockRepository);
+
+    service.cart = [];
+
+    const result = service.calculateTotal();
+
+    expect(result).toBe(0);
+
   });
 
 });
