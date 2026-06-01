@@ -10,5 +10,6 @@ COPY . /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
 RUN echo "Listen 8080" > /etc/apache2/ports.conf
 RUN sed -i 's/<VirtualHost \*:80>/<VirtualHost *:8080>/' /etc/apache2/sites-enabled/000-default.conf
+RUN rm /var/www/html/index.html
 EXPOSE 8080
 CMD ["apache2ctl", "-D", "FOREGROUND"]
