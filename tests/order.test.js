@@ -84,3 +84,16 @@ test('should remove item from cart', () => {
   expect(service.cart[0].name).toBe('Box 2');
 
 });
+
+test('should not remove item when index is invalid', () => {
+  const mockRepository = {};
+  const service = new OrderService(mockRepository);
+
+  service.cart = [
+    { name: 'Cake', price: 20 }
+  ];
+
+  service.removeFromCart(99);
+
+  expect(service.cart.length).toBe(1);
+});
