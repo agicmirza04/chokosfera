@@ -445,3 +445,38 @@ test('should not render custom order summary when summary element is missing', (
     controller.renderCustomOrderSummary();
   }).not.toThrow();
 });
+test('should render selected custom order items in summary', () => {
+  const summaryElement = {
+    innerHTML: '',
+    textContent: '',
+    appendedChildren: [],
+    appendChild: jest.fn(function (child) {
+      this.appendedChildren.push(child);
+    })
+  };
+
+  global.document.createElement = jest.fn(() => ({
+    className: '',
+    innerHTML: '',
+    querySelector: jest.fn(() => ({
+      addEventListener: jest.fn()
+    }))
+  }));
+
+  const controller = new OrderController({});
+
+  controller.customOrderSummary = summaryElement;
+
+  controller.customOrderCounts = {
+    donuts: 4,
+    popsicles: 0,
+    heartPopsicles: 0,
+    chocoStrawberries: 0,
+    chocoDates: 0,
+    smashCake: 0
+  };
+
+  controller.renderCustomOrderSummary();
+
+  expect(summaryElement.appendChild).toHaveBeenCalled();
+});
