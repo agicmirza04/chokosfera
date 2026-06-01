@@ -1138,7 +1138,6 @@
       </button>
       <div class="user-info hidden" id="userInfo">
         <span id="displayUsername"></span>
-        <a href="admin.html" id="adminLink" class="hidden" style="color:white;font-weight:bold;margin-right:6px;">Admin</a>
         <a href="logout.php" id="logoutLink">Logout</a>
       </div>
     </div>
@@ -1309,7 +1308,6 @@
       var userInfo = document.getElementById('userInfo');
       var displayUsername = document.getElementById('displayUsername');
       var logoutLink = document.getElementById('logoutLink');
-      var adminLink = document.getElementById('adminLink');
 
       function showLoginScreen() {
         loginScreen.classList.remove('hidden');
@@ -1351,13 +1349,6 @@
         userIcon.classList.add('hidden');
         displayUsername.textContent = username;
         userInfo.classList.remove('hidden');
-        if (adminLink) {
-          if (isAdmin) {
-            adminLink.classList.remove('hidden');
-          } else {
-            adminLink.classList.add('hidden');
-          }
-        }
       }
       function showLoggedOutUser() {
         if (!userInfo || !userIcon) {
