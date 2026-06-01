@@ -266,3 +266,24 @@ test('should keep original price when amount equals one', () => {
   expect(service.cart[0].price).toBe(15);
 });
 
+test('should calculate custom order total correctly', () => {
+
+  const mockService = {};
+
+  const controller = new OrderController(mockService);
+
+  controller.customOrderCounts = {
+    donuts: 4,
+    popsicles: 4,
+    heartPopsicles: 0,
+    chocoStrawberries: 0,
+    chocoDates: 0,
+    smashCake: 0
+  };
+
+  expect(
+    controller.calculateCustomOrderTotal()
+  ).toBe(17);
+
+});
+
