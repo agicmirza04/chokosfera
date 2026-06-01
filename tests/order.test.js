@@ -322,3 +322,43 @@ test('should generate next custom order label for guest user', () => {
   );
 });
 
+test('should return existing custom order label when active draft exists', () => {
+  const controller = new OrderController({});
+
+  controller.activeCustomOrderDraft = {
+    label: 'Custom order #5'
+  };
+
+  expect(controller.getNextCustomOrderLabel()).toBe('Custom order #5');
+});
+
+test('should calculate smash cake custom order total', () => {
+  const controller = new OrderController({});
+
+  controller.customOrderCounts = {
+    donuts: 0,
+    popsicles: 0,
+    heartPopsicles: 0,
+    chocoStrawberries: 0,
+    chocoDates: 0,
+    smashCake: 1
+  };
+
+  expect(controller.calculateCustomOrderTotal()).toBe(40);
+});
+
+test('should calculate mixed custom order total correctly', () => {
+  const controller = new OrderController({});
+
+  controller.customOrderCounts = {
+    donuts: 8,
+    popsicles: 0,
+    heartPopsicles: 4,
+    chocoStrawberries: 5,
+    chocoDates: 5,
+    smashCake: 1
+  };
+
+  expect(controller.calculateCustomOrderTotal()).toBe(71);
+});
+
