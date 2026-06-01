@@ -798,5 +798,36 @@ test('should show error alert when controller placeOrder fails', async () => {
     'Failed to place order: Cart is empty'
   );
 });
+test('should cancel order through service and refresh order history', async () => {
+  const mockService = {
+    cancelOrder: jest.fn().mockResolvedValue({ success: true })
+  };
+
+  const controller = new OrderController(mockService);
+  controller.viewOrders = jest.fn().mockResolvedValue([]);
+
+  await controller.cancelOrder('order-1');
+
+  expect(mockService.cancelOrder).toHaveBeenCalledWith('order-1');
+  expect(controller.viewOrders).toHaveBeenCalled();
+});
+test('should show error alert when cancelling order fails', async () => {
+  global.alert = jest.fn();
+
+  const mockService = {
+    cancelOrder: jest.fn().mockRejectedValue(
+      new Error('Cancel failed')
+    )
+  };
+
+  const controller = new OrderController(mockService);
+
+  await controller.cancelOrder('order-1');
+
+  expect(global.alert).toHaveBeenCalledWith(
+    'Failed to cancel order: Cancel failed'
+  );
+});
+
 
 
