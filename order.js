@@ -601,19 +601,40 @@ class OrderController {
   }
 }
 
-const repository = new OrderRepository();
-const service = new OrderService(repository);
-const appController = new OrderController(service);
+if (
+  typeof window !== 'undefined' &&
+  typeof document !== 'undefined' &&
+  typeof document.getElementById === 'function' &&
+  typeof module === 'undefined'
+) {
 
-function initializeOrderPage() {
-  appController.bindCustomOrderControls();
-  appController.syncCustomOrderUI();
-  appController.renderCart();
-  appController.viewOrders();
+  const repository = new OrderRepository();
+  const service = new OrderService(repository);
+  const appController = new OrderController(service);
+
+  window.appController = appController;
+
+  function initializeOrderPage() {
+    appController.bindCustomOrderControls();
+    appController.syncCustomOrderUI();
+    appController.renderCart();
+    appController.viewOrders();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeOrderPage);
+  } else {
+    initializeOrderPage();
+  }
+
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initializeOrderPage);
-} else {
-  initializeOrderPage();
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    Order,
+    OrderRepository,
+    OrderService,
+    OrderController,
+    customOrderDefinitions
+  };
 }
