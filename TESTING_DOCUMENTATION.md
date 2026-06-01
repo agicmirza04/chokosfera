@@ -129,6 +129,7 @@ Error handling and validation scenarios
 
 Mocking was used where appropriate to isolate business logic from browser dependencies.
 
+
 2. End-to-End Tests (Playwright)
 The file smoke.spec.js contains 10 Playwright E2E tests.
 
@@ -157,6 +158,7 @@ tests/
 ├── order.test.js
 └── e2e/
     └── smoke.spec.js
+```
 
 ### Coverage Results
 
@@ -170,7 +172,7 @@ Lines: 74.33%
 The project satisfies the required minimum unit test coverage target of 70%.
 
 
-### 5. Conclusion
+## 5. Conclusion
 
 The testing process confirmed that the main functionalities of the Chokosfera application work correctly.
 
