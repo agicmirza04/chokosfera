@@ -1,56 +1,64 @@
-name: Deploy to Render
+name: Deploy to Railway
 
 on:
   push:
     branches: [ main, master ]
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+    permissions:
+      contents: read
+      packages: write
 
-      - name: Set up Node
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
+          cache: 'npm'
 
-      - name: Install
-        run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Build Docker image
-        run: |
-          docker build -t chokosfera:latest .
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
 
-      - name: Push & Deploy to Render
+      - name: Deploy to Railway
         env:
-          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-          RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          NODE_ENV: production
+          PORT: 3000
         run: |
-          echo "Triggering Render deploy via API"
-          
-          # Validate credentials exist
-          if [ -z "$RENDER_API_KEY" ] || [ -z "$RENDER_SERVICE_ID" ]; then
-            echo "Error: RENDER_API_KEY or RENDER_SERVICE_ID not set"
+          # Validate token exists
+          if [ -z "$RAILWAY_TOKEN" ]; then
+            echo "Error: RAILWAY_TOKEN secret is not set"
+            echo "Please add RAILWAY_TOKEN to GitHub Secrets:"
+            echo "1. Go to Settings > Secrets and variables > Actions"
+            echo "2. Create new repository secret: RAILWAY_TOKEN"
+            echo "3. Get token from: https://railway.app/account/tokens"
             exit 1
           fi
           
-          # Make API call and capture full response for debugging
-          RESPONSE=$(curl -s -X POST \
-            -H "Authorization: Bearer $RENDER_API_KEY" \
-            -H "Content-Type: application/json" \
-            -d '{"serviceId": "'$RENDER_SERVICE_ID'"}' \
-            https://api.render.com/v1/services/$RENDER_SERVICE_ID/deploys)
-          
-          echo "API Response: $RESPONSE"
-          
-          # Extract deploy ID safely
-          DEPLOY_ID=$(echo "$RESPONSE" | jq -r '.id // empty')
-          
-          if [ -z "$DEPLOY_ID" ]; then
-            echo "Error: Failed to extract deploy ID from response"
-            echo "$RESPONSE" | jq '.'
-            exit 1
-          fi
-          
-          echo "Started deploy: $DEPLOY_ID"
+          # Deploy to Railway
+          railway up --force --token "$RAILWAY_TOKEN"
+
+      - name: Deployment Status
+        if: success()
+        run: |
+          echo "✅ Deployment to Railway successful!"
+          echo "View your app: https://railway.app/dashboard"
+
+      - name: Deployment Failed
+        if: failure()
+        run: |
+          echo "❌ Deployment to Railway failed"
+          echo "Check logs above for details"
+          exit 1
