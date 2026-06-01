@@ -1,12 +1,13 @@
 <?php
-// Database configuration
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', ''); // Leave empty if no password
-define('DB_NAME', 'chokosfera');
+// Database configuration - supports Railway or local MySQL
+$db_host = getenv('RAILWAY_DB_HOST') ?: 'localhost';
+$db_port = getenv('RAILWAY_DB_PORT') ?: 3306;
+$db_user = getenv('RAILWAY_DB_USER') ?: 'root';
+$db_pass = getenv('RAILWAY_DB_PASSWORD') ?: '';
+$db_name = getenv('RAILWAY_DB_NAME') ?: 'chokosfera';
 
 // Create connection to MySQL server (database may not exist yet)
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS);
+$conn = new mysqli($db_host . ':' . $db_port, $db_user, $db_pass);
 
 // Check connection
 if ($conn->connect_error) {
@@ -14,13 +15,13 @@ if ($conn->connect_error) {
 }
 
 // Create database if it does not exist
-$dbCreated = $conn->query("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+$dbCreated = $conn->query("CREATE DATABASE IF NOT EXISTS `" . $db_name . "` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
 if ($dbCreated === false) {
     die("Database creation failed: " . $conn->error);
 }
 
 // Select the database
-$conn->select_db(DB_NAME);
+$conn->select_db($db_name);
 
 // Create users table if it does not exist
 $tableSql = "CREATE TABLE IF NOT EXISTS users (
