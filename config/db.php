@@ -42,4 +42,7 @@ if ($conn->query($tableSql) === false) {
 
 // Set charset
 $conn->set_charset("utf8mb4");
+
+// Run migrations to ensure all tables exist with the correct schema
+require_once __DIR__ . '/migrate.php';
 ?>
