@@ -1,31 +1,21 @@
-<<<<<<< HEAD
-FROM node:18-alpine
+FROM node:20-alpine
+
 WORKDIR /app
 
-# Install dependencies
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production || npm install --only=production
+# Copy package files
+COPY package*.json ./
 
-# Copy app
+# Install dependencies (production only)
+RUN npm install --omit=dev
+
+# Copy entire app
 COPY . .
 
-ENV NODE_ENV=production
-EXPOSE 3000
+# Expose port 8080
+EXPOSE 8080
 
-CMD ["node", "server.js"]
-=======
-FROM node:18-alpine
-WORKDIR /app
+# Set environment variable for port
+ENV PORT=8080
 
-# Install dependencies
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production || npm install --only=production
-
-# Copy app
-COPY . .
-
-ENV NODE_ENV=production
-EXPOSE 3000
-
-CMD ["node", "server.js"]
->>>>>>> origin/darkyami
+# Start the Node.js server
+CMD ["npm", "start"]

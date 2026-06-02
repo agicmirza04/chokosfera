@@ -21,24 +21,35 @@ function writeOrders(orders) {
 
 router.post('/', (req, res) => {
   const { items, total, userId } = req.body;
-  const { orderDate } = req.body;
+  const { orderDate, isLoyalCustomer } = req.body;
+  
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ error: 'Cart is empty' });
+  }
+
+  // Calculate final total with loyalty discount if applicable
+  let finalTotal = Number(total) || 0;
+  if (isLoyalCustomer) {
+    finalTotal = finalTotal * 0.9;
+    console.log('[ORDER] Loyalty discount applied. Original:', total, 'Final:', finalTotal);
   }
 
   const order = {
     id: Date.now().toString(),
     items,
-    total,
+    total: Number(finalTotal.toFixed(2)),
     status: 'Pending',
     userId: userId || null,
     orderDate: orderDate || null,
+    isLoyalCustomer: isLoyalCustomer || false,
     createdAt: new Date().toISOString()
   };
 
   const orders = readOrders();
   orders.push(order);
   writeOrders(orders);
+
+  console.log('[ORDER] Order created:', { id: order.id, total: order.total, isLoyalCustomer: order.isLoyalCustomer, orderDate: order.orderDate });
 
   res.status(201).json({ order });
 });

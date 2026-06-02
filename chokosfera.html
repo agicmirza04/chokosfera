@@ -1848,10 +1848,20 @@ function showAboutPage() {
         });
       }
 
+      var apiBaseUrl = '';
+      if (window.location.protocol === 'file:' || window.location.port === '8000' || (window.location.hostname === 'localhost' && window.location.port && window.location.port !== '3000')) {
+        apiBaseUrl = 'http://localhost:3000';
+      }
+
       if (logoutLink) {
-        logoutLink.addEventListener('click', function () {
+        logoutLink.addEventListener('click', function (e) {
+          e.preventDefault();
           localStorage.removeItem('chokosferaUser');
-          showLoggedOutUser();
+          fetch('logout.php', { method: 'GET', credentials: 'same-origin' }).then(() => {
+            window.location.href = 'chokosfera.html';
+          }).catch(() => {
+            window.location.href = 'chokosfera.html';
+          });
         });
       }
 
