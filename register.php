@@ -51,6 +51,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['username'] = $username;
                 $_SESSION['email'] = $email;
                 $success = "Registration successful! You are now logged in.";
+                // Also add to loyal_customer table if not present
+                try {
+                    $lc_stmt = $conn->prepare('SELECT id FROM loyal_customer WHERE email = ?');
+                    $lc_stmt->bind_param('s', $email);
+                    $lc_stmt->execute();
+                    $lc_stmt->store_result();
+                    if ($lc_stmt->num_rows == 0) {
+                        $lc_stmt->close();
+                        $redeem_code = 'LOYAL-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 4)) . '-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 4));
+                        $password_hash = password_hash($password, PASSWORD_BCRYPT);
+                        $insert_lc = $conn->prepare('INSERT INTO loyal_customer (first_name, last_name, email, password_hash, redeem_code) VALUES (?, ?, ?, ?, ?)');
+                        $empty_last = '';
+                        $insert_lc->bind_param('sssss', $username, $empty_last, $email, $password_hash, $redeem_code);
+                        $insert_lc->execute();
+                        $insert_lc->close();
+                    } else {
+                        $lc_stmt->close();
+                    }
+                } catch (Exception $e) {
+                    // Non-fatal: loyalty insert failed
+                }
             } else {
                 $error = "Registration failed: " . $conn->error;
             }
