@@ -22,10 +22,53 @@ class Order {
 }
 
 class OrderRepository {
+  /**
+   * Return the stored JWT token, or null if the user is not logged in.
+   * Works whether auth.js has loaded (window.getAuthToken) or falls back
+   * to reading localStorage directly.
+   */
+  _getToken() {
+    if (typeof window !== 'undefined' && typeof window.getAuthToken === 'function') {
+      return window.getAuthToken();
+    }
+    try { return localStorage.getItem('chokosferaToken') || null; } catch (e) { return null; }
+  }
+
+  /**
+   * Build the Authorization header object if a token is available.
+   */
+  _authHeaders() {
+    const token = this._getToken();
+    return token ? { 'Authorization': 'Bearer ' + token } : {};
+  }
+
+  /**
+   * Handle a 401 response: clear the stored session and prompt the user to log in.
+   */
+  _handle401() {
+    if (typeof window !== 'undefined') {
+      if (typeof window.clearAuthSession === 'function') {
+        window.clearAuthSession();
+      } else {
+        try {
+          localStorage.removeItem('chokosferaToken');
+          localStorage.removeItem('chokosferaUser');
+        } catch (e) {}
+      }
+      if (typeof window.authController !== 'undefined' && window.authController) {
+        window.authController.showLoggedOutUser();
+        window.authController.openModal();
+      }
+    }
+  }
+
   async saveOrder(order) {
     const res = await fetch(API_BASE_URL + '/api/orders', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...this._authHeaders()
+      },
       body: JSON.stringify({ 
         items: order.items, 
         total: order.total, 
@@ -35,6 +78,10 @@ class OrderRepository {
         isLoyalCustomer: order.isLoyalCustomer || false
       })
     });
+    if (res.status === 401) {
+      this._handle401();
+      throw new Error('Please log in to place an order.');
+    }
     if (!res.ok) throw new Error('Failed to save order');
     const data = await res.json();
     return data.order;
@@ -47,13 +94,24 @@ class OrderRepository {
       if (saved) userId = JSON.parse(saved).id;
     } catch (e) {}
     const url = userId ? API_BASE_URL + `/api/orders?userId=${userId}` : API_BASE_URL + '/api/orders';
-    const res = await fetch(url);
+    const res = await fetch(url, { headers: this._authHeaders() });
+    if (res.status === 401) {
+      this._handle401();
+      throw new Error('Please log in to view your orders.');
+    }
     if (!res.ok) throw new Error('Failed to fetch orders');
     return await res.json();
   }
 
   async cancelOrder(orderId) {
-    const res = await fetch(API_BASE_URL + `/api/orders/${orderId}/cancel`, { method: 'PATCH' });
+    const res = await fetch(API_BASE_URL + `/api/orders/${orderId}/cancel`, {
+      method: 'PATCH',
+      headers: this._authHeaders()
+    });
+    if (res.status === 401) {
+      this._handle401();
+      throw new Error('Please log in to cancel an order.');
+    }
     if (!res.ok) throw new Error('Failed to cancel order');
     return await res.json();
   }

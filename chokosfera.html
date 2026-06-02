@@ -1118,7 +1118,7 @@
         <div class="user-info hidden" id="userInfo">
           <span id="displayUsername"></span>
           <a href="admin.html" id="adminLink" class="hidden" style="color:white;font-weight:bold;margin-right:6px;">Admin</a>
-          <a href="logout.php" id="logoutLink">Logout</a>
+          <a href="#" id="logoutLink">Logout</a>
         </div>
       </div>
     </div>
@@ -1234,6 +1234,10 @@
       <!-- REGISTER SCREEN -->
       <div id="registerScreen" class="auth-screen hidden">
         <div class="form-group">
+          <label for="registerName">Name</label>
+          <input id="registerName" type="text" placeholder="Your name">
+        </div>
+        <div class="form-group">
           <label for="registerEmail">Email</label>
           <input id="registerEmail" type="email" placeholder="you@example.com">
         </div>
@@ -1268,143 +1272,14 @@
       var homePage = document.getElementById('homePage');
       var aboutPage = document.getElementById('aboutPage');
       var brandLink = document.querySelector('.brand-link');
-      var userIcon = document.getElementById('userIcon');
-      var loginModal = document.getElementById('loginModal');
-      var closeModal = document.getElementById('closeModal');
-      var loginScreen = document.getElementById('loginScreen');
-      var registerScreen = document.getElementById('registerScreen');
-      var loginEmail = document.getElementById('loginEmail');
-      var loginPassword = document.getElementById('loginPassword');
-      var registerEmail = document.getElementById('registerEmail');
-      var registerPassword = document.getElementById('registerPassword');
-      var confirmPassword = document.getElementById('confirmPassword');
-      var loginBtn = document.querySelector('.login-btn');
-      var registerBtn = document.querySelector('.register-btn');
-      var registerTriggerBtn = document.querySelector('.register-trigger-btn');
-      var backToLoginBtn = document.querySelector('.back-to-login-btn');
-      var loginError = document.getElementById('loginError');
-      var loginSuccess = document.getElementById('loginSuccess');
-      var registerError = document.getElementById('registerError');
-      var registerSuccess = document.getElementById('registerSuccess');
-      var userInfo = document.getElementById('userInfo');
-      var displayUsername = document.getElementById('displayUsername');
-      var logoutLink = document.getElementById('logoutLink');
-      var adminLink = document.getElementById('adminLink');
+      // Auth UI (modal open/close, login, register, logout, session restore)
+      // is handled entirely by auth.js — no duplicate bindings here.
 
       homePage.hidden = false;
       aboutPage.hidden = false;
 
       homePage.style.display = '';
       aboutPage.style.display = 'block';
-
-      function showLoginScreen() {
-        loginScreen.classList.remove('hidden');
-        registerScreen.classList.add('hidden');
-        loginEmail.value = '';
-        loginPassword.value = '';
-        loginError.textContent = '';
-        loginError.classList.add('hidden');
-        loginSuccess.textContent = '';
-        loginSuccess.classList.add('hidden');
-      }
-      function showRegisterScreen() {
-        loginScreen.classList.add('hidden');
-        registerScreen.classList.remove('hidden');
-        registerEmail.value = '';
-        registerPassword.value = '';
-        confirmPassword.value = '';
-        registerError.textContent = '';
-        registerError.classList.add('hidden');
-        registerSuccess.textContent = '';
-        registerSuccess.classList.add('hidden');
-      }
-      function showLoginError(message) {
-        loginError.textContent = message;
-        loginError.classList.remove('hidden');
-        loginSuccess.textContent = '';
-        loginSuccess.classList.add('hidden');
-      }
-      function showLoginSuccess(message) {
-        loginSuccess.textContent = message;
-        loginSuccess.classList.remove('hidden');
-        loginError.textContent = '';
-        loginError.classList.add('hidden');
-      }
-      function showLoggedInUser(username, isAdmin) {
-        if (!userInfo || !displayUsername || !userIcon) {
-          return;
-        }
-        userIcon.classList.add('hidden');
-        displayUsername.textContent = username;
-        userInfo.classList.remove('hidden');
-        if (adminLink) {
-          if (isAdmin) {
-            adminLink.classList.remove('hidden');
-          } else {
-            adminLink.classList.add('hidden');
-          }
-        }
-      }
-      function showLoggedOutUser() {
-        if (!userInfo || !userIcon) {
-          return;
-        }
-        userInfo.classList.add('hidden');
-        userIcon.classList.remove('hidden');
-      }
-      function restoreLoggedInUser() {
-        try {
-          var saved = localStorage.getItem('chokosferaUser');
-          if (!saved) {
-            showLoggedOutUser();
-            return;
-          }
-          var parsed = JSON.parse(saved);
-          if (parsed && parsed.username) {
-            showLoggedInUser(parsed.username, parsed.isAdmin || false);
-            return;
-          }
-        } catch (error) {
-          // ignore
-        }
-        showLoggedOutUser();
-      }
-      function showRegisterError(message) {
-        registerError.textContent = message;
-        registerError.classList.remove('hidden');
-        registerSuccess.textContent = '';
-        registerSuccess.classList.add('hidden');
-      }
-      function showRegisterSuccess(message) {
-        registerSuccess.textContent = message;
-        registerSuccess.classList.remove('hidden');
-        registerError.textContent = '';
-        registerError.classList.add('hidden');
-      }
-      function parseJsonResponse(response) {
-        var contentType = response.headers.get('Content-Type') || response.headers.get('content-type') || '';
-        if (response.status === 204) {
-          return Promise.resolve({});
-        }
-        if (contentType.indexOf('application/json') !== -1) {
-          return response.json();
-        }
-        return response.text().then(function (text) {
-          if (!text || !text.trim()) {
-            return {};
-          }
-          try {
-            return JSON.parse(text);
-          } catch (ex) {
-            return { __raw: text };
-          }
-        });
-      }
-      function closeLoginModal() {
-        loginModal.classList.remove('show');
-        loginModal.setAttribute('aria-hidden', 'true');
-        showLoginScreen();
-      }
       function openMenuOverlay() {
         if (!menuOverlay) {
           return;
@@ -1827,170 +1702,12 @@ function showAboutPage() {
         }
       });
 
-      // Modal open/close
-      if (userIcon && loginModal) {
-        userIcon.addEventListener('click', function (event) {
-          event.stopPropagation();
-          loginModal.classList.add('show');
-          loginModal.setAttribute('aria-hidden', 'false');
-          showLoginScreen();
-        });
-      }
-
-      if (closeModal) {
-        closeModal.addEventListener('click', closeLoginModal);
-      }
-
-      if (loginModal) {
-        loginModal.addEventListener('click', closeLoginModal);
-        loginModal.querySelector('.modal-content').addEventListener('click', function (event) {
-          event.stopPropagation();
-        });
-      }
-
-      var apiBaseUrl = '';
-      if (window.location.protocol === 'file:' || window.location.port === '8000' || (window.location.hostname === 'localhost' && window.location.port && window.location.port !== '3000')) {
-        apiBaseUrl = 'http://localhost:3000';
-      }
-
-      if (logoutLink) {
-        logoutLink.addEventListener('click', function (e) {
-          e.preventDefault();
-          localStorage.removeItem('chokosferaUser');
-          fetch('logout.php', { method: 'GET', credentials: 'same-origin' }).then(() => {
-            window.location.href = 'chokosfera.html';
-          }).catch(() => {
-            window.location.href = 'chokosfera.html';
-          });
-        });
-      }
-
-      // Prefer server-side session (cookies) for reliable username display.
-      try {
-        fetch('session_user.php', { credentials: 'same-origin' })
-          .then(function (res) {
-            if (!res.ok) throw new Error('no-session');
-            return res.json();
-          })
-          .then(function (data) {
-            if (data && data.success && data.username) {
-              try {
-                var existingUser = JSON.parse(localStorage.getItem('chokosferaUser') || '{}');
-                localStorage.setItem('chokosferaUser', JSON.stringify({ username: data.username, email: '', isAdmin: existingUser.isAdmin || false }));
-              } catch (e) {}
-              var savedAdmin = false;
-              try { savedAdmin = JSON.parse(localStorage.getItem('chokosferaUser') || '{}').isAdmin || false; } catch(e) {}
-              showLoggedInUser(data.username, savedAdmin);
-            } else {
-              restoreLoggedInUser();
-            }
-          })
-          .catch(function () {
-            restoreLoggedInUser();
-          });
-      } catch (e) {
-        restoreLoggedInUser();
-      }
-
-      // Screen switching
-      if (registerTriggerBtn) {
-        registerTriggerBtn.addEventListener('click', showRegisterScreen);
-      }
-
-      if (backToLoginBtn) {
-        backToLoginBtn.addEventListener('click', showLoginScreen);
-      }
-
-      // Login handler
-      if (loginBtn) {
-        loginBtn.addEventListener('click', function () {
-          var email = loginEmail.value.trim();
-          var password = loginPassword.value.trim();
-
-          if (!email || !password) {
-            return showLoginError('Please enter both email and password.');
-          }
-
-          fetch('login.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email, password: password })
-          })
-            .then(function (response) {
-              return parseJsonResponse(response).then(function (data) {
-                if (!response.ok) {
-                  var message = data.error || data.message || response.statusText || 'Login failed';
-                  throw new Error(message);
-                }
-                return data;
-              });
-            })
-            .then(function (data) {
-              showLoginSuccess(data.message || 'Login successful!');
-              var username = data.username || email.split('@')[0] || 'user';
-              localStorage.setItem('chokosferaUser', JSON.stringify({ username: username, email: email, isAdmin: !!data.isAdmin }));
-              
-              // Check if admin login
-              if (data.isAdmin) {
-                setTimeout(function() {
-                  window.location.href = 'admin.html';
-                }, 1200);
-              } else {
-                showLoggedInUser(username, false);
-                setTimeout(closeLoginModal, 1200);
-              }
-            })
-            .catch(function (error) {
-              showLoginError(error.message);
-            });
-        });
-      }
-
-      // Register handler
-      if (registerBtn) {
-        registerBtn.addEventListener('click', function () {
-          var email = registerEmail.value.trim();
-          var password = registerPassword.value.trim();
-          var confirm = confirmPassword.value.trim();
-
-          if (!email || !password || !confirm) {
-            return showRegisterError('Please fill in all fields.');
-          }
-
-          if (password.length < 8) {
-            return showRegisterError('Password must be at least 8 characters long.');
-          }
-
-          if (password !== confirm) {
-            return showRegisterError('Passwords do not match.');
-          }
-
-          var username = email.split('@')[0] || 'user';
-
-          fetch('register.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: username, email: email, password: password, confirmPassword: confirm })
-          })
-            .then(function (response) {
-              return parseJsonResponse(response).then(function (data) {
-                if (!response.ok) {
-                  var message = data.error || data.message || response.statusText || 'Registration failed';
-                  throw new Error(message);
-                }
-                return data;
-              });
-            })
-            .then(function (data) {
-              showRegisterSuccess(data.message || 'Registration successful!');
-              setTimeout(closeLoginModal, 1400);
-            })
-            .catch(function (error) {
-              showRegisterError(error.message);
-            });
-        });
-      }
+      // Modal open/close, login, register, logout, and session restore are
+      // all handled by auth.js (loaded below). No duplicate bindings here.
     });
   </script>
+
+  <!-- Authentication: login / register / session management -->
+  <script src="auth.js"></script>
   </body>
   </html>
