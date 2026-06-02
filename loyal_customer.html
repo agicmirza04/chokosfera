@@ -357,33 +357,35 @@
         const email = document.getElementById('email').value.trim();
         const password = document.getElementById('password').value;
 
-       const response = await fetch(API_BASE_URL + '/api/loyal-customers', {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    firstName,
-    lastName,
-    email,
-    password
-  })
-});
+        const response = await fetch('loyal_customer.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName,
+            lastName,
+            email,
+            password
+          })
+        });
 
-const responseText = await response.text();
+        const data = await response.json();
 
-let data;
-try {
-  data = JSON.parse(responseText);
-} catch (err) {
-  console.error('Server returned:', responseText);
-  throw new Error('Server did not return valid JSON');
-}
-
-if (!response.ok) {
-  throw new Error(data.error || 'Registration failed');
-}
-        
+        if (data.success) {
+          redeemCodeDisplay.textContent = data.redeem_code;
+          successMessage.classList.add('show');
+          form.style.display = 'none';
+          
+          // Save user to localStorage
+          try {
+            localStorage.setItem('chokosferaUser', JSON.stringify({
+              username: firstName + ' ' + lastName,
+              email: email,
+              id: email
+            }));
+          } catch (e) {}
+        } else {
+          throw new Error(data.error || 'Registration failed');
+        }
       } catch (error) {
         errorMessage.textContent = error.message || 'An error occurred. Please try again.';
         errorMessage.classList.add('show');

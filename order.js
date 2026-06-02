@@ -338,6 +338,7 @@ class OrderController {
     this.service.removeFromCart(index);
     this.syncCustomOrderUI();
     
+    // Scroll to custom order section for editing
     const customOrderPanel = document.querySelector('.custom-order-panel');
     if (customOrderPanel) {
       customOrderPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -507,6 +508,7 @@ class OrderController {
       div.append(content, actions);
       mainDiv.append(div);
 
+      // Add edit order button for custom orders
       if (item.customOrderData) {
         const editOrderBtn = document.createElement('button');
         editOrderBtn.type = 'button';
@@ -520,6 +522,7 @@ class OrderController {
         mainDiv.append(editOrderBtn);
       }
 
+      // Add notes field for non-custom orders
       if (!item.customOrderData) {
         const notesContainer = document.createElement('div');
         const hasNotes = item.notes && item.notes.trim().length > 0;

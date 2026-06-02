@@ -1097,26 +1097,6 @@
     .hidden {
       display: none;
     }
-
-    /* NAVBAR LINK BUTTON — styles for menu and about buttons */
-    .navbar-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 16px;
-      border-radius: 5px;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: none;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .navbar-link:hover {
-      background: rgba(255, 255, 255, 0.35);
-    }
   </style>
 </head>
 
@@ -1133,12 +1113,13 @@
     <div class="icons">
       <button class="navbar-link" id="navbarMenuBtn" type="button">Menu</button>
       <button class="navbar-link" id="navbarAboutBtn" type="button">About Us</button>
-      <button class="navbar-link" id="userIcon" type="button" title="Login / Register" style="padding:0;background:transparent;border:none;font-size:40px;cursor:pointer;color:inherit;transition:0.3s;">
-        <i class="fa-solid fa-user"></i>
-      </button>
-      <div class="user-info hidden" id="userInfo">
-        <span id="displayUsername"></span>
-        <a href="logout.php" id="logoutLink">Logout</a>
+      <div class="user-panel">
+        <i class="fa-solid fa-user" id="userIcon" title="Login / Register"></i>
+        <div class="user-info hidden" id="userInfo">
+          <span id="displayUsername"></span>
+          <a href="admin.html" id="adminLink" class="hidden" style="color:white;font-weight:bold;margin-right:6px;">Admin</a>
+          <a href="logout.php" id="logoutLink">Logout</a>
+        </div>
       </div>
     </div>
 
@@ -1308,6 +1289,13 @@
       var userInfo = document.getElementById('userInfo');
       var displayUsername = document.getElementById('displayUsername');
       var logoutLink = document.getElementById('logoutLink');
+      var adminLink = document.getElementById('adminLink');
+
+      homePage.hidden = false;
+      aboutPage.hidden = false;
+
+      homePage.style.display = '';
+      aboutPage.style.display = 'block';
 
       function showLoginScreen() {
         loginScreen.classList.remove('hidden');
@@ -1349,6 +1337,13 @@
         userIcon.classList.add('hidden');
         displayUsername.textContent = username;
         userInfo.classList.remove('hidden');
+        if (adminLink) {
+          if (isAdmin) {
+            adminLink.classList.remove('hidden');
+          } else {
+            adminLink.classList.add('hidden');
+          }
+        }
       }
       function showLoggedOutUser() {
         if (!userInfo || !userIcon) {
@@ -1430,45 +1425,28 @@
         document.body.classList.remove('menu-overlay-open');
       }
       function showHomePage() {
-        closeMenuOverlay();
-        if (homePage) {
-          homePage.hidden = false;
-          homePage.removeAttribute('hidden');
-          homePage.style.display = '';
-          homePage.setAttribute('aria-hidden', 'false');
-        }
-        if (aboutPage) {
-          aboutPage.hidden = true;
-          aboutPage.setAttribute('aria-hidden', 'true');
-          aboutPage.style.display = 'none';
-        }
-        if (typeof navDropdown !== 'undefined' && navDropdown) {
-          navDropdown.classList.remove('show');
-        }
-        if (typeof window !== 'undefined') {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }
-      function showAboutPage() {
-        closeMenuOverlay();
-        if (homePage) {
-          homePage.hidden = true;
-          homePage.setAttribute('aria-hidden', 'true');
-          homePage.style.display = 'none';
-        }
-        if (aboutPage) {
-          aboutPage.hidden = false;
-          aboutPage.removeAttribute('hidden');
-          aboutPage.style.display = 'flex';
-          aboutPage.setAttribute('aria-hidden', 'false');
-        }
-        if (typeof navDropdown !== 'undefined' && navDropdown) {
-          navDropdown.classList.remove('show');
-        }
-        if (typeof window !== 'undefined') {
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-      }
+  closeMenuOverlay();
+
+  document.getElementById('homePage').scrollIntoView({
+    behavior: 'smooth'
+  });
+
+  if (typeof navDropdown !== 'undefined' && navDropdown) {
+    navDropdown.classList.remove('show');
+  }
+}
+
+function showAboutPage() {
+  closeMenuOverlay();
+
+  document.getElementById('aboutPage').scrollIntoView({
+    behavior: 'smooth'
+  });
+
+  if (typeof navDropdown !== 'undefined' && navDropdown) {
+    navDropdown.classList.remove('show');
+  }
+}
 
       function startPhotoRotation(imageElement, photos) {
   var rotationIndex = 0;
@@ -1512,6 +1490,7 @@
           amount: '16 pcs',
           price: '20 KM',
           priceValue: 20,
+          shortDescription: 'A box of soft and fluffy donuts fully coated and decorated with rich chocolate for the perfect sweet bite in every flavor.',
           description: 'A compact assortment of 16 donuts, ideal for a sweet tasting box or a small celebration.',
            photos: [
     'images/smaller1.png',
@@ -1524,6 +1503,7 @@
           amount: '36 pcs',
           price: '40 KM',
           priceValue: 40,
+          shortDescription: 'Made for sharing, this large box includes chocolate-covered donuts with a delicious mix of toppings and drizzles.',
           description: 'A larger mixed box with 36 donuts, perfect for sharing with family and friends.',
            photos: [
     'images/bigger1.png',
@@ -1536,6 +1516,7 @@
           amount: '7 pcs',
           price: '25 KM',
           priceValue: 25,
+          shortDescription: 'A luxurious mix of 7 chocolate-dipped treats featuring 4 classic cakesticles and 3 elegant heart-shaped creations.',
           description: 'A seven-piece cakesicle pack with a creamy center and soft coating.',
            photos: [
     'images/cakestickles1.png',
@@ -1544,15 +1525,16 @@
   ]
         },
         {
-          name: 'Cakestickles',
+          name: 'Heart Cakestickles',
           amount: '16 pcs',
           price: '48 KM',
           priceValue: 48,
-          description: 'A larger cakesicle bundle of 16 pieces, great for parties or gifting.',
+          shortDescription: 'Heart-shaped cakesticles covered in silky chocolate and decorated to make every bite extra special.',
+          description: 'A larger heart-shaped cakesticle bundle of 16 pieces, great for parties or gifting.',
            photos: [
-    'images/cakeBig1.png',
-    'images/cakeBig2.png',
-    'images/cakeBig3.png'
+    'images/Heart1.jpeg',
+    'images/Heart2.jpeg',
+    'images/Heart3.jpeg'
   ]
         },
         {
@@ -1560,6 +1542,7 @@
           amount: '24 pcs',
           price: '50 KM',
           priceValue: 50,
+          shortDescription: 'The perfect combo box with 12 chocolate-covered donuts and 12 rich cakesticles for anyone who wants a little of everything.',
           description: 'A mixed box of 24 sweets with a balanced variety of textures and toppings.',
            photos: [
     'images/mix1.png',
@@ -1572,6 +1555,7 @@
           amount: '25 pcs',
           price: '20 km',
           priceValue: 20,
+          shortDescription: 'Premium dates coated in smooth chocolate and finished with elegant toppings for a rich and indulgent treat.',
           description: 'A chocolate-coated date assortment with a rich, indulgent bite.',
            photos: [
     'images/choko_dates1.png',
@@ -1584,6 +1568,7 @@
           amount: '1 pcs',
           price: '40 KM',
           priceValue: 40,
+          shortDescription: 'A handcrafted chocolate heart filled with fresh strawberries and delicious chocolate-covered donuts for the sweetest surprise.',
           description: 'A heart-shaped surprise filled with donuts and berries for a playful presentation.',
            photos: [
     'images/donut1.png',
@@ -1596,6 +1581,7 @@
           amount: '1 pcs',
           price: '30 KM',
           priceValue: 30,
+          shortDescription: 'A breakable chocolate heart packed with colorful candy and sweet surprises inside, perfect for gifts and celebrations.',
           description: 'A heart-shaped surprise filled with sweets for a crunchy, candy-focused option.',
            photos: [
     'images/candy1.png',
@@ -1608,6 +1594,7 @@
           amount: '20 pcs',
           price: '25 KM',
           priceValue: 25,
+          shortDescription: 'Fresh strawberries dipped in rich chocolate and beautifully decorated for the perfect balance of fruity and sweet.',
           description: 'A strawberry-forward assortment of 20 pieces for fruity sweetness and color.',
            photos: [
     'images/strawberries1.png',
@@ -1679,7 +1666,7 @@
 
           var summaryDescription = document.createElement('p');
           summaryDescription.className = 'menu-item-summary-description';
-          summaryDescription.textContent = 'Description of option ' + (index + 1);
+          summaryDescription.textContent = item.shortDescription;
 
           var description = document.createElement('p');
           description.className = 'menu-item-description';
@@ -1807,6 +1794,39 @@
         }
       });
 
+      showHomePage();
+
+      if (menuTrigger) {
+        menuTrigger.addEventListener('click', function (event) {
+          event.preventDefault();
+          openMenuOverlay();
+        });
+      }
+
+      if (aboutMenuTrigger) {
+        aboutMenuTrigger.addEventListener('click', function (event) {
+          event.preventDefault();
+          showAboutPage();
+        });
+      }
+
+      if (brandLink) {
+        brandLink.addEventListener('click', function (event) {
+          event.preventDefault();
+          showHomePage();
+        });
+      }
+
+      if (closeMenuOverlayButton) {
+        closeMenuOverlayButton.addEventListener('click', closeMenuOverlay);
+      }
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+          closeMenuOverlay();
+        }
+      });
+
       // Modal open/close
       if (userIcon && loginModal) {
         userIcon.addEventListener('click', function (event) {
@@ -1891,20 +1911,7 @@
             return showLoginError('Please enter both email and password.');
           }
 
-          // Check if admin credentials
-          var isAdminLogin = (email === 'sarah.karacic@gmail.com' && password === 'donutsarajevo');
-
-          if (isAdminLogin) {
-            // Admin login
-            showLoginSuccess('Admin login successful!');
-            localStorage.setItem('chokosferaUser', JSON.stringify({ username: 'Admin', email: email, isAdmin: true }));
-            setTimeout(function() {
-              window.location.href = 'admin.html';
-            }, 1200);
-            return;
-          }
-
-          fetch(apiBaseUrl + '/api/login', {
+          fetch('login.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email, password: password })
@@ -1919,11 +1926,19 @@
               });
             })
             .then(function (data) {
-              showLoginSuccess('Login successful!');
-              var username = (data.user && data.user.name) || email.split('@')[0] || 'user';
-              localStorage.setItem('chokosferaUser', JSON.stringify({ username: username, email: email, isAdmin: false, token: data.token }));
-              showLoggedInUser(username, false);
-              setTimeout(closeLoginModal, 1200);
+              showLoginSuccess(data.message || 'Login successful!');
+              var username = data.username || email.split('@')[0] || 'user';
+              localStorage.setItem('chokosferaUser', JSON.stringify({ username: username, email: email, isAdmin: !!data.isAdmin }));
+              
+              // Check if admin login
+              if (data.isAdmin) {
+                setTimeout(function() {
+                  window.location.href = 'admin.html';
+                }, 1200);
+              } else {
+                showLoggedInUser(username, false);
+                setTimeout(closeLoginModal, 1200);
+              }
             })
             .catch(function (error) {
               showLoginError(error.message);
@@ -1952,10 +1967,10 @@
 
           var username = email.split('@')[0] || 'user';
 
-          fetch(apiBaseUrl + '/api/register', {
+          fetch('register.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name: username, email: email, password: password })
+            body: JSON.stringify({ username: username, email: email, password: password, confirmPassword: confirm })
           })
             .then(function (response) {
               return parseJsonResponse(response).then(function (data) {
@@ -1967,8 +1982,8 @@
               });
             })
             .then(function (data) {
-              showRegisterSuccess('Registration successful! Please log in.');
-              setTimeout(showLoginScreen, 1400);
+              showRegisterSuccess(data.message || 'Registration successful!');
+              setTimeout(closeLoginModal, 1400);
             })
             .catch(function (error) {
               showRegisterError(error.message);
