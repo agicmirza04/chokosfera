@@ -113,7 +113,7 @@ try {
                 $uStmt->close();
             }
 
-            $lStmt = $conn->prepare('SELECT email FROM loyal_customers WHERE redeem_code = ?');
+            $lStmt = $conn->prepare('SELECT email FROM loyal_customer WHERE redeem_code = ?');
             $lStmt->bind_param('s', $redeemCode);
             $lStmt->execute();
             $lRes = $lStmt->get_result();
