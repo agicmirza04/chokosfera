@@ -2,143 +2,85 @@
 session_start();
 require 'config/db.php';
 
+// Allow requests from local dev servers
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type');
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit();
+}
+
 $isJson = isset($_SERVER['CONTENT_TYPE']) && stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== false;
-$error = '';
-$success = '';
+$input = $_POST;
+if ($isJson) {
+    $json = json_decode(file_get_contents('php://input'), true);
+    if (is_array($json)) $input = $json;
+}
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $input = $_POST;
-    if ($isJson) {
-        $json = json_decode(file_get_contents('php://input'), true);
-        if (is_array($json)) {
-            $input = $json;
-        }
+$first = trim($input['firstName'] ?? $input['first_name'] ?? '');
+$last = trim($input['lastName'] ?? $input['last_name'] ?? '');
+$email = trim($input['email'] ?? '');
+$password = $input['password'] ?? '';
+$redeem_code = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (empty($email)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Email is required']);
+        exit();
     }
 
-    $username = trim($input['username'] ?? '');
-    $email = trim($input['email'] ?? '');
-    $password = $input['password'] ?? '';
-    $confirm_password = $input['confirm_password'] ?? $input['confirmPassword'] ?? '';
-
-    if (empty($username) && !empty($email)) {
-        $username = strstr($email, '@', true) ?: $email;
+    // Check existing loyal customer record
+    $stmt = $conn->prepare('SELECT id FROM loyal_customer WHERE email = ?');
+    $stmt->bind_param('s', $email);
+    $stmt->execute();
+    $stmt->store_result();
+    if ($stmt->num_rows > 0) {
+        http_response_code(409);
+        echo json_encode(['success' => false, 'error' => 'Loyal customer with that email already exists']);
+        exit();
     }
+    $stmt->close();
 
-    // Validation
-    if (empty($email) || empty($password)) {
-        $error = "All fields are required";
-    } elseif ($password !== $confirm_password) {
-        $error = "Passwords do not match";
-    } elseif (strlen($password) < 6) {
-        $error = "Password must be at least 6 characters";
+    $hash = null;
+    if (!empty($password)) {
+        $hash = password_hash($password, PASSWORD_BCRYPT);
+    }
+    $redeem_code = 'LOYAL-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 4)) . '-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 4));
+
+    $insert = $conn->prepare('INSERT INTO loyal_customer (first_name, last_name, email, password_hash, redeem_code) VALUES (?, ?, ?, ?, ?)');
+    $insert->bind_param('sssss', $first, $last, $email, $hash, $redeem_code);
+    if ($insert->execute()) {
+        echo json_encode(['success' => true, 'message' => 'Loyal customer registered', 'redeem_code' => $redeem_code]);
+        exit();
     } else {
-        $check_sql = "SELECT id FROM users WHERE email = ? OR username = ?";
-        $stmt = $conn->prepare($check_sql);
-        $stmt->bind_param("ss", $email, $username);
-        $stmt->execute();
-        $stmt->store_result();
-
-        if ($stmt->num_rows > 0) {
-            $error = "Username or email already exists";
-        } else {
-            $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-            $insert_sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
-            $stmt = $conn->prepare($insert_sql);
-            $stmt->bind_param("sss", $username, $email, $hashed_password);
-
-            if ($stmt->execute()) {
-                $_SESSION['user_id'] = $stmt->insert_id;
-                $_SESSION['username'] = $username;
-                $_SESSION['email'] = $email;
-                $success = "Registration successful! You are now logged in.";
-                // Also add to loyal_customer table if not present
-                try {
-                    $lc_stmt = $conn->prepare('SELECT id FROM loyal_customer WHERE email = ?');
-                    $lc_stmt->bind_param('s', $email);
-                    $lc_stmt->execute();
-                    $lc_stmt->store_result();
-                    if ($lc_stmt->num_rows == 0) {
-                        $lc_stmt->close();
-                        $redeem_code = 'LOYAL-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 4)) . '-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 4));
-                        $password_hash = password_hash($password, PASSWORD_BCRYPT);
-                        $insert_lc = $conn->prepare('INSERT INTO loyal_customer (first_name, last_name, email, password_hash, redeem_code) VALUES (?, ?, ?, ?, ?)');
-                        $empty_last = '';
-                        $insert_lc->bind_param('sssss', $username, $empty_last, $email, $password_hash, $redeem_code);
-                        $insert_lc->execute();
-                        $insert_lc->close();
-                    } else {
-                        $lc_stmt->close();
-                    }
-                } catch (Exception $e) {
-                    // Non-fatal: loyalty insert failed
-                }
-            } else {
-                $error = "Registration failed: " . $conn->error;
-            }
-        }
-        $stmt->close();
-    }
-
-    if ($isJson) {
-        header('Content-Type: application/json');
-        if ($error) {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'error' => $error]);
-        } else {
-            echo json_encode(['success' => true, 'message' => $success]);
-        }
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'DB error: ' . $conn->error]);
         exit();
     }
 }
-?>
 
+// If not POST, show simple HTML form fallback
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Register</title>
-    <style>
-        body { font-family: Arial; max-width: 400px; margin: 50px auto; }
-        .form-group { margin: 15px 0; }
-        input { width: 100%; padding: 10px; box-sizing: border-box; }
-        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; }
-        .error { color: red; }
-        .success { color: green; }
-    </style>
+    <meta charset="utf-8">
+    <title>Register Loyal Customer</title>
 </head>
 <body>
-    <h2>Register</h2>
-    
-    <?php if ($error): ?>
-        <div class="error"><?php echo $error; ?></div>
-    <?php endif; ?>
-    
-    <?php if ($success): ?>
-        <div class="success"><?php echo $success; ?></div>
-    <?php endif; ?>
-
+    <h2>Register Loyal Customer</h2>
     <form method="POST">
-        <div class="form-group">
-            <label>Username:</label>
-            <input type="text" name="username" required>
-        </div>
-
-        <div class="form-group">
-            <label>Email:</label>
-            <input type="email" name="email" required>
-        </div>
-
-        <div class="form-group">
-            <label>Password:</label>
-            <input type="password" name="password" required>
-        </div>
-
-        <div class="form-group">
-            <label>Confirm Password:</label>
-            <input type="password" name="confirm_password" required>
-        </div>
-
+        <label>First name: <input type="text" name="firstName"></label><br>
+        <label>Last name: <input type="text" name="lastName"></label><br>
+        <label>Email: <input type="email" name="email" required></label><br>
+        <label>Password: <input type="password" name="password" required></label><br>
         <button type="submit">Register</button>
-        <p>Already have an account? <a href="login.php">Login here</a></p>
     </form>
+    <?php if (!empty($redeem_code)): ?>
+        <p><strong>Your loyalty redeem code:</strong> <?php echo htmlspecialchars($redeem_code); ?></p>
+        <p>Use this code during payment to receive your 10% discount.</p>
+    <?php endif; ?>
 </body>
 </html>
